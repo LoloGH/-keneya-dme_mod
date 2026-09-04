@@ -4,23 +4,24 @@ Application autonome de démonstration pour la Phase 1 de Keneya-DME, un dossier
 
 ## État actuel — v0.1.0
 
-Le dépôt reçu était vide. Cette première itération fournit une interface responsive et fonctionnelle côté navigateur : connexion de démonstration, tableau de bord, liste/recherche/création de patients, dossier patient, consultations et constantes, alertes d’allergies/conditions, rendez-vous, journal d’audit et navigation pour les autres domaines DME. Les données sont conservées dans le `localStorage` du navigateur pour permettre une démonstration immédiate.
+Le dépôt reçu était vide. La version actuelle est une SPA React + Vite + TypeScript : connexion multi-rôles simulée, tableau de bord, liste/recherche/création de patients, dossier patient à onglets avec données fictives, parcours DME, audit et simulation SMS. Les mocks sont isolés dans une couche de services afin de pouvoir les remplacer ultérieurement par une API Laravel.
 
 ## Démarrer
 
 ```bash
-npm start
+npm install
+npm run dev
 ```
 
 Puis ouvrir l’adresse affichée par le serveur. Compte de démonstration : `admin@keneya.test` avec n’importe quel mot de passe non vide.
 
 ```bash
-npm test
+npm run build
 ```
 
 ## Décision d’architecture
 
-L’environnement ne contient ni PHP, ni Composer, ni Laravel et aucun dépôt initial n’a été fourni. L’interface est donc volontairement indépendante des dépendances et sert de socle UX. Pour rendre la solution médicale exploitable en production, la prochaine étape est d’installer PHP 8.4+/Composer et de créer le backend Laravel 12 : authentification, RBAC, policies, migrations, stockage privé, API, queue SMS et génération PDF. Aucun stockage `localStorage` ne doit être utilisé pour des données médicales réelles.
+L’environnement ne contient ni PHP, ni Composer, ni Laravel et aucun dépôt initial n’a été fourni. L’interface est donc volontairement indépendante du backend et sert de socle UX. Pour rendre la solution médicale exploitable en production, la prochaine étape est d’installer PHP 8.4+/Composer et de créer le backend Laravel 12 : authentification, RBAC, policies, migrations, stockage privé, API, queue SMS et génération PDF. Les mocks ne doivent jamais être remplacés par un stockage navigateur pour des données médicales réelles.
 
 ## Périmètre futur
 
