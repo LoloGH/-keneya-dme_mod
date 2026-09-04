@@ -1,0 +1,11 @@
+{
+  "name": "keneya-dme-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Keneya DME — application autonome de démonstration fonctionnelle",
+  "scripts": {
+    "start": "npx --yes serve public",
+    "test": "node --test tests/smoke.test.mjs"
+  },
+  "engines": { "node": ">=20" }
+}
