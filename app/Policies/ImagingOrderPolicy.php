@@ -1,0 +1,24 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Policies;
+
+use App\Models\ImagingOrder;
+use App\Models\User;
+
+/** Imagerie (§24) : la demande et le compte rendu sont deux droits distincts. */
+class ImagingOrderPolicy extends DomainPolicy
+{
+    protected string $viewPermission = 'imaging.view';
+
+    protected string $createPermission = 'imaging.create';
+
+    protected string $updatePermission = 'imaging.create';
+
+    public function report(User $user, ImagingOrder $order): bool
+    {
+        return $this->allows($user, 'imaging.reports.create')
+            && $order->status !== 'cancelled';
+    }
+}

@@ -1,0 +1,100 @@
+@extends('layouts.app')
+
+@section('title', $document->title)
+
+@section('content')
+    <x-page-header :title="$document->title"
+                   :subtitle="$document->typeLabel().' · '.$document->document_number"
+                   :breadcrumbs="[
+                       'Documents' => route('documents.index'),
+                       $document->patient->fullName() => route('patients.show', $document->patient),
+                       $document->document_number => null,
+                   ]">
+        <x-slot:actions>
+            @can('download', $document)
+                <a href="{{ route('documents.download', $document) }}" class="k-btn-primary">
+                    <x-icon name="download" class="h-4 w-4"/> Télécharger
+                </a>
+            @endcan
+        </x-slot:actions>
+    </x-page-header>
+
+    <div class="grid gap-4 lg:grid-cols-3">
+        <div class="lg:col-span-2">
+            {{-- Aperçu PDF intégré (§28) : servi par une route contrôlée --}}
+            @if ($document->isPdf())
+                @can('download', $document)
+                    <section class="k-card overflow-hidden">
+                        <div class="k-card-header"><h2 class="k-card-title">Aperçu</h2></div>
+                        <iframe src="{{ route('documents.preview', $document) }}"
+                                title="Aperçu de {{ $document->title }}"
+                                class="h-[70vh] w-full border-0"></iframe>
+                    </section>
+                @endcan
+            @else
+                <div class="k-card">
+                    <x-empty-state icon="document" title="Aperçu indisponible"
+                                   message="Seuls les documents PDF disposent d'un aperçu intégré. Téléchargez le fichier pour le consulter.">
+                        <x-slot:action>
+                            @can('download', $document)
+                                <a href="{{ route('documents.download', $document) }}" class="k-btn-primary">
+                                    <x-icon name="download" class="h-4 w-4"/> Télécharger
+                                </a>
+                            @endcan
+                        </x-slot:action>
+                    </x-empty-state>
+                </div>
+            @endif
+        </div>
+
+        <div class="space-y-4">
+            <section class="k-card">
+                <div class="k-card-header"><h2 class="k-card-title">Informations</h2></div>
+                <dl class="k-card-body space-y-2.5 text-sm">
+                    @foreach ([
+                        'Type' => $document->typeLabel(),
+                        'Patient' => $document->patient->fullName(),
+                        'Auteur' => $document->uploader?->displayName() ?? 'Généré par l’application',
+                        'Ajouté le' => $document->created_at->translatedFormat('d F Y à H:i'),
+                        'Taille' => $document->humanSize(),
+                        'Version' => 'v'.$document->version,
+                        'Format' => $document->mime_type ?: 'Inconnu',
+                    ] as $label => $value)
+                        <div>
+                            <dt class="text-xs text-ink-500">{{ $label }}</dt>
+                            <dd class="font-medium text-ink-900">{{ $value }}</dd>
+                        </div>
+                    @endforeach
+                    @if ($document->description)
+                        <div>
+                            <dt class="text-xs text-ink-500">Description</dt>
+                            <dd class="text-ink-800">{{ $document->description }}</dd>
+                        </div>
+                    @endif
+                    @if ($document->previousVersion)
+                        <div>
+                            <dt class="text-xs text-ink-500">Version précédente</dt>
+                            <dd>
+                                <a href="{{ route('documents.show', $document->previousVersion) }}"
+                                   class="font-mono text-xs text-clinic-700 hover:underline">
+                                    {{ $document->previousVersion->document_number }}
+                                </a>
+                            </dd>
+                        </div>
+                    @endif
+                </dl>
+            </section>
+
+            <section class="k-card">
+                <div class="k-card-header"><h2 class="k-card-title">Confidentialité</h2></div>
+                <div class="k-card-body text-sm text-ink-600">
+                    <p>
+                        Ce fichier est stocké sur un disque privé. Il n’est jamais accessible par une URL
+                        directe : chaque consultation et chaque téléchargement passent par une vérification
+                        de permission et sont inscrits au journal d’audit du dossier.
+                    </p>
+                </div>
+            </section>
+        </div>
+    </div>
+@endsection

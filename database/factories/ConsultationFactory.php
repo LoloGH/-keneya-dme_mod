@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Database\Factories;
+
+use App\Models\Patient;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<\App\Models\Consultation>
+ */
+class ConsultationFactory extends Factory
+{
+    /**
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'patient_id' => Patient::factory(),
+            'doctor_id' => User::factory(),
+            'started_at' => fake()->dateTimeBetween('-1 year', 'now'),
+            'type' => 'ambulatory',
+            'status' => 'in_progress',
+            'reason' => fake()->sentence(),
+        ];
+    }
+
+    public function completed(): static
+    {
+        return $this->state(fn () => ['status' => 'completed', 'ended_at' => now()]);
+    }
+}

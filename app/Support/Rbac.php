@@ -1,0 +1,200 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Support;
+
+/**
+ * Référentiel unique des rôles et permissions (§31-32).
+ *
+ * Ce fichier est la seule source de vérité : le seeder, les policies, les
+ * tests d'autorisation et l'écran d'administration des utilisateurs le
+ * consomment. Ajouter une permission ici suffit à la rendre disponible
+ * partout, ce qui évite les divergences entre le backend et l'interface.
+ *
+ * Phase 2 (§60) : cette classe est le point d'ancrage prévu pour se
+ * raccorder au RBAC central de Keneya Workflow — la correspondance se
+ * fera rôle à rôle, sans toucher aux vérifications disséminées dans le code.
+ */
+final class Rbac
+{
+    // Rôles (§31)
+    public const ROLE_ADMIN = 'administrateur';
+    public const ROLE_DOCTOR = 'medecin';
+    public const ROLE_NURSE = 'infirmier';
+    public const ROLE_LAB = 'laboratoire';
+    public const ROLE_RADIOLOGY = 'radiologie';
+    public const ROLE_PHARMACIST = 'pharmacien';
+    public const ROLE_RECEPTION = 'reception';
+
+    /**
+     * Libellés d'affichage des rôles.
+     *
+     * @return array<string, string>
+     */
+    public static function roleLabels(): array
+    {
+        return [
+            self::ROLE_ADMIN => 'Administrateur',
+            self::ROLE_DOCTOR => 'Médecin',
+            self::ROLE_NURSE => 'Infirmier',
+            self::ROLE_LAB => 'Laboratoire',
+            self::ROLE_RADIOLOGY => 'Radiologie',
+            self::ROLE_PHARMACIST => 'Pharmacien',
+            self::ROLE_RECEPTION => 'Réception',
+        ];
+    }
+
+    /**
+     * Toutes les permissions granulaires, groupées par domaine (§32).
+     *
+     * @return array<string, array<string, string>>
+     */
+    public static function permissionGroups(): array
+    {
+        return [
+            'Patients' => [
+                'patients.view' => 'Consulter les dossiers patients',
+                'patients.create' => 'Créer un patient',
+                'patients.update' => 'Modifier un patient',
+                'patients.delete' => 'Archiver un patient',
+            ],
+            'Consultations' => [
+                'consultations.view' => 'Consulter les consultations',
+                'consultations.create' => 'Créer une consultation',
+                'consultations.update' => 'Modifier une consultation',
+            ],
+            'Constantes et soins' => [
+                'vitals.view' => 'Consulter les constantes',
+                'vitals.create' => 'Enregistrer des constantes',
+                'nursing.view' => 'Consulter les soins infirmiers',
+                'nursing.create' => 'Enregistrer un soin infirmier',
+            ],
+            'Diagnostics' => [
+                'diagnoses.view' => 'Consulter les diagnostics',
+                'diagnoses.create' => 'Poser un diagnostic',
+            ],
+            'Ordonnances' => [
+                'prescriptions.view' => 'Consulter les ordonnances',
+                'prescriptions.create' => 'Créer une ordonnance',
+                'prescriptions.validate' => 'Valider une ordonnance',
+                'prescriptions.dispense' => 'Délivrer une ordonnance',
+            ],
+            'Laboratoire' => [
+                'laboratory.view' => 'Consulter le laboratoire',
+                'laboratory.orders.create' => 'Créer une demande d’analyse',
+                'laboratory.results.create' => 'Saisir un résultat',
+                'laboratory.results.validate' => 'Valider un résultat',
+            ],
+            'Imagerie' => [
+                'imaging.view' => 'Consulter l’imagerie',
+                'imaging.create' => 'Créer une demande d’imagerie',
+                'imaging.reports.create' => 'Rédiger un compte rendu',
+            ],
+            'Hospitalisation' => [
+                'hospitalizations.view' => 'Consulter les hospitalisations',
+                'hospitalizations.create' => 'Admettre un patient',
+                'hospitalizations.update' => 'Suivre / faire sortir un patient',
+            ],
+            'Rendez-vous' => [
+                'appointments.view' => 'Consulter les rendez-vous',
+                'appointments.manage' => 'Gérer les rendez-vous',
+            ],
+            'Documents' => [
+                'documents.view' => 'Consulter les documents',
+                'documents.upload' => 'Importer un document',
+                'documents.download' => 'Télécharger un document',
+            ],
+            'Administration' => [
+                'audit.view' => 'Consulter le journal d’audit',
+                'users.manage' => 'Gérer les utilisateurs',
+                'settings.manage' => 'Gérer les paramètres',
+                'sms.view' => 'Consulter l’historique SMS',
+                'sms.send' => 'Envoyer un SMS',
+            ],
+        ];
+    }
+
+    /**
+     * Liste plate de toutes les permissions.
+     *
+     * @return list<string>
+     */
+    public static function allPermissions(): array
+    {
+        return array_merge(...array_map(
+            static fn (array $group) => array_keys($group),
+            array_values(self::permissionGroups())
+        ));
+    }
+
+    /**
+     * Permissions attribuées à chaque rôle (§31 et tests d'autorisation §56).
+     *
+     * L'administrateur reçoit l'intégralité des permissions ; les autres
+     * rôles sont volontairement restreints à leur périmètre métier.
+     *
+     * @return array<string, list<string>>
+     */
+    public static function rolePermissions(): array
+    {
+        return [
+            self::ROLE_ADMIN => self::allPermissions(),
+
+            // Médecin : parcours clinique complet.
+            self::ROLE_DOCTOR => [
+                'patients.view', 'patients.create', 'patients.update',
+                'consultations.view', 'consultations.create', 'consultations.update',
+                'vitals.view', 'vitals.create',
+                'nursing.view',
+                'diagnoses.view', 'diagnoses.create',
+                'prescriptions.view', 'prescriptions.create', 'prescriptions.validate',
+                'laboratory.view', 'laboratory.orders.create',
+                'imaging.view', 'imaging.create',
+                'hospitalizations.view', 'hospitalizations.create', 'hospitalizations.update',
+                'appointments.view', 'appointments.manage',
+                'documents.view', 'documents.upload', 'documents.download',
+                'sms.view', 'sms.send',
+            ],
+
+            // Infirmier : constantes et soins.
+            self::ROLE_NURSE => [
+                'patients.view',
+                'consultations.view',
+                'vitals.view', 'vitals.create',
+                'nursing.view', 'nursing.create',
+                'hospitalizations.view', 'hospitalizations.update',
+                'appointments.view',
+                'documents.view',
+            ],
+
+            // Laboratoire : demandes et résultats d'analyse.
+            self::ROLE_LAB => [
+                'patients.view',
+                'laboratory.view', 'laboratory.results.create', 'laboratory.results.validate',
+                'documents.view', 'documents.upload',
+            ],
+
+            // Radiologie : examens et comptes rendus d'imagerie.
+            self::ROLE_RADIOLOGY => [
+                'patients.view',
+                'imaging.view', 'imaging.reports.create',
+                'documents.view', 'documents.upload',
+            ],
+
+            // Pharmacien : ordonnances uniquement.
+            self::ROLE_PHARMACIST => [
+                'patients.view',
+                'prescriptions.view', 'prescriptions.dispense',
+                'documents.view',
+            ],
+
+            // Réception : administratif, patients et rendez-vous.
+            self::ROLE_RECEPTION => [
+                'patients.view', 'patients.create', 'patients.update',
+                'appointments.view', 'appointments.manage',
+                'sms.view', 'sms.send',
+            ],
+        ];
+    }
+}
