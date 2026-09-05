@@ -83,6 +83,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # L'image « app » embarque un HEALTHCHECK qui interroge PHP-FPM sur le
+    # port 9000. Ce worker ne lance pas PHP-FPM (sa commande le remplace
+    # par `queue:work`) : hériter ce contrôle le ferait échouer en
+    # permanence et marquerait le conteneur « unhealthy » à tort.
+    healthcheck:
+      disable: true
     networks:
       - keneya
 
@@ -107,6 +113,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # Même raison que pour le worker de file : ce conteneur ne fait pas
+    # tourner PHP-FPM, le healthcheck de l'image ne s'y applique pas.
+    healthcheck:
+      disable: true
     networks:
       - keneya
 
