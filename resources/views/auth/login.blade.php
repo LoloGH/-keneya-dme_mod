@@ -8,35 +8,76 @@
     <link rel="icon" href="{{ asset('assets/logo-icon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="h-full bg-clinic-900">
-<div class="relative flex min-h-full flex-col overflow-hidden">
-    {{-- Photo d'ambiance en arrière-plan de toute la page, voile dégradé pour la lisibilité (§8) --}}
-    <img src="{{ asset('assets/login-hero-bg.jpg') }}" alt=""
-         class="absolute inset-0 h-full w-full object-cover object-right-bottom" aria-hidden="true">
-    <div class="absolute inset-0 bg-linear-to-br from-clinic-900/80 via-clinic-800/60 to-keneya-700/55" aria-hidden="true"></div>
+<body class="h-full overflow-hidden bg-clinic-900">
+<div class="relative flex h-screen flex-col overflow-hidden">
+    {{-- Arrière-plan : visuel seul, aucun texte n'y est incrusté — tout est généré en HTML/CSS ci-dessous. Fixe, cadré à l'écran, jamais de défilement (§ demande client). --}}
+    <img src="{{ asset('assets/login-full-bg.jpg') }}" alt=""
+         class="absolute inset-0 h-full w-full object-cover object-[15%_center] lg:object-center" aria-hidden="true">
 
-<div class="relative flex flex-1 flex-col lg:flex-row">
+    {{-- Voile dégradé côté gauche pour garantir la lisibilité du texte blanc sans masquer le visuel --}}
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-clinic-950/60 via-clinic-950/15 to-transparent" aria-hidden="true"></div>
 
-    {{-- Volet d'identité : logo, accroche, slogan. Rien d'autre (§8) --}}
-    <div class="relative flex shrink-0 flex-col px-6 py-8 text-white sm:px-10 lg:w-[42%] lg:justify-center lg:px-16 lg:py-12">
-        <div class="relative flex items-center gap-3 lg:absolute lg:top-12 lg:left-16">
-            <img src="{{ asset('assets/logo-icon.png') }}" alt="" class="h-12 w-12 object-contain">
-            <span class="text-lg font-semibold tracking-tight">Keneya <span class="text-keneya-300">DME</span></span>
+    <div class="relative flex flex-1 flex-col overflow-hidden">
+        {{-- 1. Identité — logo officiel + nom, en haut à gauche --}}
+        <div class="flex items-center gap-3 px-6 pt-6 pb-2 sm:px-8 sm:pt-8 lg:px-10 lg:pt-9 lg:pb-4 xl:px-14 xl:pt-10 xl:pb-6">
+            <img src="{{ asset('assets/logo-icon.png') }}" alt="Keneya DME" class="h-10 w-auto drop-shadow-md sm:h-11 lg:h-12 xl:h-14">
+            <div class="leading-tight">
+                <p class="text-lg font-bold text-white drop-shadow-sm sm:text-xl lg:text-2xl">Keneya DME</p>
+                <p class="text-[11px] font-medium text-white/75 sm:text-xs">Dossier Médical Électronique</p>
+            </div>
         </div>
 
-        <div class="relative mt-8 max-w-sm lg:mt-0">
-            <p class="text-xs font-semibold tracking-[0.2em] text-keneya-300 uppercase">
-                Dossier médical électronique
-            </p>
-            <h1 class="mt-3 text-2xl font-semibold leading-tight lg:text-[2rem]">
-                Tous les dossiers médicaux au même endroit.
-            </h1>
-        </div>
-    </div>
+        <div class="flex flex-1 flex-col lg:flex-row lg:items-start">
+            {{-- 2-3. Slogan et fonctionnalités — remontés juste sous le logo ; visibles à partir du desktop (lg) pour éviter tout débordement sur petit écran (§8) --}}
+            <div class="hidden lg:block lg:w-[22rem] lg:shrink-0 lg:pl-8 xl:w-[24rem] xl:pl-12 2xl:w-[28rem] 2xl:pl-16">
+                <h1 class="text-3xl leading-tight font-bold text-white drop-shadow-sm xl:text-4xl">
+                    Tous les dossiers médicaux
+                    <span class="block text-clinic-300">au même endroit.</span>
+                </h1>
 
-    {{-- Formulaire --}}
-    <div class="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:px-12">
-        <div class="w-full max-w-[26rem] rounded-2xl border border-ink-200 bg-white p-8 shadow-sm sm:p-10"
+                <ul class="mt-9 grid grid-cols-1 gap-x-6 gap-y-3.5 2xl:grid-cols-2">
+                    <li class="flex items-center gap-2.5">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-sm">
+                            <x-icon name="users" class="h-4 w-4"/>
+                        </span>
+                        <span class="text-sm font-medium text-white">Gestion des patients</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-sm">
+                            <x-icon name="stethoscope" class="h-4 w-4"/>
+                        </span>
+                        <span class="text-sm font-medium text-white">Consultations</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-sm">
+                            <x-icon name="pill" class="h-4 w-4"/>
+                        </span>
+                        <span class="text-sm font-medium text-white">Ordonnances</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-sm">
+                            <x-icon name="flask" class="h-4 w-4"/>
+                        </span>
+                        <span class="text-sm font-medium text-white">Laboratoire</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-sm">
+                            <x-icon name="scan" class="h-4 w-4"/>
+                        </span>
+                        <span class="text-sm font-medium text-white">Imagerie</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-sm">
+                            <x-icon name="bed" class="h-4 w-4"/>
+                        </span>
+                        <span class="text-sm font-medium text-white">Hospitalisation</span>
+                    </li>
+                </ul>
+            </div>
+
+    {{-- Carte de connexion — seul panneau opaque superposé à l'image --}}
+    <div class="relative flex flex-1 items-center justify-center overflow-hidden px-4 py-8 sm:px-6 lg:items-center lg:justify-end lg:self-stretch lg:pr-8 xl:pr-14 2xl:pr-24">
+        <div class="max-h-full w-full max-w-[26rem] overflow-y-auto rounded-2xl border border-ink-200 bg-white p-8 shadow-lg sm:p-10 lg:-translate-y-10 xl:-translate-y-14 2xl:-translate-y-16"
              x-data="{
                  showPassword: false,
                  submitting: false,
@@ -185,13 +226,14 @@
                 <x-icon name="lock" class="h-3 w-3 shrink-0"/>
                 Vos données médicales sont protégées — accès confidentiel et contrôlé
             </p>
+
+            <p class="mt-4 text-center text-[11px] text-ink-300">
+                © {{ date('Y') }} Keneya DME · v{{ config('keneya.version') }}
+            </p>
+        </div>
+            </div>
         </div>
     </div>
-</div>
-
-<p class="relative pb-6 text-center text-[11px] text-white/60">
-    © {{ date('Y') }} Keneya DME · v{{ config('keneya.version') }}
-</p>
 </div>
 </body>
 </html>
