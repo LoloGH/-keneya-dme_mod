@@ -6,26 +6,46 @@
     <x-page-header title="Service SMS"
                    subtitle="Service transversal : il ne dépend d’aucun module médical et pourra être extrait tel quel en phase 2."/>
 
+    {{-- Avertissement explicite lorsque rien n'est réellement émis --}}
+    @if ($simulated)
+        <div class="k-alert-warning mb-4" role="status">
+            <x-icon name="alert" class="mt-0.5 h-5 w-5 shrink-0 text-amber-600"/>
+            <div>
+                <p class="text-sm font-semibold text-amber-800">
+                    Passerelle de simulation — aucun SMS n’est réellement envoyé
+                </p>
+                <p class="text-sm text-amber-700">
+                    Les messages sont journalisés localement. Pour un envoi réel, définissez
+                    <span class="font-mono">SMS_GATEWAY=smsgate</span> et les identifiants SMSGate
+                    dans le fichier <span class="font-mono">.env</span>.
+                </p>
+            </div>
+        </div>
+    @endif
+
     {{-- État du service --}}
-    <div class="mb-4 grid gap-3 sm:grid-cols-4">
+    <div class="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <div class="k-card p-4">
             <p class="text-xs font-medium text-ink-500">Passerelle active</p>
             <p class="mt-1 text-lg font-semibold text-ink-900">{{ $gateway }}</p>
             <p class="mt-0.5 text-[11px] text-ink-400">
-                @if ($gateway === 'log')
-                    Aucun SMS réel n’est émis : les messages sont journalisés.
-                @else
-                    Configurée via SMS_DRIVER.
-                @endif
+                {{ $simulated ? 'Simulation locale' : 'Envoi réel vers l’opérateur' }}
             </p>
         </div>
         <div class="k-card p-4">
-            <p class="text-xs font-medium text-ink-500">Envoyés</p>
-            <p class="mt-1 text-2xl font-semibold tabular-nums text-keneya-600">{{ $stats['sent'] }}</p>
+            <p class="text-xs font-medium text-ink-500">Remis</p>
+            <p class="mt-1 text-2xl font-semibold tabular-nums text-keneya-600">{{ $stats['delivered'] }}</p>
+            <p class="mt-0.5 text-[11px] text-ink-400">Confirmé par l’opérateur</p>
         </div>
         <div class="k-card p-4">
-            <p class="text-xs font-medium text-ink-500">Dans la file</p>
-            <p class="mt-1 text-2xl font-semibold tabular-nums text-clinic-600">{{ $stats['queued'] }}</p>
+            <p class="text-xs font-medium text-ink-500">Envoyés</p>
+            <p class="mt-1 text-2xl font-semibold tabular-nums text-clinic-600">{{ $stats['sent'] }}</p>
+            <p class="mt-0.5 text-[11px] text-ink-400">Sans accusé de remise</p>
+        </div>
+        <div class="k-card p-4">
+            <p class="text-xs font-medium text-ink-500">En transit</p>
+            <p class="mt-1 text-2xl font-semibold tabular-nums text-ink-700">{{ $stats['in_transit'] }}</p>
+            <p class="mt-0.5 text-[11px] text-ink-400">File d’attente et passerelle</p>
         </div>
         <div class="k-card p-4">
             <p class="text-xs font-medium text-ink-500">En échec</p>

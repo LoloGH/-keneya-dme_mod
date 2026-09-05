@@ -73,7 +73,19 @@
             <dl class="k-card-body space-y-2.5 text-sm">
                 <div class="flex justify-between gap-4">
                     <dt class="text-ink-500">Passerelle</dt>
-                    <dd class="font-mono font-medium text-ink-900">{{ $smsDriver }}</dd>
+                    <dd class="font-mono font-medium text-ink-900">{{ $smsGateway }}</dd>
+                </div>
+                @if ($smsSimulated)
+                    <p class="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                        Passerelle de simulation : aucun SMS réel n’est émis.
+                        Définissez <span class="font-mono">SMS_GATEWAY=smsgate</span> pour un envoi réel.
+                    </p>
+                @endif
+                <div class="flex justify-between gap-4">
+                    <dt class="text-ink-500">Suivi d’acheminement</dt>
+                    <dd class="font-medium text-ink-900">
+                        {{ $smsTracking['enabled'] ? 'Activé' : 'Désactivé' }}
+                    </dd>
                 </div>
                 <div class="flex justify-between gap-4">
                     <dt class="text-ink-500">Tentatives maximales</dt>

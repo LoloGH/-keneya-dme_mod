@@ -23,7 +23,7 @@ use Throwable;
  */
 class SmsController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, \App\Services\Sms\SmsGatewayManager $gateways): View
     {
         $this->authorize('viewAny', SmsMessage::class);
 
@@ -41,10 +41,12 @@ class SmsController extends Controller
             'messages' => $messages,
             'filters' => $request->only(['q', 'status']),
             'templates' => SmsTemplate::orderBy('name')->get(),
-            'gateway' => config('sms.driver'),
+            'gateway' => $gateways->defaultName(),
+            'simulated' => $gateways->isSimulated(),
             'stats' => [
+                'delivered' => SmsMessage::where('status', 'delivered')->count(),
                 'sent' => SmsMessage::where('status', 'sent')->count(),
-                'queued' => SmsMessage::whereIn('status', ['pending', 'queued'])->count(),
+                'in_transit' => SmsMessage::whereIn('status', ['pending', 'queued', 'accepted'])->count(),
                 'failed' => SmsMessage::where('status', 'failed')->count(),
             ],
         ]);

@@ -23,7 +23,8 @@ class SmsMessage extends Model
     protected $fillable = [
         'reference', 'recipient', 'body', 'sender', 'sms_template_id',
         'patient_id', 'context_type', 'context_id', 'status', 'attempts',
-        'scheduled_for', 'sent_at', 'failed_at', 'error_message',
+        'scheduled_for', 'accepted_at', 'sent_at', 'delivered_at', 'failed_at',
+        'status_checked_at', 'error_message',
         'gateway', 'gateway_message_id', 'gateway_response', 'created_by',
     ];
 
@@ -31,21 +32,41 @@ class SmsMessage extends Model
     {
         return [
             'scheduled_for' => 'datetime',
+            'accepted_at' => 'datetime',
             'sent_at' => 'datetime',
+            'delivered_at' => 'datetime',
             'failed_at' => 'datetime',
+            'status_checked_at' => 'datetime',
             'gateway_response' => 'array',
             'attempts' => 'integer',
         ];
     }
 
-    /** @var array<string, string> */
+    /**
+     * Cycle de vie d'un message, du plus précoce au plus avancé.
+     *
+     * « Accepté » et « Envoyé » sont volontairement distincts : une
+     * passerelle comme SMSGate accuse d'abord réception du message sans
+     * l'avoir émis. L'application ne doit jamais présenter un message
+     * comme envoyé avant confirmation du fournisseur.
+     *
+     * @var array<string, string>
+     */
     public const STATUSES = [
         'pending' => 'En attente',
         'queued' => 'Dans la file',
+        'accepted' => 'Accepté par la passerelle',
         'sent' => 'Envoyé',
+        'delivered' => 'Remis',
         'failed' => 'Échec',
         'cancelled' => 'Annulé',
     ];
+
+    /** États au-delà desquels le suivi d'acheminement n'a plus lieu d'être. */
+    public const FINAL_STATUSES = ['delivered', 'failed', 'cancelled'];
+
+    /** États pour lesquels la passerelle peut encore faire évoluer le message. */
+    public const IN_TRANSIT_STATUSES = ['accepted', 'sent'];
 
     public function template(): BelongsTo
     {
@@ -65,6 +86,23 @@ class SmsMessage extends Model
     public function scopeFailed(Builder $query): Builder
     {
         return $query->where('status', 'failed');
+    }
+
+    /**
+     * Messages encore susceptibles d'évoluer côté passerelle.
+     */
+    public function scopeInTransit(Builder $query): Builder
+    {
+        return $query->whereIn('status', self::IN_TRANSIT_STATUSES)
+            ->whereNotNull('gateway_message_id');
+    }
+
+    /**
+     * Un message dont l'acheminement est arrêté, quel qu'en soit l'issue.
+     */
+    public function isFinal(): bool
+    {
+        return in_array($this->status, self::FINAL_STATUSES, true);
     }
 
     public function statusLabel(): string

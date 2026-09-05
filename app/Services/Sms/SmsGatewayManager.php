@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services\Sms;
 
-use App\Services\Sms\Gateways\HttpGateway;
-use App\Services\Sms\Gateways\LogGateway;
 use App\Services\Sms\Gateways\ArrayGateway;
+use App\Services\Sms\Gateways\LogGateway;
+use App\Services\Sms\Gateways\SmsGateGateway;
 use InvalidArgumentException;
 
 /**
- * Résout la passerelle SMS active à partir de config/sms.php (§35).
+ * Résout la passerelle SMS active à partir de config/sms.php.
  */
 class SmsGatewayManager
 {
@@ -19,9 +19,26 @@ class SmsGatewayManager
 
     public function gateway(?string $name = null): SmsGateway
     {
-        $name ??= (string) (config('sms.driver') ?: 'log');
+        $name ??= $this->defaultName();
 
         return $this->resolved[$name] ??= $this->resolve($name);
+    }
+
+    public function defaultName(): string
+    {
+        return (string) (config('sms.gateway') ?: 'log');
+    }
+
+    /**
+     * Indique si la passerelle active émet réellement des SMS.
+     *
+     * L'interface s'appuie dessus pour ne jamais laisser croire qu'un
+     * message a été transmis à un opérateur alors qu'il n'a été que
+     * journalisé.
+     */
+    public function isSimulated(?string $name = null): bool
+    {
+        return in_array($name ?? $this->defaultName(), ['log', 'array'], true);
     }
 
     private function resolve(string $name): SmsGateway
@@ -33,9 +50,9 @@ class SmsGatewayManager
         }
 
         return match ($config['driver'] ?? $name) {
+            'smsgate' => new SmsGateGateway($config),
             'log' => new LogGateway($config),
             'array' => new ArrayGateway(),
-            'http' => new HttpGateway($config),
             default => throw new InvalidArgumentException(
                 "Pilote de passerelle SMS « {$config['driver']} » inconnu."
             ),
@@ -43,8 +60,7 @@ class SmsGatewayManager
     }
 
     /**
-     * Enregistre une passerelle personnalisée (utile aux tests et à une
-     * future extension par un opérateur local).
+     * Enregistre une passerelle personnalisée (tests, opérateur local).
      */
     public function extend(string $name, SmsGateway $gateway): void
     {

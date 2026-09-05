@@ -123,7 +123,13 @@ class SmsService
 
     /**
      * Envoi effectif auprès de la passerelle. Appelé par le job ; ne doit
-     * pas être appelé directement depuis un contrôleur.
+     * pas être invoqué directement depuis un contrôleur.
+     *
+     * Le statut enregistré est exactement celui rapporté par la
+     * passerelle : « accepté » n'est jamais promu en « envoyé ». Une
+     * passerelle qui se contente d'accuser réception laisse donc le
+     * message en transit, jusqu'à ce que le suivi d'acheminement le
+     * fasse évoluer.
      */
     public function deliver(SmsMessage $message): SmsResult
     {
@@ -137,24 +143,83 @@ class SmsService
             'gateway_response' => $result->response,
         ]);
 
-        if ($result->successful) {
-            $message->forceFill([
-                'status' => 'sent',
-                'sent_at' => now(),
+        $this->applyResult($message, $result);
+
+        return $result;
+    }
+
+    /**
+     * Interroge la passerelle sur l'état d'un message en transit.
+     *
+     * Retourne null si la passerelle ne sait pas suivre l'acheminement,
+     * ou si le message n'a pas d'identifiant fournisseur.
+     */
+    public function refreshStatus(SmsMessage $message): ?SmsResult
+    {
+        $gateway = $this->gateways->gateway();
+
+        if (! $gateway instanceof TracksDeliveryStatus || blank($message->gateway_message_id)) {
+            return null;
+        }
+
+        $result = $gateway->status((string) $message->gateway_message_id);
+
+        $message->forceFill([
+            'status_checked_at' => now(),
+            'gateway_response' => $result->response ?: $message->gateway_response,
+        ]);
+
+        // Une erreur d'interrogation (réseau, 5xx) ne doit pas faire
+        // basculer un message en échec : on n'a rien appris de son sort.
+        if ($result->state === SmsResult::STATE_FAILED && $result->response === []) {
+            $message->save();
+
+            return $result;
+        }
+
+        $this->applyResult($message, $result);
+
+        return $result;
+    }
+
+    /**
+     * Reporte l'état rapporté par la passerelle sur le message.
+     */
+    private function applyResult(SmsMessage $message, SmsResult $result): void
+    {
+        $attributes = match ($result->state) {
+            SmsResult::STATE_ACCEPTED => [
+                'status' => 'accepted',
+                'accepted_at' => $message->accepted_at ?? now(),
                 'gateway_message_id' => $result->messageId,
                 'error_message' => null,
-            ]);
-        } else {
-            $message->forceFill([
+            ],
+            SmsResult::STATE_SENT => [
+                'status' => 'sent',
+                'accepted_at' => $message->accepted_at ?? now(),
+                'sent_at' => $message->sent_at ?? now(),
+                'gateway_message_id' => $result->messageId ?? $message->gateway_message_id,
+                'error_message' => null,
+            ],
+            SmsResult::STATE_DELIVERED => [
+                'status' => 'delivered',
+                'sent_at' => $message->sent_at ?? now(),
+                'delivered_at' => $message->delivered_at ?? now(),
+                'gateway_message_id' => $result->messageId ?? $message->gateway_message_id,
+                'error_message' => null,
+            ],
+            SmsResult::STATE_CANCELLED => [
+                'status' => 'cancelled',
+                'gateway_message_id' => $result->messageId ?? $message->gateway_message_id,
+            ],
+            default => [
                 'status' => 'failed',
                 'failed_at' => now(),
                 'error_message' => $result->error,
-            ]);
-        }
+            ],
+        };
 
-        $message->save();
-
-        return $result;
+        $message->forceFill($attributes)->save();
     }
 
     /**

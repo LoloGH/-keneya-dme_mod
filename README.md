@@ -9,6 +9,9 @@ rendez-vous, documents, historique, audit, notifications et SMS.
 > **Toutes les données de ce dépôt sont fictives.** Aucune donnée médicale réelle n'y figure
 > et aucune ne doit y être introduite.
 
+Déployable en installation native (Linux et Windows), derrière Apache ou Nginx, ou via
+Docker. **Docker est une option, pas une dépendance.**
+
 ---
 
 ## Sommaire
@@ -17,6 +20,7 @@ rendez-vous, documents, historique, audit, notifications et SMS.
 - [Fonctionnalités](#fonctionnalités)
 - [Architecture](#architecture)
 - [Stack technique](#stack-technique)
+- [Déploiement](#déploiement)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Base de données et seeders](#base-de-données-et-seeders)
@@ -147,11 +151,12 @@ deviennent non modifiables, le journal d'audit est en écriture seule.
 | Blade + Alpine.js | 3 | Interface rendue côté serveur, interactivité légère |
 | Tailwind CSS | 4 | Système de design |
 | Vite | 7 | Build des assets |
-| SQLite / MySQL / PostgreSQL | — | Base de données (SQLite par défaut) |
+| MySQL 8.4 / PostgreSQL 16 / SQLite | — | Migrations, seeders et suite de tests vérifiés sur les trois |
 | spatie/laravel-permission | 6 | Rôles et permissions |
 | barryvdh/laravel-dompdf | 3 | Génération PDF |
 | bacon/bacon-qr-code | 3 | QR codes de vérification |
 | laravel/sanctum | 4 | Jetons d'API |
+| SMSGate | API v1 | Passerelle SMS de production |
 
 > **Note d'architecture.** La spécification mentionnait Livewire comme piste possible.
 > L'interface est finalement rendue côté serveur en Blade, avec Alpine.js pour les
@@ -159,6 +164,63 @@ deviennent non modifiables, le journal d'audit est en écriture seule.
 > supplémentaire sans rien retirer aux exigences d'ergonomie, garde chaque écran testable
 > par une simple requête HTTP, et n'empêche pas d'introduire Livewire ultérieurement sur un
 > écran donné.
+
+---
+
+## Déploiement
+
+Sept configurations sont supportées et documentées dans
+**[docs/DEPLOIEMENT.md](docs/DEPLOIEMENT.md)** :
+
+| Plateforme | Serveur | Documentation |
+|---|---|---|
+| Linux | natif (`php artisan serve`) | [§B](docs/DEPLOIEMENT.md#b--installation-linux-native) |
+| Linux | Apache + PHP-FPM | [§D](docs/DEPLOIEMENT.md#d--apache) |
+| Linux | Nginx + PHP-FPM | [§E](docs/DEPLOIEMENT.md#e--nginx) |
+| Linux | Docker | [§F](docs/DEPLOIEMENT.md#f--docker) |
+| Windows | natif | [§C](docs/DEPLOIEMENT.md#c--installation-windows) |
+| Windows | Apache (XAMPP, Laragon) | [§C.4](docs/DEPLOIEMENT.md#c4--apache-sous-windows) |
+| Windows | Docker Desktop | [§F.6](docs/DEPLOIEMENT.md#f6--docker-desktop-windows) |
+
+Fichiers fournis :
+
+```text
+deploy/apache/keneya-dme.conf      VirtualHost Apache durci
+deploy/nginx/keneya-dme.conf       server block Nginx durci
+deploy/systemd/*.service           worker de file et planificateur
+docker-compose.yml                 stack Nginx + PHP-FPM + MySQL + worker + scheduler
+Dockerfile                         image multi-étapes (Composer, Vite, PHP-FPM, Nginx)
+scripts/install.sh | install.ps1   installation Linux | Windows
+scripts/update.sh  | update.ps1    mise à jour Linux | Windows
+```
+
+### Démarrage rapide
+
+**Linux / macOS**
+
+```bash
+git clone https://github.com/LoloGH/keneya-dme_app.git
+cd keneya-dme_app
+./scripts/install.sh --with-demo
+php artisan serve
+```
+
+**Windows (PowerShell)**
+
+```powershell
+git clone https://github.com/LoloGH/keneya-dme_app.git
+cd keneya-dme_app
+.\scripts\install.ps1 -WithDemo
+php artisan serve
+```
+
+**Docker**
+
+```bash
+cp .env.docker.example .env
+# renseigner APP_KEY, DB_PASSWORD et DB_ROOT_PASSWORD
+docker compose up -d --build     # → http://localhost:8080
+```
 
 ---
 
@@ -330,29 +392,72 @@ défaut dans le code.
 ## Service SMS
 
 ```text
-Événement métier → NotificationService → SmsService → File → Passerelle → Statut → Historique
+Événement métier → NotificationService → SmsService → File → SMSGate → Opérateur → Patient
+                                                                 │
+                                                          Suivi d'acheminement
 ```
 
-Le service est **transversal et découplé** : il ne connaît ni patient ni consultation.
-Cette séparation est ce qui permettra de l'extraire tel quel en phase 2.
+Le service est **transversal et découplé** : `App\Services\Sms` ne référence aucun modèle
+du domaine médical. Les contrôleurs n'appellent jamais une passerelle directement.
+`NotificationService` est la seule couche qui connaît à la fois le métier et le SMS — donc
+la seule à réécrire en phase 2.
 
-### Passerelles
+### Passerelle de production : SMSGate
+
+[SMSGate](https://sms-gate.app) (*SMS Gateway for Android™*) expose la même API REST en
+mode cloud et en mode local :
+
+| Mode | `SMSGATE_BASE_URL` | Intérêt |
+|---|---|---|
+| **Cloud** | `https://api.sms-gate.app/3rdparty/v1` | L'appareil n'est pas joignable depuis le serveur |
+| **Local** | `http://<ip-appareil>:8080/3rdparty/v1` | Aucune donnée ne quitte l'établissement |
+
+```dotenv
+SMS_GATEWAY=smsgate
+SMSGATE_BASE_URL=https://api.sms-gate.app/3rdparty/v1
+SMSGATE_USERNAME=
+SMSGATE_PASSWORD=
+```
+
+```bash
+php artisan keneya:sms:check     # configuration et joignabilité, sans afficher de secret
+```
+
+### Passerelles de développement
 
 | Pilote | Comportement |
 |---|---|
-| `log` | **Défaut.** Aucun envoi réel, le message est journalisé |
+| `log` | **Défaut.** Aucun envoi réel ; l'interface affiche un bandeau d'avertissement |
 | `array` | Inerte, utilisé par la suite de tests |
-| `http` | Modèle d'intégration d'un opérateur réel (endpoint et jeton en configuration) |
 
 Ajouter un opérateur revient à implémenter `App\Services\Sms\SmsGateway` et à déclarer sa
 configuration — aucun code métier n'est à modifier.
 
+### Un message n'est jamais annoncé comme envoyé sans confirmation
+
+```text
+pending → queued → accepted → sent → delivered
+                       │        │
+                       └────────┴──→ failed
+```
+
+SMSGate répond d'abord `Pending` : le message n'a pas encore atteint le téléphone. L'état
+`accepted` traduit fidèlement cette réalité, et **n'est jamais promu en « envoyé »**. La
+progression est assurée par le planificateur :
+
+```bash
+php artisan keneya:sms:refresh   # planifié toutes les 5 minutes
+```
+
+### Sécurité
+
+- Les identifiants ne figurent que dans `.env` — jamais dans le dépôt, les journaux ou l'interface.
+- Les messages d'erreur sont expurgés : un secret apparaissant dans une URL devient `***`.
+- Aucun résultat clinique n'est transmis par SMS : le réseau mobile n'est pas maîtrisé.
+
 ### Modèles fournis
 
-- `appointment_scheduled` — confirmation de rendez-vous
-- `appointment_reminder` — rappel la veille
-- `lab_result_available` — résultat disponible (sans valeur clinique)
-- `prescription_ready` — ordonnance enregistrée
+`appointment_scheduled` · `appointment_reminder` · `lab_result_available` · `prescription_ready`
 
 ---
 
@@ -439,9 +544,13 @@ soumis aux mêmes règles d'accès que les fichiers importés.
 php artisan test                      # suite complète
 php artisan test --testsuite=Unit     # tests unitaires
 php artisan test --filter=Security    # tests de sécurité
+php artisan test --filter=SmsGate     # passerelle SMSGate
 ```
 
-**137 tests, 330 assertions.**
+> Utiliser `php artisan test` **sans** `--env=testing` : ce drapeau réactive la protection
+> CSRF que le harnais contourne normalement, et fait échouer les envois de formulaire.
+
+**154 tests, 364 assertions**, vérifiés sur SQLite, MySQL 8.4 et PostgreSQL 16.
 
 | Suite | Couverture |
 |---|---|
@@ -454,6 +563,7 @@ php artisan test --filter=Security    # tests de sécurité
 | `Feature/SecurityTest` | Accès non autorisé, IDOR, CSRF, XSS, injection SQL, documents, élévation de privilège, audit append-only |
 | `Feature/SmsServiceTest` | Normalisation, file, statuts, réessais, découplage |
 | `Feature/ApiTest` | Jetons, structure FHIR, policies, contrôle d'allergie via API |
+| `Feature/SmsGateGatewayTest` | Contrat REST SMSGate, états d'acheminement, non-fuite des secrets |
 | `Feature/SmokeTest` | Rendu réel de tous les écrans et des 14 onglets du DME |
 
 Le mode strict d'Eloquent (`preventLazyLoading`) est actif hors production : toute requête
@@ -548,6 +658,10 @@ Ces points sont assumés pour la phase 1 et documentés pour la suite :
    services découplés, une API et des identifiants stables.
 6. **Paramètres en lecture seule.** L'écran Paramètres expose la configuration effective ;
    sa modification passe par les fichiers de configuration et l'environnement.
+7. **Image Docker non construite de bout en bout dans l'environnement de développement.**
+   Les étapes Composer, Vite et Nginx sont vérifiées, la stack tourne réellement en mode
+   SQLite, mais l'installation des extensions PHP (`apk`) n'a pas pu être exécutée ici :
+   les dépôts de paquets système y sont filtrés. Voir le rapport de version pour le détail.
 
 ---
 

@@ -46,12 +46,18 @@ return new class extends Migration
             $table->string('context_type')->nullable();
             $table->unsignedBigInteger('context_id')->nullable();
 
-            $table->enum('status', ['pending', 'queued', 'sent', 'failed', 'cancelled'])
-                ->default('pending');
+            // Chaîne plutôt qu'énumération : le cycle de vie dépend de la
+            // passerelle (SMSGate distingue accepté / envoyé / remis) et
+            // peut évoluer avec elle. Les valeurs admises sont portées par
+            // SmsMessage::STATUSES et validées côté application.
+            $table->string('status', 20)->default('pending');
             $table->unsignedTinyInteger('attempts')->default(0);
             $table->dateTime('scheduled_for')->nullable();
+            $table->dateTime('accepted_at')->nullable();
             $table->dateTime('sent_at')->nullable();
+            $table->dateTime('delivered_at')->nullable();
             $table->dateTime('failed_at')->nullable();
+            $table->dateTime('status_checked_at')->nullable();
             $table->text('error_message')->nullable();
             $table->string('gateway')->nullable();
             $table->string('gateway_message_id')->nullable();

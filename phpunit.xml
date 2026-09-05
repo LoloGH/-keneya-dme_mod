@@ -27,7 +27,7 @@
         <env name="DB_DATABASE" value=":memory:"/>
         <env name="DB_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
-        <env name="SMS_DRIVER" value="array"/>
+        <env name="SMS_GATEWAY" value="array"/>
         <env name="DEMO_USER_PASSWORD" value="MotDePasseDeTest2026"/>
         <env name="DEMO_SEED_ENABLED" value="true"/>
         <env name="QUEUE_CONNECTION" value="sync"/>

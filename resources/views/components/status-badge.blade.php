@@ -9,10 +9,10 @@
      * l'application : « validé » ne peut pas être vert ici et gris ailleurs.
      */
     $tone = match ($status) {
-        'completed', 'validated', 'confirmed', 'sent', 'final', 'signed',
+        'completed', 'validated', 'confirmed', 'delivered', 'final', 'signed',
         'active', 'available', 'discharged', 'dispensed', 'resolved', 'normal' => 'success',
 
-        'in_progress', 'scheduled', 'requested', 'queued', 'pending',
+        'in_progress', 'scheduled', 'requested', 'queued', 'pending', 'accepted', 'sent',
         'draft', 'admitted', 'performed', 'reported', 'controlled' => 'info',
 
         'suspected', 'suspended', 'low', 'high', 'urgent', 'no_show', 'warning' => 'warning',

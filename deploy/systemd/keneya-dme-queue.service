@@ -1,0 +1,38 @@
+# Worker de file d'attente Keneya-DME (SMS, notifications).
+#
+#   sudo cp deploy/systemd/keneya-dme-queue.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now keneya-dme-queue
+#
+# Adapter User, Group et WorkingDirectory à l'installation.
+
+[Unit]
+Description=Keneya-DME — worker de file d'attente
+After=network.target mysql.service postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/keneya-dme
+
+# --max-time relance le worker toutes les heures : cela libère la mémoire
+# et garantit qu'un déploiement est pris en compte sans intervention.
+ExecStart=/usr/bin/php artisan queue:work --queue=sms,default --tries=3 --backoff=60 --max-time=3600 --sleep=3
+
+Restart=always
+RestartSec=5
+StartLimitBurst=0
+
+# Le worker n'a besoin d'écrire que dans storage/.
+PrivateTmp=true
+ProtectSystem=full
+NoNewPrivileges=true
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=keneya-queue
+
+[Install]
+WantedBy=multi-user.target
