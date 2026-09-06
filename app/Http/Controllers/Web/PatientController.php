@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Web\CareOrderController;
 use App\Http\Requests\StorePatientRequest;
 use App\Models\Allergy;
 use App\Models\ChronicCondition;
@@ -252,6 +253,27 @@ class PatientController extends Controller
                 'nursingNotes' => $patient->nursingNotes()
                     ->with('nurse:id,name,first_name,last_name,title')
                     ->paginate(20)->withQueryString(),
+                // La portée est appliquée en base : un soignant ne reçoit
+                // jamais les soins d'un autre service, même en mémoire.
+                'careOrders' => $request->user()->can('care_orders.view')
+                    ? $patient->careOrders()
+                        ->visibleTo($request->user())
+                        ->with([
+                            'prescriber:id,name,first_name,last_name,title',
+                            'assignedNurse:id,name,first_name,last_name,title',
+                            'completedBy:id,name,first_name,last_name,title',
+                            'service:id,name',
+                        ])
+                        ->orderByRaw("CASE WHEN status = 'planned' THEN 0 ELSE 1 END")
+                        ->orderBy('starts_at')
+                        ->get()
+                    : collect(),
+                'assignableNurses' => $request->user()->can('care_orders.assign')
+                    ? CareOrderController::assignableNurses($request->user())
+                    : collect(),
+                'openHospitalizations' => $patient->hospitalizations()
+                    ->whereNull('discharged_at')
+                    ->get(['id', 'reference']),
             ],
             'rendez-vous' => [
                 'appointments' => $patient->appointments()

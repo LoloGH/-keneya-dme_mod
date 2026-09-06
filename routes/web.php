@@ -12,11 +12,13 @@ use App\Http\Controllers\Web\HospitalizationController;
 use App\Http\Controllers\Web\ImagingController;
 use App\Http\Controllers\Web\LaboratoryController;
 use App\Http\Controllers\Web\NotificationController;
+use App\Http\Controllers\Web\CareOrderController;
 use App\Http\Controllers\Web\NursingController;
 use App\Http\Controllers\Web\PatientController;
 use App\Http\Controllers\Web\PatientRecordController;
 use App\Http\Controllers\Web\PrescriptionController;
 use App\Http\Controllers\Web\SearchController;
+use App\Http\Controllers\Web\RolePermissionController;
 use App\Http\Controllers\Web\SettingsController;
 use App\Http\Controllers\Web\SmsController;
 use App\Http\Controllers\Web\UserController;
@@ -165,6 +167,16 @@ Route::middleware('auth')->group(function (): void {
 
     Route::post('/patients/{patient}/soins', [NursingController::class, 'store'])->name('nursing.store');
 
+    // Soins programmés : la prescription, distincte du soin réalisé.
+    Route::post('/patients/{patient}/soins-programmes', [CareOrderController::class, 'store'])
+        ->name('care-orders.store');
+    Route::patch('/soins-programmes/{careOrder}/attribution', [CareOrderController::class, 'assign'])
+        ->name('care-orders.assign');
+    Route::patch('/soins-programmes/{careOrder}/realisation', [CareOrderController::class, 'execute'])
+        ->name('care-orders.execute');
+    Route::patch('/soins-programmes/{careOrder}/annulation', [CareOrderController::class, 'cancel'])
+        ->name('care-orders.cancel');
+
     // ---------------------------------------------------------------
     // Rendez-vous (§27)
     // ---------------------------------------------------------------
@@ -201,4 +213,14 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/sms/{smsMessage}/rejouer', [SmsController::class, 'retry'])->name('sms.retry');
 
     Route::get('/parametres', [SettingsController::class, 'index'])->name('settings.index');
+    // Son propre compte : ouvert à tous, aucune permission ne le conditionne.
+    Route::put('/parametres/mot-de-passe', [SettingsController::class, 'updatePassword'])
+        ->name('settings.password.update');
+    Route::patch('/parametres/garde', [SettingsController::class, 'toggleDuty'])
+        ->name('settings.duty.toggle');
+    // Matrice des rôles : réservée à roles.manage, vérifié dans le contrôleur.
+    Route::put('/parametres/roles', [RolePermissionController::class, 'update'])
+        ->name('settings.roles.update');
+    Route::post('/parametres/roles/reinitialiser', [RolePermissionController::class, 'reset'])
+        ->name('settings.roles.reset');
 });

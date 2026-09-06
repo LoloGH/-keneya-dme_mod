@@ -28,6 +28,8 @@ use App\Policies\HospitalizationPolicy;
 use App\Policies\ImagingOrderPolicy;
 use App\Policies\LabOrderPolicy;
 use App\Policies\MedicalDocumentPolicy;
+use App\Models\CareOrder;
+use App\Policies\CareOrderPolicy;
 use App\Policies\NursingNotePolicy;
 use App\Policies\PatientPolicy;
 use App\Policies\PrescriptionPolicy;
@@ -67,6 +69,7 @@ class AppServiceProvider extends ServiceProvider
         ImagingReport::class => ImagingOrderPolicy::class,
         Hospitalization::class => HospitalizationPolicy::class,
         NursingNote::class => NursingNotePolicy::class,
+        CareOrder::class => CareOrderPolicy::class,
         Appointment::class => AppointmentPolicy::class,
         MedicalDocument::class => MedicalDocumentPolicy::class,
         AuditLog::class => AuditLogPolicy::class,

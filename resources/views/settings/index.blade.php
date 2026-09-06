@@ -6,6 +6,12 @@
     <x-page-header title="Paramètres"
                    subtitle="Configuration effective de l’application. Les valeurs proviennent des fichiers de configuration et des variables d’environnement ; aucun secret n’est affiché."/>
 
+    @include('settings.partials.account')
+
+    <h2 class="mt-6 mb-3 text-sm font-semibold tracking-wide text-ink-500 uppercase">
+        Administration
+    </h2>
+
     <div class="grid gap-4 lg:grid-cols-2">
 
         <section class="k-card">
@@ -115,11 +121,29 @@
                     {{ count(\App\Support\Rbac::allPermissions()) }} permissions · {{ $roles->count() }} rôles
                 </span>
             </div>
-            <div class="k-card-body">
+
+            <form action="{{ route('settings.roles.update') }}" method="POST" class="k-card-body">
+                @csrf
+                @method('PUT')
+
                 <p class="mb-3 text-sm text-ink-600">
                     Les permissions sont vérifiées côté serveur par les policies. L’interface masque les
                     actions interdites par confort, mais un accès direct par URL est refusé de la même manière.
                 </p>
+
+                @if ($canEditRoles)
+                    <div class="mb-4 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                        Une permission retirée prend effet immédiatement, y compris pour les sessions déjà
+                        ouvertes. Les permissions d’administration du rôle Administrateur
+                        ({{ implode(', ', $lockedPermissions) }}) sont verrouillées : les retirer fermerait
+                        cet écran sans autre issue qu’une intervention en base.
+                    </div>
+                @else
+                    <div class="mb-4 rounded-lg border border-ink-200 bg-ink-50 px-3 py-2 text-xs text-ink-600">
+                        Lecture seule : la permission <span class="font-mono">roles.manage</span> est requise
+                        pour modifier cette matrice.
+                    </div>
+                @endif
 
                 <div class="overflow-x-auto">
                     <table class="k-table">
@@ -147,8 +171,28 @@
                                             <span class="block text-xs text-ink-500">{{ $description }}</span>
                                         </td>
                                         @foreach ($roleLabels as $roleKey => $roleLabel)
+                                            @php
+                                                $granted = in_array($permission, $rolePermissions[$roleKey] ?? [], true);
+                                                $locked = $roleKey === \App\Support\Rbac::ROLE_ADMIN
+                                                    && in_array($permission, $lockedPermissions, true);
+                                            @endphp
                                             <td class="text-center">
-                                                @if (in_array($permission, $rolePermissions[$roleKey] ?? [], true))
+                                                @if ($canEditRoles && ! $locked)
+                                                    <input type="checkbox"
+                                                           name="permissions[{{ $roleKey }}][]"
+                                                           value="{{ $permission }}"
+                                                           @checked($granted)
+                                                           class="h-4 w-4 rounded border-ink-300 text-clinic-600
+                                                                  focus:ring-clinic-500"
+                                                           aria-label="{{ $roleLabel }} — {{ $description }}">
+                                                @elseif ($locked)
+                                                    {{-- Verrouillée : cochée, envoyée, non décochable. --}}
+                                                    <input type="hidden"
+                                                           name="permissions[{{ $roleKey }}][]"
+                                                           value="{{ $permission }}">
+                                                    <x-icon name="lock" class="mx-auto h-4 w-4 text-ink-400"/>
+                                                    <span class="sr-only">{{ $roleLabel }} : verrouillé</span>
+                                                @elseif ($granted)
                                                     <x-icon name="check" class="mx-auto h-4 w-4 text-keneya-600"/>
                                                     <span class="sr-only">{{ $roleLabel }} : autorisé</span>
                                                 @else
@@ -163,10 +207,31 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+
+                @if ($canEditRoles)
+                    <div class="mt-4 flex flex-wrap items-center justify-end gap-2">
+                        <button type="submit" class="k-btn-primary">
+                            <x-icon name="check" class="h-4 w-4"/> Enregistrer la matrice
+                        </button>
+                    </div>
+                @endif
+            </form>
+
+            @if ($canEditRoles)
+                <div class="border-t border-ink-100 px-4 py-3">
+                    <form action="{{ route('settings.roles.reset') }}" method="POST"
+                          onsubmit="return confirm('Rétablir la matrice d’origine ? Les modifications en cours seront perdues.');">
+                        @csrf
+                        <button type="submit" class="k-btn-ghost text-xs">
+                            <x-icon name="arrow-left" class="h-3.5 w-3.5"/>
+                            Rétablir la configuration d’origine
+                        </button>
+                    </form>
+                </div>
+            @endif
         </section>
 
-        <section class="k-card lg:col-span-2">
+                <section class="k-card lg:col-span-2">
             <div class="k-card-header"><h2 class="k-card-title">Services de l’établissement</h2></div>
             <div class="k-card-body grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($services as $service)

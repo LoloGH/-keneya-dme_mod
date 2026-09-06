@@ -32,6 +32,7 @@ class User extends Authenticatable
     protected $fillable = [
         'matricule', 'name', 'first_name', 'last_name', 'title', 'speciality',
         'email', 'phone', 'password', 'service_id', 'is_active',
+        'is_on_duty', 'on_duty_since',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -43,12 +44,33 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'is_on_duty' => 'boolean',
+            'on_duty_since' => 'datetime',
         ];
     }
 
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+
+    /**
+     * De garde : un compte désactivé ne l'est jamais, quel que soit le
+     * drapeau — il n'a plus accès à l'application.
+     */
+    public function isOnDuty(): bool
+    {
+        return $this->is_active && $this->is_on_duty;
+    }
+
+    public function prescribedCareOrders(): HasMany
+    {
+        return $this->hasMany(CareOrder::class, 'prescriber_id');
+    }
+
+    public function assignedCareOrders(): HasMany
+    {
+        return $this->hasMany(CareOrder::class, 'assigned_nurse_id');
     }
 
     public function consultations(): HasMany

@@ -51,6 +51,7 @@ return [
             'hospitalization' => 'HOSP',
             'document' => 'DOC',
             'appointment' => 'RDV',
+            'care_order' => 'SOIN',
         ],
     ],
 

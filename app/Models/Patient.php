@@ -157,6 +157,11 @@ class Patient extends Model
         return $this->hasMany(Hospitalization::class)->orderByDesc('admitted_at');
     }
 
+    public function careOrders(): HasMany
+    {
+        return $this->hasMany(CareOrder::class);
+    }
+
     public function nursingNotes(): HasMany
     {
         return $this->hasMany(NursingNote::class)->orderByDesc('occurred_at');

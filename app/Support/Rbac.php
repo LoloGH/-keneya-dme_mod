@@ -70,6 +70,13 @@ final class Rbac
                 'nursing.view' => 'Consulter les soins infirmiers',
                 'nursing.create' => 'Enregistrer un soin infirmier',
             ],
+            'Soins programmés' => [
+                'care_orders.view' => 'Consulter les soins programmés',
+                'care_orders.create' => 'Prescrire un soin',
+                'care_orders.assign' => 'Confier un soin à un soignant',
+                'care_orders.execute' => 'Réaliser ou refuser un soin',
+                'care_orders.cancel' => 'Annuler un soin programmé',
+            ],
             'Diagnostics' => [
                 'diagnoses.view' => 'Consulter les diagnostics',
                 'diagnoses.create' => 'Poser un diagnostic',
@@ -109,6 +116,7 @@ final class Rbac
                 'audit.view' => 'Consulter le journal d’audit',
                 'users.manage' => 'Gérer les utilisateurs',
                 'settings.manage' => 'Gérer les paramètres',
+                'roles.manage' => 'Modifier les rôles et permissions',
                 'sms.view' => 'Consulter l’historique SMS',
                 'sms.send' => 'Envoyer un SMS',
             ],
@@ -129,7 +137,26 @@ final class Rbac
     }
 
     /**
-     * Permissions attribuées à chaque rôle (§31 et tests d'autorisation §56).
+     * Permissions requises pour que l'administration reste possible.
+     *
+     * Le rôle administrateur les conserve quoi qu'il arrive : les retirer
+     * fermerait définitivement l'accès à l'écran qui permet de les rendre,
+     * sans autre issue qu'une intervention en base.
+     *
+     * @return list<string>
+     */
+    public static function lockedAdminPermissions(): array
+    {
+        return ['users.manage', 'settings.manage', 'roles.manage'];
+    }
+
+    /**
+     * Permissions attribuées à chaque rôle au premier amorçage (§31).
+     *
+     * Depuis que la matrice est modifiable dans l'écran Paramètres, ce
+     * tableau n'est plus la vérité courante : il ne sert qu'à peupler la
+     * base au premier `migrate --seed`. L'état réel se lit dans les rôles
+     * persistés, via Rbac::persistedRolePermissions().
      *
      * L'administrateur reçoit l'intégralité des permissions ; les autres
      * rôles sont volontairement restreints à leur périmètre métier.
@@ -147,6 +174,7 @@ final class Rbac
                 'consultations.view', 'consultations.create', 'consultations.update',
                 'vitals.view', 'vitals.create',
                 'nursing.view',
+                'care_orders.view', 'care_orders.create', 'care_orders.assign', 'care_orders.cancel',
                 'diagnoses.view', 'diagnoses.create',
                 'prescriptions.view', 'prescriptions.create', 'prescriptions.validate',
                 'laboratory.view', 'laboratory.orders.create',
@@ -163,6 +191,7 @@ final class Rbac
                 'consultations.view',
                 'vitals.view', 'vitals.create',
                 'nursing.view', 'nursing.create',
+                'care_orders.view', 'care_orders.execute',
                 'hospitalizations.view', 'hospitalizations.update',
                 'appointments.view',
                 'documents.view',
@@ -196,5 +225,24 @@ final class Rbac
                 'sms.view', 'sms.send',
             ],
         ];
+    }
+
+    /**
+     * État courant de la matrice, tel qu'il est enregistré en base.
+     *
+     * C'est cette méthode que doivent consulter l'écran Paramètres et les
+     * tests : après une modification par l'administrateur, le tableau
+     * d'amorçage ci-dessus ne décrit plus la réalité.
+     *
+     * @return array<string, list<string>>
+     */
+    public static function persistedRolePermissions(): array
+    {
+        return \Spatie\Permission\Models\Role::with('permissions:id,name')
+            ->get()
+            ->mapWithKeys(static fn ($role) => [
+                $role->name => $role->permissions->pluck('name')->sort()->values()->all(),
+            ])
+            ->all();
     }
 }
