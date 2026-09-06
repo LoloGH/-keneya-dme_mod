@@ -8,9 +8,9 @@
     <title>Connexion · {{ config('app.name') }}</title>
     <link rel="icon" href="{{ asset('assets/logo-icon.png') }}">
     <link rel="preload" as="image" href="{{ asset('assets/login-scene.webp') }}" type="image/webp"
-          media="(min-width: 1360px)">
+          media="(min-width: 1360px) and (max-aspect-ratio: 2/1)">
     <link rel="preload" as="image" href="{{ asset('assets/login-scene-plain.webp') }}" type="image/webp"
-          media="(max-width: 1359px)">
+          media="(max-width: 1359px), (min-aspect-ratio: 2/1)">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="h-full overflow-hidden bg-clinic-950">
@@ -48,12 +48,16 @@
          rognée horizontalement : on recentre alors sur le couloir, faute de
          quoi le praticien se retrouve décapité derrière la carte. --}}
     <picture>
-        {{-- À partir de 1360 px, la carte de connexion laisse la carte
-             patient entièrement dégagée : on sert le visuel d'origine. --}}
-        <source media="(min-width: 1360px)" srcset="{{ asset('assets/login-scene.webp') }}" type="image/webp">
-        <source media="(min-width: 1360px)" srcset="{{ asset('assets/login-scene.jpg') }}" type="image/jpeg">
-        {{-- En deçà, la carte serait coupée en deux par le formulaire :
-             on sert la variante sans carte plutôt que de la mutiler. --}}
+        {{-- Le visuel d'origine, carte patient comprise, n'est servi que
+             lorsqu'elle tient entièrement à l'écran : au moins 1360 px de
+             large, sinon le formulaire la recouvre, et un rapport d'au plus
+             2:1, sinon le rognage vertical lui coupe le bas. --}}
+        <source media="(min-width: 1360px) and (max-aspect-ratio: 2/1)"
+                srcset="{{ asset('assets/login-scene.webp') }}" type="image/webp">
+        <source media="(min-width: 1360px) and (max-aspect-ratio: 2/1)"
+                srcset="{{ asset('assets/login-scene.jpg') }}" type="image/jpeg">
+        {{-- Partout ailleurs, la variante sans carte : mieux vaut l'absence
+             qu'une carte tronquée. --}}
         <source srcset="{{ asset('assets/login-scene-plain.webp') }}" type="image/webp">
         <img src="{{ asset('assets/login-scene-plain.jpg') }}" alt="" aria-hidden="true"
              width="1671" height="941" fetchpriority="high"
@@ -66,14 +70,16 @@
     <div class="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-clinic-950/55 to-transparent"
          aria-hidden="true"></div>
 
-    <div class="relative flex min-h-0 flex-1 flex-col">
+    <div class="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
 
         {{-- ── Identité ─────────────────────────────────────────────── --}}
-        <header class="shrink-0 px-5 pt-5 sm:px-8 sm:pt-7 lg:px-12 lg:pt-9 xl:px-16 2xl:px-24">
+        <header class="shrink-0 px-5 pt-5 sm:px-8 sm:pt-7 lg:px-12 lg:pt-9 xl:px-16 2xl:px-24
+                       [@media(max-height:820px)]:pt-4 [@media(max-height:820px)]:lg:pt-4">
             <div class="flex items-center gap-3.5 lg:gap-4">
                 <img src="{{ asset('assets/logo-icon.png') }}" alt="Keneya DME"
                      width="320" height="270"
-                     class="h-12 w-auto drop-shadow-md sm:h-14 lg:h-16 xl:h-[4.5rem]">
+                     class="h-12 w-auto drop-shadow-md sm:h-14 lg:h-16 xl:h-[4.5rem]
+                            [@media(max-height:820px)]:h-11 [@media(max-height:820px)]:sm:h-12 [@media(max-height:820px)]:lg:h-[3.25rem] [@media(max-height:820px)]:xl:h-14">
                 <div class="leading-tight">
                     <p class="text-xl font-bold tracking-tight text-white drop-shadow-sm sm:text-2xl lg:text-3xl xl:text-[2rem]">
                         Keneya DME
@@ -121,8 +127,9 @@
                  Seul panneau opaque : c'est là que va l'attention. --}}
             <div class="flex min-h-0 flex-1 items-center justify-center px-4 pt-3 pb-5 sm:px-6 sm:pb-8
                         lg:justify-end lg:pr-12 xl:pr-16 2xl:pr-24">
-                <div class="max-h-full w-full max-w-[23.5rem] overflow-y-auto rounded-2xl bg-white p-6 ring-1 ring-black/5
-                            shadow-[0_24px_60px_-24px_rgb(15_23_42/0.55)] sm:max-w-[24.5rem] sm:p-7"
+                <div class="w-full max-w-[23.5rem] rounded-2xl bg-white p-6 ring-1 ring-black/5
+                            shadow-[0_24px_60px_-24px_rgb(15_23_42/0.55)] sm:max-w-[24.5rem] sm:p-7
+                            [@media(max-height:820px)]:p-5 [@media(max-height:820px)]:sm:p-5"
                      x-data="{
                          showPassword: false,
                          submitting: false,
@@ -169,8 +176,10 @@
 
                     <div class="mt-1 flex flex-col items-center text-center">
                         <img src="{{ asset('assets/logo-icon.png') }}" alt="Keneya DME"
-                             width="320" height="270" class="h-11 w-auto object-contain">
-                        <h2 class="mt-3 text-lg font-semibold tracking-tight text-ink-900">Accès sécurisé</h2>
+                             width="320" height="270" class="h-11 w-auto object-contain [@media(max-height:820px)]:h-9">
+                        <h2 class="mt-3 text-lg font-semibold tracking-tight text-ink-900 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:text-base">
+                            Accès sécurisé
+                        </h2>
                         <p class="mt-0.5 text-[0.8125rem] text-ink-500">Connectez-vous pour accéder à votre espace</p>
                     </div>
 
@@ -181,7 +190,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('login') }}" method="POST" class="mt-5 space-y-3.5" @submit="submitting = true">
+                    <form action="{{ route('login') }}" method="POST" class="mt-5 space-y-3.5 [@media(max-height:820px)]:mt-3 [@media(max-height:820px)]:space-y-2.5" @submit="submitting = true">
                         @csrf
 
                         <div>
@@ -251,15 +260,15 @@
                         </button>
                     </form>
 
-                    <div class="mt-5 flex items-center gap-3 text-[11px] font-medium text-ink-400" role="separator">
+                    <div class="mt-5 flex items-center gap-3 text-[11px] font-medium text-ink-400 [@media(max-height:820px)]:mt-3" role="separator">
                         <span class="h-px flex-1 bg-ink-200"></span>
                         ou
                         <span class="h-px flex-1 bg-ink-200"></span>
                     </div>
 
-                    <div class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    <div class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 [@media(max-height:820px)]:mt-2">
                         <button type="button"
-                                class="flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-ink-200 px-2
+                                class="flex min-h-9 [@media(max-height:820px)]:min-h-8 items-center justify-center gap-1.5 rounded-lg border border-ink-200 px-2
                                        text-[11px] font-medium text-ink-500 transition hover:border-clinic-300
                                        hover:bg-clinic-50 hover:text-clinic-700 focus-visible:outline-2
                                        focus-visible:outline-offset-2 focus-visible:outline-clinic-600"
@@ -267,7 +276,7 @@
                             <x-icon name="stethoscope" class="h-3.5 w-3.5"/> Médecin
                         </button>
                         <button type="button"
-                                class="flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-ink-200 px-2
+                                class="flex min-h-9 [@media(max-height:820px)]:min-h-8 items-center justify-center gap-1.5 rounded-lg border border-ink-200 px-2
                                        text-[11px] font-medium text-ink-500 transition hover:border-clinic-300
                                        hover:bg-clinic-50 hover:text-clinic-700 focus-visible:outline-2
                                        focus-visible:outline-offset-2 focus-visible:outline-clinic-600"
@@ -275,7 +284,7 @@
                             <x-icon name="heart" class="h-3.5 w-3.5"/> Infirmier
                         </button>
                         <button type="button"
-                                class="flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-ink-200 px-2
+                                class="flex min-h-9 [@media(max-height:820px)]:min-h-8 items-center justify-center gap-1.5 rounded-lg border border-ink-200 px-2
                                        text-[11px] font-medium text-ink-500 transition hover:border-clinic-300
                                        hover:bg-clinic-50 hover:text-clinic-700 focus-visible:outline-2
                                        focus-visible:outline-offset-2 focus-visible:outline-clinic-600"
@@ -283,7 +292,7 @@
                             <x-icon name="clipboard" class="h-3.5 w-3.5"/> Réception
                         </button>
                         <button type="button"
-                                class="flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-ink-200 px-2
+                                class="flex min-h-9 [@media(max-height:820px)]:min-h-8 items-center justify-center gap-1.5 rounded-lg border border-ink-200 px-2
                                        text-[11px] font-medium text-ink-500 transition hover:border-clinic-300
                                        hover:bg-clinic-50 hover:text-clinic-700 focus-visible:outline-2
                                        focus-visible:outline-offset-2 focus-visible:outline-clinic-600"
@@ -292,12 +301,12 @@
                         </button>
                     </div>
 
-                    <p class="mt-5 flex items-center justify-center gap-1.5 text-center text-[11px] text-ink-400">
+                    <p class="mt-5 flex items-center justify-center gap-1.5 text-center text-[11px] text-ink-400 [@media(max-height:820px)]:mt-3">
                         <x-icon name="lock" class="h-3 w-3 shrink-0"/>
                         Vos données médicales sont protégées — accès confidentiel et contrôlé
                     </p>
 
-                    <p class="mt-2.5 text-center text-[11px] text-ink-300">
+                    <p class="mt-2.5 text-center text-[11px] text-ink-300 [@media(max-height:820px)]:mt-1.5">
                         © {{ date('Y') }} Keneya DME · v{{ config('keneya.version') }}
                     </p>
                 </div>
@@ -305,7 +314,7 @@
         </div>
 
         {{-- ── Mentions de confiance — discrètes, sans bandeau ────────── --}}
-        <footer class="hidden shrink-0 px-12 pb-6 lg:block xl:px-16 2xl:px-24">
+        <footer class="hidden shrink-0 px-12 pb-6 lg:block xl:px-16 2xl:px-24 [@media(max-height:820px)]:pb-3">
             <ul class="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/75">
                 @foreach ($trust as $index => $item)
                     @if ($index > 0)
