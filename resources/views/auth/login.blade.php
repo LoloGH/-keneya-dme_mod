@@ -7,10 +7,7 @@
     <meta name="theme-color" content="#172554">
     <title>Connexion · {{ config('app.name') }}</title>
     <link rel="icon" href="{{ asset('assets/logo-icon.png') }}">
-    <link rel="preload" as="image" href="{{ asset('assets/login-scene.webp') }}" type="image/webp"
-          media="(min-width: 1360px) and (max-aspect-ratio: 2/1)">
-    <link rel="preload" as="image" href="{{ asset('assets/login-scene-plain.webp') }}" type="image/webp"
-          media="(max-width: 1359px), (min-aspect-ratio: 2/1)">
+    <link rel="preload" as="image" href="{{ asset('assets/login-scene.webp') }}" type="image/webp">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="h-full overflow-hidden bg-clinic-950">
@@ -41,25 +38,16 @@
      réellement visible sous la barre d'adresse et rognerait la carte. --}}
 <div class="relative flex h-[100dvh] flex-col overflow-hidden">
 
-    {{-- Scène hospitalière. La carte patient reste incrustée dans le visuel
-         (choix client) : rien n'est superposé à cette zone. Seul le bandeau
-         de confiance en a été retiré, puisqu'il est reconstruit en HTML plus
-         bas — l'y laisser l'afficherait deux fois. En portrait, l'image est
-         rognée horizontalement : on recentre alors sur le couloir, faute de
-         quoi le praticien se retrouve décapité derrière la carte. --}}
+    {{-- Scène hospitalière, telle qu'elle a été fournie. La carte patient y
+         reste incrustée et rien n'est superposé à cette zone ; le bas du
+         visuel n'est ni retouché ni flouté. Seul le bandeau de confiance en
+         a été retiré, puisqu'il est reconstruit en HTML plus bas — l'y
+         laisser l'afficherait deux fois. En portrait, l'image est rognée
+         horizontalement : on recentre alors sur le couloir, faute de quoi le
+         praticien se retrouve décapité derrière la carte. --}}
     <picture>
-        {{-- Le visuel d'origine, carte patient comprise, n'est servi que
-             lorsqu'elle tient entièrement à l'écran : au moins 1360 px de
-             large, sinon le formulaire la recouvre, et un rapport d'au plus
-             2:1, sinon le rognage vertical lui coupe le bas. --}}
-        <source media="(min-width: 1360px) and (max-aspect-ratio: 2/1)"
-                srcset="{{ asset('assets/login-scene.webp') }}" type="image/webp">
-        <source media="(min-width: 1360px) and (max-aspect-ratio: 2/1)"
-                srcset="{{ asset('assets/login-scene.jpg') }}" type="image/jpeg">
-        {{-- Partout ailleurs, la variante sans carte : mieux vaut l'absence
-             qu'une carte tronquée. --}}
-        <source srcset="{{ asset('assets/login-scene-plain.webp') }}" type="image/webp">
-        <img src="{{ asset('assets/login-scene-plain.jpg') }}" alt="" aria-hidden="true"
+        <source srcset="{{ asset('assets/login-scene.webp') }}" type="image/webp">
+        <img src="{{ asset('assets/login-scene.jpg') }}" alt="" aria-hidden="true"
              width="1671" height="941" fetchpriority="high"
              class="absolute inset-0 h-full w-full object-cover object-[26%_center] lg:object-center">
     </picture>
