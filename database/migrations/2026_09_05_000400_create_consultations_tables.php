@@ -20,12 +20,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('consultations', function (Blueprint $table) {
+        Schema::create('dme_consultations', function (Blueprint $table) {
             $table->id();
             $table->string('consultation_number')->unique(); // CONS-2026-000001
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
             $table->foreignId('doctor_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('service_id')->nullable()->constrained('services')->nullOnDelete();
+            $table->foreignId('service_id')->nullable()->constrained('dme_services')->nullOnDelete();
             $table->foreignId('appointment_id')->nullable();
             $table->foreignId('hospitalization_id')->nullable();
 
@@ -51,10 +51,10 @@ return new class extends Migration
             $table->index(['patient_id', 'started_at']);
         });
 
-        Schema::create('vital_signs', function (Blueprint $table) {
+        Schema::create('dme_vital_signs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('consultation_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
+            $table->foreignId('consultation_id')->nullable()->constrained('dme_consultations')->nullOnDelete();
             $table->foreignId('hospitalization_id')->nullable();
             $table->dateTime('measured_at');
 
@@ -79,9 +79,9 @@ return new class extends Migration
         });
 
         // §19 — examen clinique par appareil
-        Schema::create('clinical_notes', function (Blueprint $table) {
+        Schema::create('dme_clinical_notes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('consultation_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('consultation_id')->constrained('dme_consultations')->cascadeOnDelete();
             $table->string('system'); // general, cardiovascular, respiratory, abdominal,
                                       // neurological, ent, dermatological, other
             $table->longText('content');
@@ -91,10 +91,10 @@ return new class extends Migration
             $table->index(['consultation_id', 'system']);
         });
 
-        Schema::create('diagnoses', function (Blueprint $table) {
+        Schema::create('dme_diagnoses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('consultation_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
+            $table->foreignId('consultation_id')->nullable()->constrained('dme_consultations')->nullOnDelete();
             $table->foreignId('doctor_id')->nullable()->constrained('users')->nullOnDelete();
 
             $table->string('label');
@@ -114,9 +114,9 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('diagnoses');
-        Schema::dropIfExists('clinical_notes');
-        Schema::dropIfExists('vital_signs');
-        Schema::dropIfExists('consultations');
+        Schema::dropIfExists('dme_diagnoses');
+        Schema::dropIfExists('dme_clinical_notes');
+        Schema::dropIfExists('dme_vital_signs');
+        Schema::dropIfExists('dme_consultations');
     }
 };

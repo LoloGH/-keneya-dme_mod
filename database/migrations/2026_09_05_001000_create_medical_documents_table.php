@@ -18,10 +18,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('medical_documents', function (Blueprint $table) {
+        Schema::create('dme_medical_documents', function (Blueprint $table) {
             $table->id();
             $table->string('document_number')->unique(); // DOC-2026-000001
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
 
             $table->string('title');
             $table->enum('type', [
@@ -40,7 +40,7 @@ return new class extends Migration
 
             $table->unsignedSmallInteger('version')->default(1);
             $table->foreignId('replaces_document_id')->nullable()
-                ->constrained('medical_documents')->nullOnDelete();
+                ->constrained('dme_medical_documents')->nullOnDelete();
 
             $table->enum('status', ['draft', 'final', 'signed', 'archived'])->default('final');
             $table->boolean('is_generated')->default(false); // produit par l'application (PDF)
@@ -60,6 +60,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('medical_documents');
+        Schema::dropIfExists('dme_medical_documents');
     }
 };

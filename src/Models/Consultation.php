@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\HasBusinessIdentifier;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -20,6 +21,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Consultation extends Model
 {
+    protected $table = 'dme_consultations';
+
     use HasBusinessIdentifier;
     use HasFactory;
     use RecordsMedicalActivity;
@@ -87,7 +90,7 @@ class Consultation extends Model
 
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'doctor_id');
+        return $this->belongsTo(Dme::userModel(), 'doctor_id');
     }
 
     public function service(): BelongsTo

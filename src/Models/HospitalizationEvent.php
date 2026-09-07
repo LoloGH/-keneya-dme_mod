@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /** Événement de la timeline d'un séjour hospitalier (§25). */
 class HospitalizationEvent extends Model
 {
+    protected $table = 'dme_hospitalization_events';
+
     use HasFactory;
 
     protected $fillable = [
@@ -48,7 +51,7 @@ class HospitalizationEvent extends Model
 
     public function recorder(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'recorded_by');
+        return $this->belongsTo(Dme::userModel(), 'recorded_by');
     }
 
     public function typeLabel(): string

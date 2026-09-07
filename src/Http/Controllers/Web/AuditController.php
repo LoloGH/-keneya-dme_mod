@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Http\Controllers\Web;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Http\Controllers\Controller;
 use Keneya\Dme\Models\AuditLog;
-use Keneya\Dme\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -39,7 +39,7 @@ class AuditController extends Controller
         return view('dme::audit.index', [
             'logs' => $logs,
             'filters' => $request->only(['action', 'outcome', 'user', 'from', 'to']),
-            'users' => User::orderBy('last_name')->get(['id', 'name', 'first_name', 'last_name', 'title']),
+            'users' => Dme::userQuery()->orderBy('last_name')->get(['id', 'name', 'first_name', 'last_name', 'title']),
             'actions' => AuditLog::query()->distinct()->orderBy('action')->pluck('action')->filter()->values(),
         ]);
     }

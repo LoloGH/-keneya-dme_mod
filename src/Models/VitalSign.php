@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class VitalSign extends Model
 {
+    protected $table = 'dme_vital_signs';
+
     use HasFactory;
     use RecordsMedicalActivity;
 
@@ -72,7 +75,7 @@ class VitalSign extends Model
 
     public function recorder(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'recorded_by');
+        return $this->belongsTo(Dme::userModel(), 'recorded_by');
     }
 
     public function bloodPressure(): ?string

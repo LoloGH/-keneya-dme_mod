@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Policies;
 
-use Keneya\Dme\Models\User;
+use Keneya\Dme\Contracts\DmeUser;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -32,27 +32,27 @@ abstract class DomainPolicy
     /** Permission requise pour supprimer / archiver ; null = interdit à tous. */
     protected ?string $deletePermission = null;
 
-    public function viewAny(User $user): bool
+    public function viewAny(DmeUser $user): bool
     {
         return $this->allows($user, $this->viewPermission);
     }
 
-    public function view(User $user, Model $model): bool
+    public function view(DmeUser $user, Model $model): bool
     {
         return $this->allows($user, $this->viewPermission);
     }
 
-    public function create(User $user): bool
+    public function create(DmeUser $user): bool
     {
         return $this->allows($user, $this->createPermission);
     }
 
-    public function update(User $user, Model $model): bool
+    public function update(DmeUser $user, Model $model): bool
     {
         return $this->allows($user, $this->updatePermission);
     }
 
-    public function delete(User $user, Model $model): bool
+    public function delete(DmeUser $user, Model $model): bool
     {
         return $this->deletePermission !== null
             && $this->allows($user, $this->deletePermission);
@@ -61,7 +61,7 @@ abstract class DomainPolicy
     /**
      * Vérification élémentaire : compte actif et permission accordée.
      */
-    protected function allows(User $user, string $permission): bool
+    protected function allows(DmeUser $user, string $permission): bool
     {
         if ($permission === '' || ! $user->isActive()) {
             return false;

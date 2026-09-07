@@ -17,11 +17,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('prescriptions', function (Blueprint $table) {
+        Schema::create('dme_prescriptions', function (Blueprint $table) {
             $table->id();
             $table->string('prescription_number')->unique(); // ORD-2026-000001
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('consultation_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
+            $table->foreignId('consultation_id')->nullable()->constrained('dme_consultations')->nullOnDelete();
             $table->foreignId('doctor_id')->nullable()->constrained('users')->nullOnDelete();
 
             $table->date('issued_on');
@@ -48,9 +48,9 @@ return new class extends Migration
             $table->index('issued_on');
         });
 
-        Schema::create('prescription_items', function (Blueprint $table) {
+        Schema::create('dme_prescription_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('prescription_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('prescription_id')->constrained('dme_prescriptions')->cascadeOnDelete();
             $table->unsignedSmallInteger('position')->default(1);
 
             $table->string('medication_name');
@@ -71,7 +71,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('prescription_items');
-        Schema::dropIfExists('prescriptions');
+        Schema::dropIfExists('dme_prescription_items');
+        Schema::dropIfExists('dme_prescriptions');
     }
 };

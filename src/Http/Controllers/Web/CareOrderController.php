@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Http\Controllers\Web;
 
+use Keneya\Dme\Contracts\DmeUser;
+use Keneya\Dme\Dme;
 use Keneya\Dme\Http\Controllers\Controller;
 use Keneya\Dme\Models\AuditLog;
 use Keneya\Dme\Models\CareOrder;
 use Keneya\Dme\Models\NursingNote;
 use Keneya\Dme\Models\Patient;
-use Keneya\Dme\Models\User;
 use Keneya\Dme\Support\Rbac;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,7 +42,7 @@ class CareOrderController extends Controller
             'ends_at' => ['nullable', 'date', 'after:starts_at'],
             'hospitalization_id' => [
                 'nullable',
-                Rule::exists('hospitalizations', 'id')->where('patient_id', $patient->id),
+                Rule::exists('dme_hospitalizations', 'id')->where('patient_id', $patient->id),
             ],
             'assigned_nurse_id' => ['nullable', Rule::in($this->assignableNurseIds($user))],
         ], [
@@ -198,7 +199,7 @@ class CareOrderController extends Controller
      *
      * @return list<int>
      */
-    private function assignableNurseIds(User $user): array
+    private function assignableNurseIds(DmeUser $user): array
     {
         if ($user->service_id === null) {
             return [];
@@ -210,13 +211,13 @@ class CareOrderController extends Controller
     /**
      * @return \Illuminate\Database\Eloquent\Collection<int, User>
      */
-    public static function assignableNurses(User $user): \Illuminate\Database\Eloquent\Collection
+    public static function assignableNurses(DmeUser $user): \Illuminate\Database\Eloquent\Collection
     {
         if ($user->service_id === null) {
-            return User::whereRaw('1 = 0')->get();
+            return Dme::userQuery()->whereRaw('1 = 0')->get();
         }
 
-        return User::query()
+        return Dme::userQuery()
             ->where('is_active', true)
             ->where('service_id', $user->service_id)
             ->role(Rbac::ROLE_NURSE)

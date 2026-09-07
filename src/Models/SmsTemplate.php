@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class SmsTemplate extends Model
 {
+    protected $table = 'dme_sms_templates';
+
     use HasFactory;
 
     protected $fillable = ['key', 'name', 'body', 'variables', 'description', 'is_active'];

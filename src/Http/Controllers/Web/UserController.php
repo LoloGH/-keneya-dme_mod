@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Http\Controllers\Web;
 
+use Keneya\Dme\Contracts\DmeUser;
+use Keneya\Dme\Dme;
 use Keneya\Dme\Http\Controllers\Controller;
 use Keneya\Dme\Models\Service;
-use Keneya\Dme\Models\User;
 use Keneya\Dme\Models\UserDutyPeriod;
 use Keneya\Dme\Models\UserWeeklySchedule;
 use Keneya\Dme\Support\Rbac;
@@ -30,9 +31,9 @@ class UserController extends Controller
 {
     public function index(Request $request): View
     {
-        $this->authorize('viewAny', User::class);
+        $this->authorize('viewAny', Dme::userModel());
 
-        $users = User::query()
+        $users = Dme::userQuery()
             ->with(['roles:id,name', 'service:id,name'])
             ->when($request->string('role')->toString(), fn ($q, $role) => $q->role($role))
             ->when($request->string('q')->toString(), fn ($q, $term) => $q->where(fn ($inner) => $inner
@@ -53,14 +54,14 @@ class UserController extends Controller
 
     public function create(): View
     {
-        $this->authorize('create', User::class);
+        $this->authorize('create', Dme::userModel());
 
         return view('dme::users.create', $this->formData());
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorize('create', User::class);
+        $this->authorize('create', Dme::userModel());
 
         $data = $request->validate([
             'first_name' => ['required', 'string', 'max:100'],
@@ -70,7 +71,7 @@ class UserController extends Controller
             'matricule' => ['nullable', 'string', 'max:50', 'unique:users,matricule'],
             'email' => ['required', 'email', 'max:150', 'unique:users,email'],
             'phone' => ['nullable', 'string', 'max:30'],
-            'service_id' => ['nullable', 'exists:services,id'],
+            'service_id' => ['nullable', 'exists:dme_services,id'],
             'password' => ['required', 'confirmed', PasswordPolicy::rule()],
             'role' => ['required', Rule::in(array_keys(Rbac::allRoleLabels()))],
         ], [], [
@@ -84,7 +85,7 @@ class UserController extends Controller
         $schedule = $this->validateSchedule($request);
 
         DB::transaction(function () use ($data, $schedule, $request): void {
-            $user = User::create([
+            $user = Dme::userQuery()->create([
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
                 'name' => trim($data['first_name'].' '.$data['last_name']),
@@ -106,8 +107,10 @@ class UserController extends Controller
         return redirect()->route('dme.users.index')->with('success', 'Compte créé.');
     }
 
-    public function edit(User $user): View
+    public function edit(int $user): View
     {
+        $user = Dme::userQuery()->findOrFail($user);
+
         $this->authorize('update', $user);
 
         $user->load(['roles', 'weeklySchedules']);
@@ -119,8 +122,10 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(Request $request, User $user): RedirectResponse
+    public function update(Request $request, int $user): RedirectResponse
     {
+        $user = Dme::userQuery()->findOrFail($user);
+
         $this->authorize('update', $user);
 
         $data = $request->validate([
@@ -131,7 +136,7 @@ class UserController extends Controller
             'matricule' => ['nullable', 'string', 'max:50', Rule::unique('users', 'matricule')->ignore($user->id)],
             'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')->ignore($user->id)],
             'phone' => ['nullable', 'string', 'max:30'],
-            'service_id' => ['nullable', 'exists:services,id'],
+            'service_id' => ['nullable', 'exists:dme_services,id'],
             'password' => ['nullable', 'confirmed', PasswordPolicy::rule()],
             'role' => ['required', Rule::in(array_keys(Rbac::allRoleLabels()))],
             'is_active' => ['nullable', 'boolean'],
@@ -232,7 +237,7 @@ class UserController extends Controller
      *
      * @param  array<string, mixed>  $schedule
      */
-    private function applySchedule(User $user, array $schedule, Request $request): void
+    private function applySchedule(DmeUser $user, array $schedule, Request $request): void
     {
         foreach (UserWeeklySchedule::WEEKDAYS as $weekday => $label) {
             $row = $schedule['schedule'][$weekday] ?? [];

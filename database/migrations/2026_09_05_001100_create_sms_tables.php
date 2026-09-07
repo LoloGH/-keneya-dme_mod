@@ -20,7 +20,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('sms_templates', function (Blueprint $table) {
+        Schema::create('dme_sms_templates', function (Blueprint $table) {
             $table->id();
             $table->string('key')->unique(); // appointment_reminder, lab_result_available…
             $table->string('name');
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('sms_messages', function (Blueprint $table) {
+        Schema::create('dme_sms_messages', function (Blueprint $table) {
             $table->id();
             $table->string('reference')->unique();
             $table->string('recipient');                 // numéro normalisé E.164
@@ -39,7 +39,7 @@ return new class extends Migration
             $table->string('sender')->nullable();
 
             $table->foreignId('sms_template_id')->nullable()
-                ->constrained('sms_templates')->nullOnDelete();
+                ->constrained('dme_sms_templates')->nullOnDelete();
 
             // Contexte métier — volontairement non contraint (découplage)
             $table->foreignId('patient_id')->nullable();
@@ -75,7 +75,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('sms_messages');
-        Schema::dropIfExists('sms_templates');
+        Schema::dropIfExists('dme_sms_messages');
+        Schema::dropIfExists('dme_sms_templates');
     }
 };

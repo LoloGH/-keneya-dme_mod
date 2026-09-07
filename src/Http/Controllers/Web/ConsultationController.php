@@ -200,8 +200,8 @@ class ConsultationController extends Controller
     private function validated(Request $request): array
     {
         return $request->validate([
-            'service_id' => ['nullable', 'exists:services,id'],
-            'appointment_id' => ['nullable', 'exists:appointments,id'],
+            'service_id' => ['nullable', 'exists:dme_services,id'],
+            'appointment_id' => ['nullable', 'exists:dme_appointments,id'],
             'started_at' => ['required', 'date', 'before_or_equal:now'],
             'type' => ['required', Rule::in(array_keys(Consultation::TYPES))],
             'reason' => ['nullable', 'string', 'max:1000'],

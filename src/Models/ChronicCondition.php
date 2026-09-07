@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /** Pathologie chronique. Correspondance FHIR : Condition (§44). */
 class ChronicCondition extends Model
 {
+    protected $table = 'dme_chronic_conditions';
+
     use HasFactory;
     use RecordsMedicalActivity;
 

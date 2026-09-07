@@ -4,27 +4,27 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Policies;
 
-use Keneya\Dme\Models\User;
+use Keneya\Dme\Contracts\DmeUser;
 
 /** Administration des comptes (§31). */
 class UserPolicy
 {
-    public function viewAny(User $user): bool
+    public function viewAny(DmeUser $user): bool
     {
         return $user->isActive() && $user->can('users.manage');
     }
 
-    public function view(User $user, User $target): bool
+    public function view(DmeUser $user, DmeUser $target): bool
     {
         return $this->viewAny($user) || $user->is($target);
     }
 
-    public function create(User $user): bool
+    public function create(DmeUser $user): bool
     {
         return $this->viewAny($user);
     }
 
-    public function update(User $user, User $target): bool
+    public function update(DmeUser $user, DmeUser $target): bool
     {
         return $this->viewAny($user);
     }
@@ -34,7 +34,7 @@ class UserPolicy
      * il est désactivé. On empêche aussi un administrateur de se
      * désactiver lui-même, ce qui pourrait fermer l'accès à l'application.
      */
-    public function deactivate(User $user, User $target): bool
+    public function deactivate(DmeUser $user, DmeUser $target): bool
     {
         return $this->viewAny($user) && ! $user->is($target);
     }

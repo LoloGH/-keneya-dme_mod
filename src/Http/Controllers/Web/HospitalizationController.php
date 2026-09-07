@@ -64,7 +64,7 @@ class HospitalizationController extends Controller
         $this->authorize('create', Hospitalization::class);
 
         $data = $request->validate([
-            'service_id' => ['nullable', 'exists:services,id'],
+            'service_id' => ['nullable', 'exists:dme_services,id'],
             'admitted_at' => ['required', 'date', 'before_or_equal:now'],
             'admission_reason' => ['required', 'string', 'max:1000'],
             'admission_diagnosis' => ['nullable', 'string', 'max:200'],

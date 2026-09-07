@@ -24,7 +24,7 @@ class ServiceController extends Controller
         abort_unless($request->user()->can('settings.manage'), 403);
 
         $data = $request->validate([
-            'code' => ['required', 'string', 'max:10', 'alpha_dash', 'unique:services,code'],
+            'code' => ['required', 'string', 'max:10', 'alpha_dash', 'unique:dme_services,code'],
             'name' => ['required', 'string', 'max:100'],
             'type' => ['required', 'in:clinical,medico_technical,administrative'],
             'description' => ['nullable', 'string', 'max:255'],

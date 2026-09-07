@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /** Soin infirmier, administration ou transmission (§26). */
 class NursingNote extends Model
 {
+    protected $table = 'dme_nursing_notes';
+
     use HasFactory;
     use RecordsMedicalActivity;
 
@@ -47,7 +50,7 @@ class NursingNote extends Model
 
     public function nurse(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'nurse_id');
+        return $this->belongsTo(Dme::userModel(), 'nurse_id');
     }
 
     public function typeLabel(): string

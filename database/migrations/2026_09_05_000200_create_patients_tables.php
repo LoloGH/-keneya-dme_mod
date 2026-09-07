@@ -19,7 +19,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('patients', function (Blueprint $table) {
+        Schema::create('dme_patients', function (Blueprint $table) {
             $table->id();
             $table->string('patient_number')->unique(); // PAT-2026-000001
 
@@ -65,9 +65,9 @@ return new class extends Migration
             $table->index(['last_name', 'first_name']);
         });
 
-        Schema::create('patient_identifiers', function (Blueprint $table) {
+        Schema::create('dme_patient_identifiers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
             $table->string('system');  // ex : keneya_workflow, national_registry, insurance
             $table->string('value');
             $table->string('label')->nullable();
@@ -78,9 +78,9 @@ return new class extends Migration
             $table->index('patient_id');
         });
 
-        Schema::create('emergency_contacts', function (Blueprint $table) {
+        Schema::create('dme_emergency_contacts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
             $table->string('name');
             $table->string('relationship')->nullable();
             $table->string('phone');
@@ -95,8 +95,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('emergency_contacts');
-        Schema::dropIfExists('patient_identifiers');
-        Schema::dropIfExists('patients');
+        Schema::dropIfExists('dme_emergency_contacts');
+        Schema::dropIfExists('dme_patient_identifiers');
+        Schema::dropIfExists('dme_patients');
     }
 };

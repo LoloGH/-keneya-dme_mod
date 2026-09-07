@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserDutyPeriod extends Model
 {
+    protected $table = 'dme_user_duty_periods';
+
     protected $fillable = ['starts_at', 'ends_at', 'notes', 'created_by_id'];
 
     protected function casts(): array
@@ -27,12 +30,12 @@ class UserDutyPeriod extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Dme::userModel());
     }
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by_id');
+        return $this->belongsTo(Dme::userModel(), 'created_by_id');
     }
 
     /**

@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /** Ligne d'une ordonnance (§22). */
 class PrescriptionItem extends Model
 {
+    protected $table = 'dme_prescription_items';
+
     use HasFactory;
 
     protected $fillable = [

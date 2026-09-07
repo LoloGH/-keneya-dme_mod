@@ -64,7 +64,7 @@ class ImagingController extends Controller
         $this->authorize('create', ImagingOrder::class);
 
         $data = $request->validate([
-            'consultation_id' => ['nullable', 'exists:consultations,id'],
+            'consultation_id' => ['nullable', 'exists:dme_consultations,id'],
             'modality' => ['required', Rule::in(array_keys(ImagingOrder::MODALITIES))],
             'body_site' => ['nullable', 'string', 'max:150'],
             'requested_at' => ['required', 'date'],

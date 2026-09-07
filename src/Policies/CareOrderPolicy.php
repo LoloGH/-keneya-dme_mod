@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Policies;
 
+use Keneya\Dme\Contracts\DmeUser;
 use Keneya\Dme\Models\CareOrder;
-use Keneya\Dme\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -27,7 +27,7 @@ class CareOrderPolicy extends DomainPolicy
     /**
      * Accès à un soin précis : permission, puis portée.
      */
-    public function view(User $user, Model $model): bool
+    public function view(DmeUser $user, Model $model): bool
     {
         return $this->allows($user, $this->viewPermission)
             && $this->inScope($user, $model);
@@ -37,7 +37,7 @@ class CareOrderPolicy extends DomainPolicy
      * Confier ou reprendre un soin. Un soin clos ne se réattribue pas :
      * il faudrait en prescrire un nouveau, ce qui laisse une trace.
      */
-    public function assign(User $user, CareOrder $order): bool
+    public function assign(DmeUser $user, CareOrder $order): bool
     {
         return $order->isOpen()
             && $this->allows($user, 'care_orders.assign')
@@ -49,7 +49,7 @@ class CareOrderPolicy extends DomainPolicy
      * le soignant nommé, ou le personnel de garde du service quand le
      * soin est resté ouvert.
      */
-    public function execute(User $user, CareOrder $order): bool
+    public function execute(DmeUser $user, CareOrder $order): bool
     {
         if (! $order->isOpen() || ! $this->allows($user, 'care_orders.execute')) {
             return false;
@@ -68,7 +68,7 @@ class CareOrderPolicy extends DomainPolicy
      * Annuler. Le prescripteur revient sur sa propre demande ;
      * l'administration peut trancher un soin resté ouvert par erreur.
      */
-    public function cancel(User $user, CareOrder $order): bool
+    public function cancel(DmeUser $user, CareOrder $order): bool
     {
         if (! $order->isOpen() || ! $this->allows($user, 'care_orders.cancel')) {
             return false;
@@ -78,12 +78,12 @@ class CareOrderPolicy extends DomainPolicy
     }
 
     /** Un soin programmé ne se modifie pas et ne se supprime pas (§30). */
-    public function update(User $user, Model $model): bool
+    public function update(DmeUser $user, Model $model): bool
     {
         return false;
     }
 
-    public function delete(User $user, Model $model): bool
+    public function delete(DmeUser $user, Model $model): bool
     {
         return false;
     }
@@ -91,7 +91,7 @@ class CareOrderPolicy extends DomainPolicy
     /**
      * Portée de visibilité, miroir exact de CareOrder::scopeVisibleTo.
      */
-    private function inScope(User $user, Model $order): bool
+    private function inScope(DmeUser $user, Model $order): bool
     {
         if ($user->can('users.manage')) {
             return true;

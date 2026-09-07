@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Policies;
 
+use Keneya\Dme\Contracts\DmeUser;
 use Keneya\Dme\Models\AuditLog;
-use Keneya\Dme\Models\User;
 
 /**
  * Journal d'audit (§30) — append-only.
@@ -17,27 +17,27 @@ use Keneya\Dme\Models\User;
  */
 class AuditLogPolicy
 {
-    public function viewAny(User $user): bool
+    public function viewAny(DmeUser $user): bool
     {
         return $user->isActive() && $user->can('audit.view');
     }
 
-    public function view(User $user, AuditLog $log): bool
+    public function view(DmeUser $user, AuditLog $log): bool
     {
         return $this->viewAny($user);
     }
 
-    public function create(User $user): bool
+    public function create(DmeUser $user): bool
     {
         return false;
     }
 
-    public function update(User $user, AuditLog $log): bool
+    public function update(DmeUser $user, AuditLog $log): bool
     {
         return false;
     }
 
-    public function delete(User $user, AuditLog $log): bool
+    public function delete(DmeUser $user, AuditLog $log): bool
     {
         return false;
     }

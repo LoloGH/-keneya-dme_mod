@@ -98,7 +98,7 @@ class PatientIdentifierResolverTest extends TestCase
         // L'identifiant métier du DME reste attribué normalement.
         $this->assertMatchesRegularExpression('/^PAT-\d{4}-\d{6}$/', $patient->patient_number);
 
-        $this->assertDatabaseHas('patient_identifiers', [
+        $this->assertDatabaseHas('dme_patient_identifiers', [
             'patient_id' => $patient->getKey(),
             'system' => self::SYSTEM,
             'value' => 'WF-000900',

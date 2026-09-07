@@ -11,12 +11,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('appointments', function (Blueprint $table) {
+        Schema::create('dme_appointments', function (Blueprint $table) {
             $table->id();
             $table->string('appointment_number')->unique(); // RDV-2026-000001
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
             $table->foreignId('doctor_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('service_id')->nullable()->constrained('services')->nullOnDelete();
+            $table->foreignId('service_id')->nullable()->constrained('dme_services')->nullOnDelete();
 
             $table->dateTime('scheduled_for');
             $table->unsignedSmallInteger('duration_minutes')->default(30);
@@ -42,6 +42,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('appointments');
+        Schema::dropIfExists('dme_appointments');
     }
 };

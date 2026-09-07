@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Policies;
 
+use Keneya\Dme\Contracts\DmeUser;
 use Keneya\Dme\Models\Prescription;
-use Keneya\Dme\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -24,27 +24,27 @@ class PrescriptionPolicy extends DomainPolicy
     protected string $updatePermission = 'prescriptions.create';
 
     /** Une ordonnance n'est modifiable qu'à l'état de brouillon. */
-    public function update(User $user, Model $model): bool
+    public function update(DmeUser $user, Model $model): bool
     {
         return parent::update($user, $model)
             && $model instanceof Prescription
             && $model->isEditable();
     }
 
-    public function validate(User $user, Prescription $prescription): bool
+    public function validate(DmeUser $user, Prescription $prescription): bool
     {
         return $this->allows($user, 'prescriptions.validate')
             && $prescription->status === 'draft';
     }
 
-    public function dispense(User $user, Prescription $prescription): bool
+    public function dispense(DmeUser $user, Prescription $prescription): bool
     {
         return $this->allows($user, 'prescriptions.dispense')
             && $prescription->status === 'validated';
     }
 
     /** L'impression / le PDF suit le droit de lecture. */
-    public function print(User $user, Prescription $prescription): bool
+    public function print(DmeUser $user, Prescription $prescription): bool
     {
         return $this->allows($user, 'prescriptions.view');
     }

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Http\Controllers\Api;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Http\Controllers\Controller;
 use Keneya\Dme\Models\AuditLog;
-use Keneya\Dme\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -29,7 +29,7 @@ class AuthApiController extends Controller
             'device_name' => ['required', 'string', 'max:100'],
         ]);
 
-        $user = User::where('email', $data['email'])->first();
+        $user = Dme::userQuery()->where('email', $data['email'])->first();
 
         if ($user === null || ! Hash::check($data['password'], $user->password) || ! $user->isActive()) {
             AuditLog::record(

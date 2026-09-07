@@ -20,7 +20,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('user_weekly_schedules', function (Blueprint $table) {
+        Schema::create('dme_user_weekly_schedules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             // 1 = lundi ... 7 = dimanche (Carbon::dayOfWeekIso).
@@ -35,6 +35,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('user_weekly_schedules');
+        Schema::dropIfExists('dme_user_weekly_schedules');
     }
 };

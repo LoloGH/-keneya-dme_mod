@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\HasBusinessIdentifier;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,6 +29,8 @@ use Illuminate\Support\Collection;
  */
 class Patient extends Model
 {
+    protected $table = 'dme_patients';
+
     use HasBusinessIdentifier;
     use HasFactory;
     use RecordsMedicalActivity;
@@ -85,12 +88,12 @@ class Patient extends Model
 
     public function attendingDoctor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'attending_doctor_id');
+        return $this->belongsTo(Dme::userModel(), 'attending_doctor_id');
     }
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(Dme::userModel(), 'created_by');
     }
 
     public function identifiers(): HasMany

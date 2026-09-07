@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Http\Controllers\Web;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Http\Controllers\Controller;
 use Keneya\Dme\Models\Appointment;
 use Keneya\Dme\Models\Patient;
 use Keneya\Dme\Models\Service;
-use Keneya\Dme\Models\User;
 use Keneya\Dme\Services\Notifications\NotificationService;
 use Keneya\Dme\Support\Rbac;
 use Illuminate\Http\RedirectResponse;
@@ -54,7 +54,7 @@ class AppointmentController extends Controller
             'start' => $start,
             'end' => $end,
             'filters' => $request->only(['doctor', 'status']),
-            'doctors' => User::role(Rbac::ROLE_DOCTOR)->where('is_active', true)
+            'doctors' => Dme::userQuery()->role(Rbac::ROLE_DOCTOR)->where('is_active', true)
                 ->orderBy('last_name')->get(['id', 'name', 'first_name', 'last_name', 'title']),
         ]);
     }
@@ -68,7 +68,7 @@ class AppointmentController extends Controller
 
         $data = $request->validate([
             'doctor_id' => ['nullable', 'exists:users,id'],
-            'service_id' => ['nullable', 'exists:services,id'],
+            'service_id' => ['nullable', 'exists:dme_services,id'],
             'scheduled_for' => ['required', 'date', 'after:now'],
             'duration_minutes' => ['required', 'integer', 'between:5,480'],
             'reason' => ['nullable', 'string', 'max:255'],

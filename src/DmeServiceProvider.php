@@ -35,7 +35,6 @@ use Keneya\Dme\Models\NursingNote;
 use Keneya\Dme\Models\Patient;
 use Keneya\Dme\Models\Prescription;
 use Keneya\Dme\Models\SmsMessage;
-use Keneya\Dme\Models\User;
 use Keneya\Dme\Models\VitalSign;
 use Keneya\Dme\Patients\PatientIdentifierResolver;
 use Keneya\Dme\Policies\AppointmentPolicy;
@@ -104,7 +103,6 @@ class DmeServiceProvider extends ServiceProvider
         MedicalDocument::class => MedicalDocumentPolicy::class,
         AuditLog::class => AuditLogPolicy::class,
         SmsMessage::class => SmsMessagePolicy::class,
-        User::class => UserPolicy::class,
     ];
 
     public function register(): void
@@ -175,6 +173,25 @@ class DmeServiceProvider extends ServiceProvider
     {
         foreach (self::POLICIES as $model => $policy) {
             Gate::policy($model, $policy);
+        }
+
+        $this->registerUserPolicy();
+    }
+
+    /**
+     * Le modèle utilisateur est le seul qui puisse appartenir à l'hôte.
+     *
+     * L'écran d'administration des comptes du module a besoin d'une policy
+     * sur ce modèle, mais l'hôte en a peut-être déjà déclaré une, qui
+     * porte ses propres règles : on ne l'écrase jamais. Sans policy de
+     * l'hôte, celle du module prend le relais et l'écran reste utilisable.
+     */
+    private function registerUserPolicy(): void
+    {
+        $model = Dme::userModel();
+
+        if (Gate::getPolicyFor($model) === null) {
+            Gate::policy($model, UserPolicy::class);
         }
     }
 
@@ -336,7 +353,7 @@ class DmeServiceProvider extends ServiceProvider
     private function configureFacilitySettings(): void
     {
         try {
-            if (! $this->app['db']->connection()->getSchemaBuilder()->hasTable('app_settings')) {
+            if (! $this->app['db']->connection()->getSchemaBuilder()->hasTable('dme_app_settings')) {
                 return;
             }
 

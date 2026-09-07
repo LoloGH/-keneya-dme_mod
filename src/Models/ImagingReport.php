@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /** Compte rendu d'imagerie (§24). */
 class ImagingReport extends Model
 {
+    protected $table = 'dme_imaging_reports';
+
     use HasFactory;
     use RecordsMedicalActivity;
 
@@ -40,7 +43,7 @@ class ImagingReport extends Model
 
     public function radiologist(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'radiologist_id');
+        return $this->belongsTo(Dme::userModel(), 'radiologist_id');
     }
 
     public function auditLabel(): string

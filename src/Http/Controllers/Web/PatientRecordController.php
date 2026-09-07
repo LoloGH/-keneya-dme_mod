@@ -130,7 +130,7 @@ class PatientRecordController extends Controller
             'height' => ['nullable', 'numeric', 'between:20,250'],
             'glycemia' => ['nullable', 'numeric', 'between:0.1,10'],
             'pain_scale' => ['nullable', 'integer', 'between:0,10'],
-            'consultation_id' => ['nullable', 'exists:consultations,id'],
+            'consultation_id' => ['nullable', 'exists:dme_consultations,id'],
             'comment' => ['nullable', 'string', 'max:500'],
         ], [], [
             'measured_at' => 'date de mesure',

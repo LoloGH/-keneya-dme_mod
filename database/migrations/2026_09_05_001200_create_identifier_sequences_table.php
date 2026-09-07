@@ -16,7 +16,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('identifier_sequences', function (Blueprint $table) {
+        Schema::create('dme_identifier_sequences', function (Blueprint $table) {
             $table->id();
             $table->string('prefix');
             $table->unsignedSmallInteger('year');
@@ -29,6 +29,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('identifier_sequences');
+        Schema::dropIfExists('dme_identifier_sequences');
     }
 };

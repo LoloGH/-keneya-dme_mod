@@ -3,7 +3,7 @@
      * Barre supérieure (§7) : recherche globale, notifications, profil.
      * Le compteur de notifications est calculé une fois par requête.
      */
-    $unreadCount = \Illuminate\Support\Facades\DB::table('notifications')
+    $unreadCount = \Illuminate\Support\Facades\DB::table('dme_notifications')
         ->where('notifiable_type', auth()->user()->getMorphClass())
         ->where('notifiable_id', auth()->id())
         ->whereNull('read_at')

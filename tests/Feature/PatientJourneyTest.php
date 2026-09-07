@@ -373,13 +373,13 @@ class PatientJourneyTest extends TestCase
         // 17-18. Notifications et SMS (§33, §35)
         // ---------------------------------------------------------
         // Le pharmacien a été notifié de l'ordonnance à délivrer.
-        $this->assertDatabaseHas('notifications', [
+        $this->assertDatabaseHas('dme_notifications', [
             'notifiable_id' => $this->pharmacist->id,
             'category' => 'prescription',
         ]);
 
         // Le prescripteur a été notifié des résultats disponibles.
-        $this->assertDatabaseHas('notifications', [
+        $this->assertDatabaseHas('dme_notifications', [
             'notifiable_id' => $this->doctor->id,
             'category' => 'lab_result',
         ]);

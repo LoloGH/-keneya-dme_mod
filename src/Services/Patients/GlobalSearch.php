@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Services\Patients;
 
+use Keneya\Dme\Contracts\DmeUser;
 use Keneya\Dme\Models\Appointment;
 use Keneya\Dme\Models\Consultation;
 use Keneya\Dme\Models\ImagingOrder;
@@ -11,7 +12,6 @@ use Keneya\Dme\Models\LabOrder;
 use Keneya\Dme\Models\MedicalDocument;
 use Keneya\Dme\Models\Patient;
 use Keneya\Dme\Models\Prescription;
-use Keneya\Dme\Models\User;
 use Illuminate\Support\Collection;
 
 /**
@@ -28,7 +28,7 @@ class GlobalSearch
     /**
      * @return Collection<string, Collection<int, array{title: string, subtitle: string, url: string}>>
      */
-    public function search(string $term, User $user): Collection
+    public function search(string $term, DmeUser $user): Collection
     {
         $term = trim($term);
         $results = collect();

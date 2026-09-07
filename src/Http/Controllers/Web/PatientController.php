@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Http\Controllers\Web;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Http\Controllers\Controller;
 use Keneya\Dme\Http\Controllers\Web\CareOrderController;
 use Keneya\Dme\Http\Requests\StorePatientRequest;
@@ -11,7 +12,6 @@ use Keneya\Dme\Models\Allergy;
 use Keneya\Dme\Models\ChronicCondition;
 use Keneya\Dme\Models\Patient;
 use Keneya\Dme\Models\Service;
-use Keneya\Dme\Models\User;
 use Keneya\Dme\Services\Documents\PdfGenerator;
 use Keneya\Dme\Services\Patients\MedicalTimeline;
 use Keneya\Dme\Support\Rbac;
@@ -46,7 +46,7 @@ class PatientController extends Controller
             ->addSelect([
                 // Dernière consultation en sous-requête : évite de charger
                 // toutes les consultations pour afficher une seule date.
-                'last_consultation_at' => DB::table('consultations')
+                'last_consultation_at' => DB::table('dme_consultations')
                     ->selectRaw('MAX(started_at)')
                     ->whereColumn('consultations.patient_id', 'patients.id'),
             ])
@@ -377,7 +377,7 @@ class PatientController extends Controller
      */
     private function doctors()
     {
-        return User::role(Rbac::ROLE_DOCTOR)
+        return Dme::userQuery()->role(Rbac::ROLE_DOCTOR)
             ->where('is_active', true)
             ->orderBy('last_name')
             ->get(['id', 'name', 'first_name', 'last_name', 'title', 'speciality']);

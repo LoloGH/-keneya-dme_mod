@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Policies;
 
+use Keneya\Dme\Contracts\DmeUser;
 use Keneya\Dme\Models\Hospitalization;
-use Keneya\Dme\Models\User;
 
 class HospitalizationPolicy extends DomainPolicy
 {
@@ -20,7 +20,7 @@ class HospitalizationPolicy extends DomainPolicy
      * que l'infirmier ne possède pas (il peut en revanche alimenter le
      * suivi du séjour via `hospitalizations.update`).
      */
-    public function discharge(User $user, Hospitalization $hospitalization): bool
+    public function discharge(DmeUser $user, Hospitalization $hospitalization): bool
     {
         return $this->allows($user, 'hospitalizations.create')
             && $hospitalization->isOngoing();

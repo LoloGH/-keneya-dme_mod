@@ -18,11 +18,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('hospitalizations', function (Blueprint $table) {
+        Schema::create('dme_hospitalizations', function (Blueprint $table) {
             $table->id();
             $table->string('hospitalization_number')->unique(); // HOSP-2026-000001
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('service_id')->nullable()->constrained('services')->nullOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
+            $table->foreignId('service_id')->nullable()->constrained('dme_services')->nullOnDelete();
             $table->foreignId('doctor_id')->nullable()->constrained('users')->nullOnDelete();
 
             // Admission
@@ -50,9 +50,9 @@ return new class extends Migration
             $table->index('admitted_at');
         });
 
-        Schema::create('hospitalization_events', function (Blueprint $table) {
+        Schema::create('dme_hospitalization_events', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('hospitalization_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('hospitalization_id')->constrained('dme_hospitalizations')->cascadeOnDelete();
             $table->enum('type', [
                 'admission', 'observation', 'care', 'exam', 'treatment',
                 'evolution', 'transfer', 'discharge',
@@ -71,10 +71,10 @@ return new class extends Migration
         });
 
         // §26 — soins infirmiers
-        Schema::create('nursing_notes', function (Blueprint $table) {
+        Schema::create('dme_nursing_notes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('hospitalization_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
+            $table->foreignId('hospitalization_id')->nullable()->constrained('dme_hospitalizations')->nullOnDelete();
             $table->enum('type', [
                 'care', 'medication_administration', 'observation', 'incident', 'handover',
             ])->default('care');
@@ -95,8 +95,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('nursing_notes');
-        Schema::dropIfExists('hospitalization_events');
-        Schema::dropIfExists('hospitalizations');
+        Schema::dropIfExists('dme_nursing_notes');
+        Schema::dropIfExists('dme_hospitalization_events');
+        Schema::dropIfExists('dme_hospitalizations');
     }
 };

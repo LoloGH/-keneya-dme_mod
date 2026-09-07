@@ -61,7 +61,7 @@ class SmsPipelineController extends Controller
         $data = $request->validate([
             'recipient' => ['required', 'string', 'max:30'],
             'body' => ['required', 'string', 'max:480'],
-            'patient_id' => ['nullable', 'exists:patients,id'],
+            'patient_id' => ['nullable', 'exists:dme_patients,id'],
         ], [], [
             'recipient' => 'destinataire',
             'body' => 'message',

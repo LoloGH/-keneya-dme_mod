@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AppSetting extends Model
 {
+    protected $table = 'dme_app_settings';
+
     protected $fillable = ['key', 'value'];
 
     /**

@@ -164,7 +164,7 @@ class SmsServiceTest extends TestCase
         ]);
 
         $this->assertSame(999999, $message->patient_id);
-        $this->assertDatabaseHas('sms_messages', ['id' => $message->id]);
+        $this->assertDatabaseHas('dme_sms_messages', ['id' => $message->id]);
     }
 
     public function test_un_envoi_manuel_depuis_l_interface_est_mis_en_file(): void
@@ -182,7 +182,7 @@ class SmsServiceTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas('success');
 
-        $this->assertDatabaseHas('sms_messages', [
+        $this->assertDatabaseHas('dme_sms_messages', [
             'recipient' => '+22370001001',
             'patient_id' => $patient->id,
             'status' => 'queued',
@@ -198,6 +198,6 @@ class SmsServiceTest extends TestCase
             ])
             ->assertForbidden();
 
-        $this->assertDatabaseCount('sms_messages', 0);
+        $this->assertDatabaseCount('dme_sms_messages', 0);
     }
 }

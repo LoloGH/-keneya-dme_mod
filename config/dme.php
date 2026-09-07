@@ -139,6 +139,28 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | Modèles de l'application hôte
+    |----------------------------------------------------------------------
+    |
+    | Le module partage la table `users` avec son hôte : c'est le même
+    | compte, la même session, la même ligne en base. Le modèle qui la
+    | représente doit donc être celui de l'hôte — celui que `Auth::user()`
+    | renvoie — sinon le module manipulerait, pour une même personne, des
+    | objets d'une autre classe que ceux de la session en cours.
+    |
+    | Ce modèle doit satisfaire Keneya\Dme\Contracts\DmeUser, ce que le
+    | trait Keneya\Dme\Models\Concerns\IsDmePractitioner suffit à lui
+    | apporter.
+    |
+    | Laissé nul, le module utilise son propre modèle, qui convient quand
+    | il tourne seul.
+    */
+    'models' => [
+        'user' => null,
+    ],
+
+    /*
+    |----------------------------------------------------------------------
     | Autorisation d'accès de haut niveau (décidée par l'hôte)
     |----------------------------------------------------------------------
     |

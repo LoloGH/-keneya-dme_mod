@@ -15,11 +15,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('lab_orders', function (Blueprint $table) {
+        Schema::create('dme_lab_orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_number')->unique(); // LAB-2026-000001
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('consultation_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
+            $table->foreignId('consultation_id')->nullable()->constrained('dme_consultations')->nullOnDelete();
             $table->foreignId('doctor_id')->nullable()->constrained('users')->nullOnDelete();
 
             $table->dateTime('requested_at');
@@ -35,9 +35,9 @@ return new class extends Migration
             $table->index('requested_at');
         });
 
-        Schema::create('lab_order_items', function (Blueprint $table) {
+        Schema::create('dme_lab_order_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lab_order_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('lab_order_id')->constrained('dme_lab_orders')->cascadeOnDelete();
             $table->string('exam_name');
             $table->string('exam_code')->nullable();  // LOINC lorsque disponible
             $table->string('category')->nullable();   // hématologie, biochimie…
@@ -48,10 +48,10 @@ return new class extends Migration
             $table->index('lab_order_id');
         });
 
-        Schema::create('lab_results', function (Blueprint $table) {
+        Schema::create('dme_lab_results', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lab_order_item_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('lab_order_item_id')->constrained('dme_lab_order_items')->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
 
             $table->string('parameter');
             $table->string('value')->nullable();
@@ -74,8 +74,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('lab_results');
-        Schema::dropIfExists('lab_order_items');
-        Schema::dropIfExists('lab_orders');
+        Schema::dropIfExists('dme_lab_results');
+        Schema::dropIfExists('dme_lab_order_items');
+        Schema::dropIfExists('dme_lab_orders');
     }
 };

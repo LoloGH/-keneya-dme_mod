@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\HasBusinessIdentifier;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /** Rendez-vous (§27). Correspondance FHIR : Appointment (§44). */
 class Appointment extends Model
 {
+    protected $table = 'dme_appointments';
+
     use HasBusinessIdentifier;
     use HasFactory;
     use RecordsMedicalActivity;
@@ -77,7 +80,7 @@ class Appointment extends Model
 
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'doctor_id');
+        return $this->belongsTo(Dme::userModel(), 'doctor_id');
     }
 
     public function service(): BelongsTo

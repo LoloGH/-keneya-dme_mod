@@ -113,7 +113,7 @@ class SecurityTest extends TestCase
             ])
             ->assertForbidden();
 
-        $this->assertDatabaseCount('lab_results', 0);
+        $this->assertDatabaseCount('dme_lab_results', 0);
     }
 
     public function test_une_notification_d_un_autre_utilisateur_ne_peut_pas_etre_marquee_comme_lue(): void
@@ -128,7 +128,7 @@ class SecurityTest extends TestCase
             message: 'Message confidentiel',
         );
 
-        $notification = \Illuminate\Support\Facades\DB::table('notifications')->first();
+        $notification = \Illuminate\Support\Facades\DB::table('dme_notifications')->first();
 
         $this->actingAs($intrus)
             ->post(route('dme.notifications.read', $notification->id))
@@ -136,7 +136,7 @@ class SecurityTest extends TestCase
 
         // La notification de l'autre utilisateur reste non lue.
         $this->assertNull(
-            \Illuminate\Support\Facades\DB::table('notifications')->where('id', $notification->id)->value('read_at')
+            \Illuminate\Support\Facades\DB::table('dme_notifications')->where('id', $notification->id)->value('read_at')
         );
     }
 
@@ -209,7 +209,7 @@ class SecurityTest extends TestCase
             ])
             ->assertSessionHasErrors('file');
 
-        $this->assertDatabaseCount('medical_documents', 0);
+        $this->assertDatabaseCount('dme_medical_documents', 0);
     }
 
     // -----------------------------------------------------------------

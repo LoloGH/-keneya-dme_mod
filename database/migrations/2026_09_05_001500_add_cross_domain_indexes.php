@@ -17,24 +17,24 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('consultations', function (Blueprint $table) {
+        Schema::table('dme_consultations', function (Blueprint $table) {
             $table->index('appointment_id');
             $table->index('hospitalization_id');
         });
 
-        Schema::table('vital_signs', function (Blueprint $table) {
+        Schema::table('dme_vital_signs', function (Blueprint $table) {
             $table->index('hospitalization_id');
         });
     }
 
     public function down(): void
     {
-        Schema::table('consultations', function (Blueprint $table) {
+        Schema::table('dme_consultations', function (Blueprint $table) {
             $table->dropIndex(['appointment_id']);
             $table->dropIndex(['hospitalization_id']);
         });
 
-        Schema::table('vital_signs', function (Blueprint $table) {
+        Schema::table('dme_vital_signs', function (Blueprint $table) {
             $table->dropIndex(['hospitalization_id']);
         });
     }

@@ -19,7 +19,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('user_duty_periods', function (Blueprint $table) {
+        Schema::create('dme_user_duty_periods', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->dateTime('starts_at');
@@ -36,6 +36,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('user_duty_periods');
+        Schema::dropIfExists('dme_user_duty_periods');
     }
 };

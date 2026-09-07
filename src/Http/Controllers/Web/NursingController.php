@@ -22,7 +22,7 @@ class NursingController extends Controller
         $this->authorize('create', NursingNote::class);
 
         $data = $request->validate([
-            'hospitalization_id' => ['nullable', 'exists:hospitalizations,id'],
+            'hospitalization_id' => ['nullable', 'exists:dme_hospitalizations,id'],
             'type' => ['required', Rule::in(array_keys(NursingNote::TYPES))],
             'occurred_at' => ['required', 'date', 'before_or_equal:now'],
             'title' => ['required', 'string', 'max:200'],

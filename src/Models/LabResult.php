@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class LabResult extends Model
 {
+    protected $table = 'dme_lab_results';
+
     use HasFactory;
     use RecordsMedicalActivity;
 
@@ -55,7 +58,7 @@ class LabResult extends Model
 
     public function validator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'validated_by');
+        return $this->belongsTo(Dme::userModel(), 'validated_by');
     }
 
     public function flagLabel(): string

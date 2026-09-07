@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Services\Notifications;
 
+use Keneya\Dme\Contracts\DmeUser;
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Appointment;
 use Keneya\Dme\Models\LabOrder;
 use Keneya\Dme\Models\Patient;
 use Keneya\Dme\Models\Prescription;
-use Keneya\Dme\Models\User;
 use Keneya\Dme\Contracts\SmsDispatcherContract;
 use Keneya\Dme\Models\SmsTemplate;
 use Keneya\Dme\Sms\SmsContext;
@@ -54,7 +55,7 @@ class NotificationService
         string $level = 'info',
         array $data = [],
     ): int {
-        $recipients = User::permission($permission)->where('is_active', true)->get();
+        $recipients = Dme::userQuery()->permission($permission)->where('is_active', true)->get();
         $count = 0;
 
         foreach ($recipients as $recipient) {
@@ -71,7 +72,7 @@ class NotificationService
      * @param  array<string, mixed>  $data
      */
     public function store(
-        User $user,
+        DmeUser $user,
         string $category,
         string $title,
         string $message,
@@ -80,7 +81,7 @@ class NotificationService
         string $level = 'info',
         array $data = [],
     ): void {
-        DB::table('notifications')->insert([
+        DB::table('dme_notifications')->insert([
             'id' => Str::uuid()->toString(),
             'type' => 'keneya.'.$category,
             'notifiable_type' => $user->getMorphClass(),

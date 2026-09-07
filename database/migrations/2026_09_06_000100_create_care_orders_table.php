@@ -19,14 +19,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('care_orders', function (Blueprint $table) {
+        Schema::create('dme_care_orders', function (Blueprint $table) {
             $table->id();
             $table->string('reference')->unique();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('hospitalization_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
+            $table->foreignId('hospitalization_id')->nullable()->constrained('dme_hospitalizations')->nullOnDelete();
 
             $table->foreignId('prescriber_id')->constrained('users')->restrictOnDelete();
-            $table->foreignId('service_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('service_id')->nullable()->constrained('dme_services')->nullOnDelete();
             // Null = soin ouvert au personnel de garde du service prescripteur.
             $table->foreignId('assigned_nurse_id')->nullable()->constrained('users')->nullOnDelete();
 
@@ -53,6 +53,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('care_orders');
+        Schema::dropIfExists('dme_care_orders');
     }
 };

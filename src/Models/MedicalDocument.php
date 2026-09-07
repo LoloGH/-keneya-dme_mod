@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\HasBusinessIdentifier;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,6 +23,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class MedicalDocument extends Model
 {
+    protected $table = 'dme_medical_documents';
+
     use HasBusinessIdentifier;
     use HasFactory;
     use RecordsMedicalActivity;
@@ -86,7 +89,7 @@ class MedicalDocument extends Model
 
     public function uploader(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'uploaded_by');
+        return $this->belongsTo(Dme::userModel(), 'uploaded_by');
     }
 
     public function source(): MorphTo

@@ -68,7 +68,7 @@ class LaboratoryController extends Controller
         $this->authorize('create', LabOrder::class);
 
         $data = $request->validate([
-            'consultation_id' => ['nullable', 'exists:consultations,id'],
+            'consultation_id' => ['nullable', 'exists:dme_consultations,id'],
             'requested_at' => ['required', 'date'],
             'priority' => ['required', Rule::in(array_keys(LabOrder::PRIORITIES))],
             'indication' => ['nullable', 'string', 'max:1000'],
@@ -131,7 +131,7 @@ class LaboratoryController extends Controller
 
         $data = $request->validate([
             'results' => ['required', 'array', 'min:1'],
-            'results.*.lab_order_item_id' => ['required', 'exists:lab_order_items,id'],
+            'results.*.lab_order_item_id' => ['required', 'exists:dme_lab_order_items,id'],
             'results.*.parameter' => ['required', 'string', 'max:150'],
             'results.*.value' => ['nullable', 'string', 'max:100'],
             'results.*.unit' => ['nullable', 'string', 'max:50'],

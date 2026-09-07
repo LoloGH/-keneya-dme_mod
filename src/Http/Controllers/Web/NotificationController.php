@@ -21,7 +21,7 @@ class NotificationController extends Controller
 {
     public function index(Request $request): View
     {
-        $notifications = DB::table('notifications')
+        $notifications = DB::table('dme_notifications')
             ->where('notifiable_type', $request->user()->getMorphClass())
             ->where('notifiable_id', $request->user()->getKey())
             ->when($request->string('category')->toString(), fn ($q, $c) => $q->where('category', $c))
@@ -38,7 +38,7 @@ class NotificationController extends Controller
 
     public function markAsRead(Request $request, string $notification): RedirectResponse
     {
-        DB::table('notifications')
+        DB::table('dme_notifications')
             ->where('id', $notification)
             ->where('notifiable_type', $request->user()->getMorphClass())
             ->where('notifiable_id', $request->user()->getKey())
@@ -49,7 +49,7 @@ class NotificationController extends Controller
 
     public function markAllAsRead(Request $request): RedirectResponse
     {
-        DB::table('notifications')
+        DB::table('dme_notifications')
             ->where('notifiable_type', $request->user()->getMorphClass())
             ->where('notifiable_id', $request->user()->getKey())
             ->whereNull('read_at')

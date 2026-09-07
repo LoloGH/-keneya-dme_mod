@@ -19,9 +19,9 @@ return new class extends Migration
         // §16 — antécédents personnels, chirurgicaux, familiaux,
         // gynéco-obstétriques et facteurs de risque, dans une table unique
         // discriminée par `category` afin de garder l'historique homogène.
-        Schema::create('medical_histories', function (Blueprint $table) {
+        Schema::create('dme_medical_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
             $table->enum('category', [
                 'personal', 'surgical', 'family', 'gynecological', 'risk_factor',
             ]);
@@ -40,9 +40,9 @@ return new class extends Migration
             $table->index(['patient_id', 'category']);
         });
 
-        Schema::create('allergies', function (Blueprint $table) {
+        Schema::create('dme_allergies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
             $table->string('allergen');
             $table->string('allergen_type')->nullable();  // medication, food, environment, other
             $table->string('reaction')->nullable();
@@ -58,9 +58,9 @@ return new class extends Migration
             $table->index('severity');
         });
 
-        Schema::create('chronic_conditions', function (Blueprint $table) {
+        Schema::create('dme_chronic_conditions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
             $table->string('label');
             $table->string('code')->nullable();
             $table->string('code_system')->nullable();
@@ -74,9 +74,9 @@ return new class extends Migration
         });
 
         // §18 — traitements habituels (hors ordonnance ponctuelle)
-        Schema::create('medications', function (Blueprint $table) {
+        Schema::create('dme_medications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
             $table->string('name');
             $table->string('dosage')->nullable();
             $table->string('frequency')->nullable();
@@ -94,9 +94,9 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('medications');
-        Schema::dropIfExists('chronic_conditions');
-        Schema::dropIfExists('allergies');
-        Schema::dropIfExists('medical_histories');
+        Schema::dropIfExists('dme_medications');
+        Schema::dropIfExists('dme_chronic_conditions');
+        Schema::dropIfExists('dme_allergies');
+        Schema::dropIfExists('dme_medical_histories');
     }
 };

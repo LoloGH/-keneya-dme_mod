@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Service extends Model
 {
+    protected $table = 'dme_services';
+
     use HasFactory;
 
     protected $fillable = ['code', 'name', 'type', 'description', 'is_active'];
@@ -24,7 +27,7 @@ class Service extends Model
 
     public function users(): HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(Dme::userModel(), 'service_id');
     }
 
     public function consultations(): HasMany

@@ -19,11 +19,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('imaging_orders', function (Blueprint $table) {
+        Schema::create('dme_imaging_orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_number')->unique(); // IMG-2026-000001
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('consultation_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
+            $table->foreignId('consultation_id')->nullable()->constrained('dme_consultations')->nullOnDelete();
             $table->foreignId('doctor_id')->nullable()->constrained('users')->nullOnDelete();
 
             $table->enum('modality', [
@@ -48,10 +48,10 @@ return new class extends Migration
             $table->index('requested_at');
         });
 
-        Schema::create('imaging_reports', function (Blueprint $table) {
+        Schema::create('dme_imaging_reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('imaging_order_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('imaging_order_id')->constrained('dme_imaging_orders')->cascadeOnDelete();
+            $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
             $table->foreignId('radiologist_id')->nullable()->constrained('users')->nullOnDelete();
 
             $table->longText('technique')->nullable();
@@ -69,7 +69,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('imaging_reports');
-        Schema::dropIfExists('imaging_orders');
+        Schema::dropIfExists('dme_imaging_reports');
+        Schema::dropIfExists('dme_imaging_orders');
     }
 };

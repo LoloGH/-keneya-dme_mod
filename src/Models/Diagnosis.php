@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +21,7 @@ class Diagnosis extends Model
     use HasFactory;
     use RecordsMedicalActivity;
 
-    protected $table = 'diagnoses';
+    protected $table = 'dme_diagnoses';
 
     protected $fillable = [
         'patient_id', 'consultation_id', 'doctor_id', 'label', 'code',
@@ -52,7 +53,7 @@ class Diagnosis extends Model
 
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'doctor_id');
+        return $this->belongsTo(Dme::userModel(), 'doctor_id');
     }
 
     public function statusLabel(): string

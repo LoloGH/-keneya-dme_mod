@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class PatientIdentifier extends Model
 {
+    protected $table = 'dme_patient_identifiers';
+
     use HasFactory;
 
     protected $fillable = ['patient_id', 'system', 'value', 'label', 'is_primary'];

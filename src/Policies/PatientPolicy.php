@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Policies;
 
+use Keneya\Dme\Contracts\DmeUser;
 use Keneya\Dme\Models\Patient;
-use Keneya\Dme\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -31,7 +31,7 @@ class PatientPolicy extends DomainPolicy
      * Un dossier archivé ou décédé reste consultable, mais n'est plus
      * modifiable en dehors du rôle administrateur.
      */
-    public function update(User $user, Model $model): bool
+    public function update(DmeUser $user, Model $model): bool
     {
         if (! parent::update($user, $model)) {
             return false;

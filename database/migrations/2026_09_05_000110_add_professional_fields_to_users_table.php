@@ -30,7 +30,7 @@ return new class extends Migration
             }
 
             if (! Schema::hasColumn('users', 'service_id')) {
-                $table->foreignId('service_id')->nullable()->constrained('services')->nullOnDelete();
+                $table->foreignId('service_id')->nullable()->constrained('dme_services')->nullOnDelete();
             }
 
             if (! Schema::hasColumn('users', 'is_active')) {

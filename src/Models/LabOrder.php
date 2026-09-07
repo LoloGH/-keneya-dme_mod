@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\HasBusinessIdentifier;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 /** Demande d'examens de laboratoire (§23). FHIR : ServiceRequest (§44). */
 class LabOrder extends Model
 {
+    protected $table = 'dme_lab_orders';
+
     use HasBusinessIdentifier;
     use HasFactory;
     use RecordsMedicalActivity;
@@ -86,7 +89,7 @@ class LabOrder extends Model
 
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'doctor_id');
+        return $this->belongsTo(Dme::userModel(), 'doctor_id');
     }
 
     public function items(): HasMany

@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /** Personne à prévenir en cas d'urgence (§12). */
 class EmergencyContact extends Model
 {
+    protected $table = 'dme_emergency_contacts';
+
     use HasFactory;
 
     protected $fillable = [

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserWeeklySchedule extends Model
 {
+    protected $table = 'dme_user_weekly_schedules';
+
     protected $fillable = ['weekday', 'starts_at', 'ends_at'];
 
     public const WEEKDAYS = [
@@ -30,7 +33,7 @@ class UserWeeklySchedule extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Dme::userModel());
     }
 
     public function isRestDay(): bool

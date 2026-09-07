@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /** Examen clinique par appareil, rattaché à une consultation (§19). */
 class ClinicalNote extends Model
 {
+    protected $table = 'dme_clinical_notes';
+
     use HasFactory;
 
     protected $fillable = ['consultation_id', 'system', 'content', 'is_abnormal'];

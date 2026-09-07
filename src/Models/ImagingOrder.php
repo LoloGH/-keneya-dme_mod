@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\HasBusinessIdentifier;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class ImagingOrder extends Model
 {
+    protected $table = 'dme_imaging_orders';
+
     use HasBusinessIdentifier;
     use HasFactory;
     use RecordsMedicalActivity;
@@ -84,7 +87,7 @@ class ImagingOrder extends Model
 
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'doctor_id');
+        return $this->belongsTo(Dme::userModel(), 'doctor_id');
     }
 
     public function report(): HasOne

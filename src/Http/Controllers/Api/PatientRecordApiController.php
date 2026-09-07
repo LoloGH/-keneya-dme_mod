@@ -49,7 +49,7 @@ class PatientRecordApiController extends Controller
         $data = $request->validate([
             'started_at' => ['required', 'date'],
             'type' => ['required', Rule::in(array_keys(Consultation::TYPES))],
-            'service_id' => ['nullable', 'exists:services,id'],
+            'service_id' => ['nullable', 'exists:dme_services,id'],
             'reason' => ['nullable', 'string', 'max:1000'],
             'history_of_illness' => ['nullable', 'string', 'max:10000'],
         ]);
@@ -84,7 +84,7 @@ class PatientRecordApiController extends Controller
         $this->authorize('create', Prescription::class);
 
         $data = $request->validate([
-            'consultation_id' => ['nullable', 'exists:consultations,id'],
+            'consultation_id' => ['nullable', 'exists:dme_consultations,id'],
             'issued_on' => ['required', 'date'],
             'valid_until' => ['nullable', 'date', 'after_or_equal:issued_on'],
             'instructions' => ['nullable', 'string', 'max:2000'],
@@ -146,8 +146,8 @@ class PatientRecordApiController extends Controller
         $this->authorize('create', LabOrder::class);
 
         $data = $request->validate([
-            'patient_id' => ['required', 'exists:patients,id'],
-            'consultation_id' => ['nullable', 'exists:consultations,id'],
+            'patient_id' => ['required', 'exists:dme_patients,id'],
+            'consultation_id' => ['nullable', 'exists:dme_consultations,id'],
             'requested_at' => ['required', 'date'],
             'priority' => ['required', Rule::in(array_keys(LabOrder::PRIORITIES))],
             'indication' => ['nullable', 'string', 'max:1000'],
@@ -199,7 +199,7 @@ class PatientRecordApiController extends Controller
         $this->authorize('create', MedicalDocument::class);
 
         $data = $request->validate([
-            'patient_id' => ['required', 'exists:patients,id'],
+            'patient_id' => ['required', 'exists:dme_patients,id'],
             'title' => ['required', 'string', 'max:200'],
             'type' => ['required', Rule::in(array_keys(MedicalDocument::TYPES))],
             'description' => ['nullable', 'string', 'max:1000'],

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Standalone;
 
+use Keneya\Dme\Dme;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Http\Request;
@@ -58,7 +59,7 @@ class StartDevSession
         $email = $this->standalone->devUser()['email'];
 
         try {
-            return User::query()->where('email', $email)->first();
+            return Dme::userQuery()->where('email', $email)->first();
         } catch (\Throwable) {
             // Base absente ou migrations non jouées : on laisse la
             // requête suivre son cours sans session.

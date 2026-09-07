@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,7 +22,7 @@ class Allergy extends Model
     use HasFactory;
     use RecordsMedicalActivity;
 
-    protected $table = 'allergies';
+    protected $table = 'dme_allergies';
 
     protected $fillable = [
         'patient_id', 'allergen', 'allergen_type', 'reaction', 'severity',
@@ -48,7 +49,7 @@ class Allergy extends Model
 
     public function recorder(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'recorded_by');
+        return $this->belongsTo(Dme::userModel(), 'recorded_by');
     }
 
     public function scopeActive(Builder $query): Builder

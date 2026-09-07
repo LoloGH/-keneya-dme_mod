@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Contracts\DmeUser;
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\HasBusinessIdentifier;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,6 +22,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class CareOrder extends Model
 {
+    protected $table = 'dme_care_orders';
+
     use HasBusinessIdentifier;
     use HasFactory;
     use RecordsMedicalActivity;
@@ -71,7 +75,7 @@ class CareOrder extends Model
 
     public function prescriber(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'prescriber_id');
+        return $this->belongsTo(Dme::userModel(), 'prescriber_id');
     }
 
     public function service(): BelongsTo
@@ -81,12 +85,12 @@ class CareOrder extends Model
 
     public function assignedNurse(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'assigned_nurse_id');
+        return $this->belongsTo(Dme::userModel(), 'assigned_nurse_id');
     }
 
     public function completedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'completed_by_id');
+        return $this->belongsTo(Dme::userModel(), 'completed_by_id');
     }
 
     public function statusLabel(): string
@@ -126,7 +130,7 @@ class CareOrder extends Model
      * Le contrôle reste doublé côté policy : cette portée filtre la liste,
      * la policy tranche l'accès à une ligne précise.
      */
-    public function scopeVisibleTo(Builder $query, User $user): Builder
+    public function scopeVisibleTo(Builder $query, DmeUser $user): Builder
     {
         // L'administration voit tout : c'est le rôle qui répond de l'établissement.
         if ($user->can('users.manage')) {

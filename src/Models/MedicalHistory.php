@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,7 @@ class MedicalHistory extends Model
     use HasFactory;
     use RecordsMedicalActivity;
 
-    protected $table = 'medical_histories';
+    protected $table = 'dme_medical_histories';
 
     protected $fillable = [
         'patient_id', 'category', 'label', 'code', 'code_system', 'year',
@@ -47,7 +48,7 @@ class MedicalHistory extends Model
 
     public function recorder(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'recorded_by');
+        return $this->belongsTo(Dme::userModel(), 'recorded_by');
     }
 
     public function auditLabel(): string

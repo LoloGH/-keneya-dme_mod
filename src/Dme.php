@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Keneya\Dme;
 
 use Closure;
+use Illuminate\Database\Eloquent\Builder;
+use Keneya\Dme\Models\User;
 
 /**
  * Point d'entrée du module pour l'application hôte.
@@ -55,6 +57,42 @@ final class Dme
     public static function flushState(): void
     {
         self::$accessResolver = null;
+    }
+
+    /**
+     * Classe du modèle utilisateur en vigueur.
+     *
+     * Le module partage la table `users` avec son application hôte : c'est
+     * donc le modèle de l'hôte — celui que `Auth::user()` renvoie — qui
+     * doit porter les relations du dossier médical. Sans cela, le module
+     * manipulerait des objets d'une autre classe que ceux de la session en
+     * cours : deux instances pour la même ligne, des comparaisons
+     * d'identité fausses et un `causer_type` d'audit divergent.
+     *
+     * L'hôte le déclare dans `config/dme.php` :
+     *
+     *     'models' => ['user' => \App\Models\User::class],
+     *
+     * À défaut, le module retombe sur son propre modèle, qui suffit quand
+     * il tourne seul.
+     *
+     * @return class-string<\Illuminate\Database\Eloquent\Model>
+     */
+    public static function userModel(): string
+    {
+        $model = config('dme.models.user');
+
+        return is_string($model) && $model !== '' ? $model : User::class;
+    }
+
+    /**
+     * Requête neuve sur les utilisateurs, quel que soit le modèle retenu.
+     */
+    public static function userQuery(): Builder
+    {
+        $model = self::userModel();
+
+        return (new $model)->newQuery();
     }
 
     /**

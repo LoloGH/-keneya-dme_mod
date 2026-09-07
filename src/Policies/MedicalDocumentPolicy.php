@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Policies;
 
+use Keneya\Dme\Contracts\DmeUser;
 use Keneya\Dme\Models\MedicalDocument;
-use Keneya\Dme\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -24,13 +24,13 @@ class MedicalDocumentPolicy extends DomainPolicy
 
     protected string $updatePermission = 'documents.upload';
 
-    public function download(User $user, MedicalDocument $document): bool
+    public function download(DmeUser $user, MedicalDocument $document): bool
     {
         return $this->allows($user, 'documents.download');
     }
 
     /** Un document archivé n'est plus remplaçable. */
-    public function update(User $user, Model $model): bool
+    public function update(DmeUser $user, Model $model): bool
     {
         return parent::update($user, $model)
             && $model instanceof MedicalDocument
@@ -38,7 +38,7 @@ class MedicalDocumentPolicy extends DomainPolicy
     }
 
     /** Seul un administrateur peut retirer un document du dossier. */
-    public function delete(User $user, Model $model): bool
+    public function delete(DmeUser $user, Model $model): bool
     {
         return $this->allows($user, 'settings.manage');
     }

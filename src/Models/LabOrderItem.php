@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /** Examen demandé au sein d'une demande de laboratoire (§23). */
 class LabOrderItem extends Model
 {
+    protected $table = 'dme_lab_order_items';
+
     use HasFactory;
 
     protected $fillable = [

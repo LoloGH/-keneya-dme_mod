@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Keneya\Dme\Models\Concerns\RecordsMedicalActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Medication extends Model
 {
+    protected $table = 'dme_medications';
+
     use HasFactory;
     use RecordsMedicalActivity;
 
@@ -46,7 +49,7 @@ class Medication extends Model
 
     public function prescriber(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'prescriber_id');
+        return $this->belongsTo(Dme::userModel(), 'prescriber_id');
     }
 
     public function scopeActive(Builder $query): Builder

@@ -18,7 +18,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_settings', function (Blueprint $table) {
+        Schema::create('dme_app_settings', function (Blueprint $table) {
             $table->id();
             $table->string('key')->unique();
             $table->text('value')->nullable();
@@ -28,6 +28,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('app_settings');
+        Schema::dropIfExists('dme_app_settings');
     }
 };

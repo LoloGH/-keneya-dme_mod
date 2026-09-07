@@ -44,14 +44,14 @@ class IdentifierGenerator
         $padding = (int) config('dme.identifiers.padding', 6);
 
         $value = $this->connection->transaction(function () use ($prefix, $year): int {
-            $row = $this->connection->table('identifier_sequences')
+            $row = $this->connection->table('dme_identifier_sequences')
                 ->where('prefix', $prefix)
                 ->where('year', $year)
                 ->lockForUpdate()
                 ->first();
 
             if ($row === null) {
-                $this->connection->table('identifier_sequences')->insert([
+                $this->connection->table('dme_identifier_sequences')->insert([
                     'prefix' => $prefix,
                     'year' => $year,
                     'current_value' => 1,
@@ -64,7 +64,7 @@ class IdentifierGenerator
 
             $next = (int) $row->current_value + 1;
 
-            $this->connection->table('identifier_sequences')
+            $this->connection->table('dme_identifier_sequences')
                 ->where('id', $row->id)
                 ->update(['current_value' => $next, 'updated_at' => now()]);
 

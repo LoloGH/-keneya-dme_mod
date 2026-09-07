@@ -122,7 +122,7 @@ class ApiTest extends TestCase
             'items' => [['medication_name' => 'Amoxicilline']],
         ])->assertForbidden();
 
-        $this->assertDatabaseCount('prescriptions', 0);
+        $this->assertDatabaseCount('dme_prescriptions', 0);
     }
 
     public function test_le_controle_d_allergie_s_applique_aussi_via_l_api(): void

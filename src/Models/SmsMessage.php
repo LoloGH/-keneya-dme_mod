@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Models;
 
+use Keneya\Dme\Dme;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class SmsMessage extends Model
 {
+    protected $table = 'dme_sms_messages';
+
     use HasFactory;
 
     protected $fillable = [
@@ -80,7 +83,7 @@ class SmsMessage extends Model
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(Dme::userModel(), 'created_by');
     }
 
     public function scopeFailed(Builder $query): Builder

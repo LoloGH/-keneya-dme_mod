@@ -76,7 +76,7 @@ class PrescriptionController extends Controller
         $this->authorize('create', Prescription::class);
 
         $data = $request->validate([
-            'consultation_id' => ['nullable', 'exists:consultations,id'],
+            'consultation_id' => ['nullable', 'exists:dme_consultations,id'],
             'issued_on' => ['required', 'date'],
             'valid_until' => ['nullable', 'date', 'after_or_equal:issued_on'],
             'instructions' => ['nullable', 'string', 'max:2000'],

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Keneya\Dme\Policies;
 
+use Keneya\Dme\Contracts\DmeUser;
 use Keneya\Dme\Models\Consultation;
-use Keneya\Dme\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class ConsultationPolicy extends DomainPolicy
@@ -21,7 +21,7 @@ class ConsultationPolicy extends DomainPolicy
      * médical validé doit rester intègre (§40). Une correction passe par
      * une nouvelle consultation ou une note complémentaire.
      */
-    public function update(User $user, Model $model): bool
+    public function update(DmeUser $user, Model $model): bool
     {
         return parent::update($user, $model)
             && $model instanceof Consultation
@@ -29,7 +29,7 @@ class ConsultationPolicy extends DomainPolicy
     }
 
     /** Clôture définitive de la consultation. */
-    public function complete(User $user, Consultation $consultation): bool
+    public function complete(DmeUser $user, Consultation $consultation): bool
     {
         return $this->allows($user, 'consultations.update') && $consultation->isEditable();
     }
