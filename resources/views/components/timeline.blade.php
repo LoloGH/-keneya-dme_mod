@@ -19,7 +19,7 @@
                                     <span class="k-badge-info">{{ $event['label'] }}</span>
                                 </div>
                                 @if ($event['status'])
-                                    <x-status-badge :status="\Illuminate\Support\Str::slug($event['status'])" :label="$event['status']"/>
+                                    <x-dme::status-badge :status="\Illuminate\Support\Str::slug($event['status'])" :label="$event['status']"/>
                                 @endif
                             </div>
                             <p class="mt-1.5 text-sm font-medium text-ink-900">

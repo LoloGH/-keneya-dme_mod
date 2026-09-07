@@ -17,35 +17,35 @@
             <div class="k-card-body">
                 @if ($v = $tabData['latestVitals'])
                     <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                        <x-vital-card label="Tension artérielle" :value="$v->bloodPressure()" unit="mmHg"
+                        <x-dme::vital-card label="Tension artérielle" :value="$v->bloodPressure()" unit="mmHg"
                                       :abnormal="$v->isOutOfRange('systolic') || $v->isOutOfRange('diastolic')"/>
-                        <x-vital-card label="Pouls" :value="$v->heart_rate" unit="bpm"
+                        <x-dme::vital-card label="Pouls" :value="$v->heart_rate" unit="bpm"
                                       :abnormal="$v->isOutOfRange('heart_rate')"/>
-                        <x-vital-card label="Température" :value="$v->temperature" unit="°C"
+                        <x-dme::vital-card label="Température" :value="$v->temperature" unit="°C"
                                       :abnormal="$v->isOutOfRange('temperature')"/>
-                        <x-vital-card label="SpO₂" :value="$v->oxygen_saturation" unit="%"
+                        <x-dme::vital-card label="SpO₂" :value="$v->oxygen_saturation" unit="%"
                                       :abnormal="$v->isOutOfRange('oxygen_saturation')"/>
-                        <x-vital-card label="Poids" :value="$v->weight" unit="kg"/>
-                        <x-vital-card label="Taille" :value="$v->height" unit="cm"/>
-                        <x-vital-card label="IMC" :value="$v->bmi" unit="kg/m²"
+                        <x-dme::vital-card label="Poids" :value="$v->weight" unit="kg"/>
+                        <x-dme::vital-card label="Taille" :value="$v->height" unit="cm"/>
+                        <x-dme::vital-card label="IMC" :value="$v->bmi" unit="kg/m²"
                                       :hint="$v->bmi ? 'Calculé automatiquement' : null"/>
-                        <x-vital-card label="Glycémie" :value="$v->glycemia" unit="g/L"
+                        <x-dme::vital-card label="Glycémie" :value="$v->glycemia" unit="g/L"
                                       :abnormal="$v->isOutOfRange('glycemia')"/>
                     </div>
 
                     {{-- Courbes d'évolution (§20) --}}
                     @if ($tabData['vitalsHistory']->count() >= 2)
                         <div class="mt-5 grid gap-5 border-t border-ink-100 pt-4 sm:grid-cols-3">
-                            <x-sparkline label="Poids" unit="kg"
+                            <x-dme::sparkline label="Poids" unit="kg"
                                 :points="$tabData['vitalsHistory']->map(fn ($r) => ['value' => $r->weight])->all()"/>
-                            <x-sparkline label="Tension systolique" unit="mmHg"
+                            <x-dme::sparkline label="Tension systolique" unit="mmHg"
                                 :points="$tabData['vitalsHistory']->map(fn ($r) => ['value' => $r->systolic])->all()"/>
-                            <x-sparkline label="Glycémie" unit="g/L"
+                            <x-dme::sparkline label="Glycémie" unit="g/L"
                                 :points="$tabData['vitalsHistory']->map(fn ($r) => ['value' => $r->glycemia])->all()"/>
                         </div>
                     @endif
                 @else
-                    <x-empty-state icon="heart" title="Aucune constante enregistrée"
+                    <x-dme::empty-state icon="heart" title="Aucune constante enregistrée"
                                    message="Les constantes saisies en consultation ou par l'équipe soignante apparaîtront ici."/>
                 @endif
             </div>
@@ -55,12 +55,12 @@
         <section class="k-card">
             <div class="k-card-header">
                 <h2 class="k-card-title">Dernières consultations</h2>
-                <a href="{{ route('patients.show', [$patient, 'tab' => 'consultations']) }}"
+                <a href="{{ route('dme.patients.show', [$patient, 'tab' => 'consultations']) }}"
                    class="text-xs font-medium text-clinic-700 hover:underline">Tout voir</a>
             </div>
             <div class="k-card-body">
                 @forelse ($tabData['lastConsultations'] as $consultation)
-                    <a href="{{ route('consultations.show', $consultation) }}"
+                    <a href="{{ route('dme.consultations.show', $consultation) }}"
                        class="flex items-start gap-3 border-b border-ink-100 py-2.5 first:pt-0 last:border-0 last:pb-0 hover:bg-clinic-50/40">
                         <span class="w-16 shrink-0 pt-0.5 text-xs text-ink-500">
                             {{ $consultation->started_at->translatedFormat('d M Y') }}
@@ -72,19 +72,19 @@
                                 · {{ $consultation->consultation_number }}
                             </p>
                         </div>
-                        <x-status-badge :status="$consultation->status" :label="$consultation->statusLabel()"/>
+                        <x-dme::status-badge :status="$consultation->status" :label="$consultation->statusLabel()"/>
                     </a>
                 @empty
-                    <x-empty-state icon="stethoscope" title="Aucune consultation enregistrée"
+                    <x-dme::empty-state icon="stethoscope" title="Aucune consultation enregistrée"
                                    message="Ce patient n'a pas encore été vu en consultation.">
                         <x-slot:action>
                             @can('consultations.create')
-                                <a href="{{ route('consultations.create', $patient) }}" class="k-btn-primary">
-                                    <x-icon name="plus" class="h-4 w-4"/> Nouvelle consultation
+                                <a href="{{ route('dme.consultations.create', $patient) }}" class="k-btn-primary">
+                                    <x-dme::icon name="plus" class="h-4 w-4"/> Nouvelle consultation
                                 </a>
                             @endcan
                         </x-slot:action>
-                    </x-empty-state>
+                    </x-dme::empty-state>
                 @endforelse
             </div>
         </section>
@@ -93,7 +93,7 @@
         <section class="k-card">
             <div class="k-card-header">
                 <h2 class="k-card-title">Derniers résultats d’examens</h2>
-                <a href="{{ route('patients.show', [$patient, 'tab' => 'laboratoire']) }}"
+                <a href="{{ route('dme.patients.show', [$patient, 'tab' => 'laboratoire']) }}"
                    class="text-xs font-medium text-clinic-700 hover:underline">Laboratoire</a>
             </div>
             <div class="k-card-body">
@@ -114,10 +114,10 @@
                                 <p class="text-[11px] text-ink-400">Réf. {{ $result->reference_range }}</p>
                             @endif
                         </div>
-                        <x-status-badge :status="$result->flag" :label="$result->flagLabel()"/>
+                        <x-dme::status-badge :status="$result->flag" :label="$result->flagLabel()"/>
                     </div>
                 @empty
-                    <x-empty-state icon="flask" title="Aucun résultat disponible"
+                    <x-dme::empty-state icon="flask" title="Aucun résultat disponible"
                                    message="Les résultats validés par le laboratoire apparaîtront ici."/>
                 @endforelse
             </div>
@@ -139,7 +139,7 @@
                 <div>
                     <p class="text-xs text-ink-500">Prochain rendez-vous</p>
                     @if ($next = $tabData['nextAppointment'])
-                        <a href="{{ route('appointments.show', $next) }}" class="font-medium text-clinic-700 hover:underline">
+                        <a href="{{ route('dme.appointments.show', $next) }}" class="font-medium text-clinic-700 hover:underline">
                             {{ $next->scheduled_for->translatedFormat('d F Y à H:i') }}
                         </a>
                         <p class="text-xs text-ink-500">{{ $next->reason ?: 'Consultation' }}</p>
@@ -177,7 +177,7 @@
                                 {{ $problem->diagnosed_on?->translatedFormat('M Y') }}
                             </p>
                         </div>
-                        <x-status-badge :status="$problem->status" :label="$problem->statusLabel()"/>
+                        <x-dme::status-badge :status="$problem->status" :label="$problem->statusLabel()"/>
                     </div>
                 @empty
                     <p class="py-2 text-sm text-ink-500">Aucun problème actif documenté.</p>
@@ -188,16 +188,16 @@
         <section class="k-card">
             <div class="k-card-header">
                 <h2 class="k-card-title">Dernières ordonnances</h2>
-                <a href="{{ route('patients.show', [$patient, 'tab' => 'ordonnances']) }}"
+                <a href="{{ route('dme.patients.show', [$patient, 'tab' => 'ordonnances']) }}"
                    class="text-xs font-medium text-clinic-700 hover:underline">Tout voir</a>
             </div>
             <div class="k-card-body">
                 @forelse ($tabData['recentPrescriptions'] as $prescription)
-                    <a href="{{ route('prescriptions.show', $prescription) }}"
+                    <a href="{{ route('dme.prescriptions.show', $prescription) }}"
                        class="block border-b border-ink-100 py-2 first:pt-0 last:border-0 last:pb-0 hover:bg-clinic-50/40">
                         <div class="flex items-center justify-between gap-2">
                             <span class="font-mono text-xs text-ink-600">{{ $prescription->prescription_number }}</span>
-                            <x-status-badge :status="$prescription->status" :label="$prescription->statusLabel()"/>
+                            <x-dme::status-badge :status="$prescription->status" :label="$prescription->statusLabel()"/>
                         </div>
                         <p class="mt-0.5 truncate text-sm text-ink-800">
                             {{ $prescription->items->pluck('medication_name')->implode(', ') ?: 'Aucun médicament' }}

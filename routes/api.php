@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Api\AuthApiController;
-use App\Http\Controllers\Api\PatientApiController;
-use App\Http\Controllers\Api\PatientRecordApiController;
+use Keneya\Dme\Http\Controllers\Api\AuthApiController;
+use Keneya\Dme\Http\Controllers\Api\PatientApiController;
+use Keneya\Dme\Http\Controllers\Api\PatientRecordApiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,10 +24,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/auth/token', [AuthApiController::class, 'token'])
-    ->middleware('throttle:login')
+    ->middleware('throttle:dme-login')
     ->name('api.auth.token');
 
-Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
+Route::middleware(['auth:sanctum', 'throttle:dme-api'])->group(function (): void {
 
     Route::get('/auth/me', [AuthApiController::class, 'me'])->name('api.auth.me');
     Route::delete('/auth/token', [AuthApiController::class, 'revoke'])->name('api.auth.revoke');

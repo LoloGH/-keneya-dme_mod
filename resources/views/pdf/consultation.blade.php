@@ -1,4 +1,4 @@
-@extends('pdf._layout', ['title' => 'Compte rendu de consultation'])
+@extends('dme::pdf._layout', ['title' => 'Compte rendu de consultation'])
 
 @section('content')
     <h2>Consultation</h2>

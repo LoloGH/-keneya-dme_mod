@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders;
+namespace Keneya\Dme\Database\Seeders;
 
-use App\Models\Allergy;
-use App\Models\Appointment;
-use App\Models\ChronicCondition;
-use App\Models\Consultation;
-use App\Models\Hospitalization;
-use App\Models\ImagingOrder;
-use App\Models\LabOrder;
-use App\Models\LabResult;
-use App\Models\MedicalHistory;
-use App\Models\Medication;
-use App\Models\NursingNote;
-use App\Models\Patient;
-use App\Models\Prescription;
-use App\Models\Service;
-use App\Models\SmsMessage;
-use App\Models\User;
-use App\Support\Rbac;
+use Keneya\Dme\Models\Allergy;
+use Keneya\Dme\Models\Appointment;
+use Keneya\Dme\Models\ChronicCondition;
+use Keneya\Dme\Models\Consultation;
+use Keneya\Dme\Models\Hospitalization;
+use Keneya\Dme\Models\ImagingOrder;
+use Keneya\Dme\Models\LabOrder;
+use Keneya\Dme\Models\LabResult;
+use Keneya\Dme\Models\MedicalHistory;
+use Keneya\Dme\Models\Medication;
+use Keneya\Dme\Models\NursingNote;
+use Keneya\Dme\Models\Patient;
+use Keneya\Dme\Models\Prescription;
+use Keneya\Dme\Models\Service;
+use Keneya\Dme\Models\SmsMessage;
+use Keneya\Dme\Models\User;
+use Keneya\Dme\Support\Rbac;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -323,7 +323,7 @@ class DemoMedicalDataSeeder extends Seeder
             'reference' => 'SMS-'.Str::upper(Str::random(10)),
             'recipient' => '+22370001001',
             'body' => 'Keneya : Votre ordonnance a été enregistrée. Référence : '.$prescription->prescription_number.'.',
-            'sender' => config('sms.sender'),
+            'sender' => config('dme.sms.sender'),
             'patient_id' => $patient->id,
             'context_type' => Prescription::class,
             'context_id' => $prescription->id,
@@ -338,7 +338,7 @@ class DemoMedicalDataSeeder extends Seeder
             'reference' => 'SMS-'.Str::upper(Str::random(10)),
             'recipient' => '+22370001001',
             'body' => 'Keneya : Votre résultat d’analyse est disponible. Présentez-vous avec votre pièce d’identité.',
-            'sender' => config('sms.sender'),
+            'sender' => config('dme.sms.sender'),
             'patient_id' => $patient->id,
             'status' => 'failed',
             'attempts' => 1,

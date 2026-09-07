@@ -13,17 +13,19 @@
 /.zed
 /auth.json
 /node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/storage/pail
 /vendor
 Homestead.json
 Homestead.yaml
 Thumbs.db
 
-# Keneya-DME
-/database/*.sqlite
-/database/*.sqlite-journal
-/storage/app/private/medical-documents
+# Application hôte de test générée par Orchestra Testbench.
+# Seuls les fichiers écrits à la main sous workbench/ sont versionnés.
+/workbench/bootstrap/cache
+/workbench/database/*.sqlite
+/workbench/storage
+/vendor/orchestra
+
+# Les ressources compilées du module, elles, sont versionnées :
+# une application hôte installe le module, elle ne le construit pas.
+# (public/build est donc volontairement absent de cette liste.)
+/public/hot

@@ -6,7 +6,7 @@
             @foreach ($breadcrumbs as $label => $url)
                 @if ($url)
                     <a href="{{ $url }}" class="hover:text-clinic-700 hover:underline">{{ $label }}</a>
-                    <x-icon name="chevron-right" class="h-3.5 w-3.5"/>
+                    <x-dme::icon name="chevron-right" class="h-3.5 w-3.5"/>
                 @else
                     <span class="font-medium text-ink-700" aria-current="page">{{ $label }}</span>
                 @endif

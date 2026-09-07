@@ -1,32 +1,32 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Patients')
 
 @section('content')
-    <x-page-header title="Patients"
+    <x-dme::page-header title="Patients"
                    subtitle="{{ $patients->total() }} dossier(s) — recherche par nom, numéro de dossier, téléphone ou date de naissance.">
         <x-slot:actions>
             @can('patients.view')
-                <a href="{{ route('patients.export', request()->query()) }}" class="k-btn-secondary">
-                    <x-icon name="download" class="h-4 w-4"/> Exporter
+                <a href="{{ route('dme.patients.export', request()->query()) }}" class="k-btn-secondary">
+                    <x-dme::icon name="download" class="h-4 w-4"/> Exporter
                 </a>
             @endcan
             @can('patients.create')
-                <a href="{{ route('patients.create') }}" class="k-btn-primary">
-                    <x-icon name="plus" class="h-4 w-4"/> Nouveau patient
+                <a href="{{ route('dme.patients.create') }}" class="k-btn-primary">
+                    <x-dme::icon name="plus" class="h-4 w-4"/> Nouveau patient
                 </a>
             @endcan
         </x-slot:actions>
-    </x-page-header>
+    </x-dme::page-header>
 
     {{-- Recherche et filtres (§11) --}}
-    <form method="GET" action="{{ route('patients.index') }}" class="k-card mb-4 p-4"
+    <form method="GET" action="{{ route('dme.patients.index') }}" class="k-card mb-4 p-4"
           x-data="{ showFilters: {{ collect($filters)->except('q')->filter()->isNotEmpty() ? 'true' : 'false' }} }">
         <div class="flex flex-wrap gap-3">
             <div class="min-w-56 flex-1">
                 <label for="q" class="sr-only">Rechercher un patient</label>
                 <div class="relative">
-                    <x-icon name="search" class="pointer-events-none absolute top-1/2 left-3 h-4.5 w-4.5 -translate-y-1/2 text-ink-400"/>
+                    <x-dme::icon name="search" class="pointer-events-none absolute top-1/2 left-3 h-4.5 w-4.5 -translate-y-1/2 text-ink-400"/>
                     <input id="q" type="search" name="q" value="{{ $filters['q'] ?? '' }}" class="k-input pl-10"
                            placeholder="Nom, prénom, n° dossier, téléphone, 12/03/1984…">
                 </div>
@@ -35,7 +35,7 @@
             <button type="button" class="k-btn-secondary" @click="showFilters = !showFilters"
                     :aria-expanded="showFilters">Filtres</button>
             @if (collect($filters)->filter()->isNotEmpty())
-                <a href="{{ route('patients.index') }}" class="k-btn-ghost">Réinitialiser</a>
+                <a href="{{ route('dme.patients.index') }}" class="k-btn-ghost">Réinitialiser</a>
             @endif
         </div>
 
@@ -95,16 +95,16 @@
 
     @if ($patients->isEmpty())
         <div class="k-card">
-            <x-empty-state icon="users" title="Aucun patient ne correspond"
+            <x-dme::empty-state icon="users" title="Aucun patient ne correspond"
                            message="Ajustez la recherche ou les filtres, ou créez un nouveau dossier patient.">
                 <x-slot:action>
                     @can('patients.create')
-                        <a href="{{ route('patients.create') }}" class="k-btn-primary">
-                            <x-icon name="plus" class="h-4 w-4"/> Nouveau patient
+                        <a href="{{ route('dme.patients.create') }}" class="k-btn-primary">
+                            <x-dme::icon name="plus" class="h-4 w-4"/> Nouveau patient
                         </a>
                     @endcan
                 </x-slot:action>
-            </x-empty-state>
+            </x-dme::empty-state>
         </div>
     @else
         {{-- Tableau desktop --}}
@@ -128,7 +128,7 @@
                         @foreach ($patients as $patient)
                             <tr>
                                 <td>
-                                    <a href="{{ route('patients.show', $patient) }}"
+                                    <a href="{{ route('dme.patients.show', $patient) }}"
                                        class="flex items-center gap-2.5 font-medium text-ink-900 hover:text-clinic-700">
                                         <span class="flex h-8 w-8 items-center justify-center rounded-full bg-clinic-100 text-xs font-semibold text-clinic-700">
                                             {{ $patient->initials() }}
@@ -145,10 +145,10 @@
                                         ? \Illuminate\Support\Carbon::parse($patient->last_consultation_at)->translatedFormat('d M Y')
                                         : '—' }}
                                 </td>
-                                <td><x-status-badge :status="$patient->status" :label="ucfirst($patient->status)"/></td>
+                                <td><x-dme::status-badge :status="$patient->status" :label="ucfirst($patient->status)"/></td>
                                 <td class="text-right">
-                                    <a href="{{ route('patients.show', $patient) }}" class="k-btn-ghost k-btn-sm">
-                                        Dossier <x-icon name="chevron-right" class="h-3.5 w-3.5"/>
+                                    <a href="{{ route('dme.patients.show', $patient) }}" class="k-btn-ghost k-btn-sm">
+                                        Dossier <x-dme::icon name="chevron-right" class="h-3.5 w-3.5"/>
                                     </a>
                                 </td>
                             </tr>
@@ -161,7 +161,7 @@
         {{-- Cartes mobile (§8) : le tableau devient une liste sous 768px --}}
         <div class="space-y-2.5 md:hidden">
             @foreach ($patients as $patient)
-                <a href="{{ route('patients.show', $patient) }}" class="k-card block p-4">
+                <a href="{{ route('dme.patients.show', $patient) }}" class="k-card block p-4">
                     <div class="flex items-start gap-3">
                         <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-clinic-100 text-sm font-semibold text-clinic-700">
                             {{ $patient->initials() }}
@@ -174,7 +174,7 @@
                                 @if ($patient->phone) · {{ $patient->phone }} @endif
                             </p>
                         </div>
-                        <x-status-badge :status="$patient->status" :label="ucfirst($patient->status)"/>
+                        <x-dme::status-badge :status="$patient->status" :label="ucfirst($patient->status)"/>
                     </div>
                 </a>
             @endforeach

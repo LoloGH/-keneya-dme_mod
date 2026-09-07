@@ -9,7 +9,7 @@
     {{-- Identité --}}
     <fieldset class="k-fieldset">
         <legend class="k-fieldset-legend">
-            <x-icon name="users" class="h-4.5 w-4.5 text-clinic-600"/> Identité
+            <x-dme::icon name="users" class="h-4.5 w-4.5 text-clinic-600"/> Identité
         </legend>
 
         <div class="grid gap-4 sm:grid-cols-2">
@@ -17,13 +17,13 @@
                 <label for="last_name" class="k-label">Nom <span class="text-red-600" aria-hidden="true">*</span></label>
                 <input id="last_name" name="last_name" type="text" required maxlength="100"
                        value="{{ old('last_name', $patient?->last_name) }}" class="k-input">
-                <x-field-error name="last_name"/>
+                <x-dme::field-error name="last_name"/>
             </div>
             <div>
                 <label for="first_name" class="k-label">Prénom <span class="text-red-600" aria-hidden="true">*</span></label>
                 <input id="first_name" name="first_name" type="text" required maxlength="100"
                        value="{{ old('first_name', $patient?->first_name) }}" class="k-input">
-                <x-field-error name="first_name"/>
+                <x-dme::field-error name="first_name"/>
             </div>
             <div>
                 <label for="sex" class="k-label">Sexe <span class="text-red-600" aria-hidden="true">*</span></label>
@@ -32,13 +32,13 @@
                         <option value="{{ $value }}" @selected(old('sex', $patient?->sex) === $value)>{{ $label }}</option>
                     @endforeach
                 </select>
-                <x-field-error name="sex"/>
+                <x-dme::field-error name="sex"/>
             </div>
             <div>
                 <label for="birth_date" class="k-label">Date de naissance</label>
                 <input id="birth_date" name="birth_date" type="date" max="{{ now()->toDateString() }}"
                        value="{{ old('birth_date', $patient?->birth_date?->toDateString()) }}" class="k-input">
-                <x-field-error name="birth_date"/>
+                <x-dme::field-error name="birth_date"/>
                 <label class="mt-1.5 flex items-center gap-2 text-xs text-ink-500">
                     <input type="checkbox" name="birth_date_estimated" value="1"
                            @checked(old('birth_date_estimated', $patient?->birth_date_estimated))
@@ -85,7 +85,7 @@
     {{-- Coordonnées --}}
     <fieldset class="k-fieldset">
         <legend class="k-fieldset-legend">
-            <x-icon name="chat" class="h-4.5 w-4.5 text-clinic-600"/> Coordonnées
+            <x-dme::icon name="chat" class="h-4.5 w-4.5 text-clinic-600"/> Coordonnées
         </legend>
 
         <div class="grid gap-4 sm:grid-cols-2">
@@ -94,7 +94,7 @@
                 <input id="phone" name="phone" type="tel" maxlength="30"
                        value="{{ old('phone', $patient?->phone) }}" class="k-input" placeholder="+223 70 00 10 01">
                 <p class="k-hint">Utilisé pour les rappels de rendez-vous par SMS.</p>
-                <x-field-error name="phone"/>
+                <x-dme::field-error name="phone"/>
             </div>
             <div>
                 <label for="phone_secondary" class="k-label">Téléphone secondaire</label>
@@ -105,7 +105,7 @@
                 <label for="email" class="k-label">Adresse e-mail</label>
                 <input id="email" name="email" type="email" maxlength="150"
                        value="{{ old('email', $patient?->email) }}" class="k-input">
-                <x-field-error name="email"/>
+                <x-dme::field-error name="email"/>
             </div>
             <div class="sm:col-span-2">
                 <label for="address" class="k-label">Adresse</label>
@@ -128,7 +128,7 @@
     {{-- Contact d'urgence --}}
     <fieldset class="k-fieldset">
         <legend class="k-fieldset-legend">
-            <x-icon name="alert" class="h-4.5 w-4.5 text-amber-600"/> Personne à prévenir
+            <x-dme::icon name="alert" class="h-4.5 w-4.5 text-amber-600"/> Personne à prévenir
         </legend>
 
         @if ($patient && $patient->relationLoaded('emergencyContacts') && $patient->emergencyContacts->isNotEmpty())
@@ -157,7 +157,7 @@
                     <label for="ec_phone" class="k-label">Téléphone</label>
                     <input id="ec_phone" name="emergency_contact[phone]" type="tel" maxlength="30"
                            value="{{ old('emergency_contact.phone') }}" class="k-input">
-                    <x-field-error name="emergency_contact.phone"/>
+                    <x-dme::field-error name="emergency_contact.phone"/>
                 </div>
             </div>
         @endif
@@ -166,7 +166,7 @@
     {{-- Informations médicales --}}
     <fieldset class="k-fieldset">
         <legend class="k-fieldset-legend">
-            <x-icon name="heart" class="h-4.5 w-4.5 text-red-600"/> Informations médicales
+            <x-dme::icon name="heart" class="h-4.5 w-4.5 text-red-600"/> Informations médicales
         </legend>
 
         <div class="grid gap-4 sm:grid-cols-2">
@@ -178,7 +178,7 @@
                         <option value="{{ $group }}" @selected(old('blood_group', $patient?->blood_group) === $group)>{{ $group }}</option>
                     @endforeach
                 </select>
-                <x-field-error name="blood_group"/>
+                <x-dme::field-error name="blood_group"/>
             </div>
             <div>
                 <label for="attending_doctor_id" class="k-label">Médecin traitant</label>

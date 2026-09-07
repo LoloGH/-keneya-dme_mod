@@ -1,13 +1,13 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Imagerie '.$order->order_number)
 
 @section('content')
-    <x-page-header :title="$order->modalityLabel().($order->body_site ? ' — '.$order->body_site : '')"
+    <x-dme::page-header :title="$order->modalityLabel().($order->body_site ? ' — '.$order->body_site : '')"
                    :subtitle="$order->order_number.' · demandé le '.$order->requested_at->translatedFormat('d F Y')"
                    :breadcrumbs="[
-                       'Imagerie' => route('imaging.index'),
-                       $order->patient->fullName() => route('patients.show', $order->patient),
+                       'Imagerie' => route('dme.imaging.index'),
+                       $order->patient->fullName() => route('dme.patients.show', $order->patient),
                        $order->order_number => null,
                    ]"/>
 
@@ -16,13 +16,13 @@
             <section class="k-card">
                 <div class="k-card-header">
                     <h2 class="k-card-title">Compte rendu</h2>
-                    <x-status-badge :status="$order->status" :label="$order->statusLabel()"/>
+                    <x-dme::status-badge :status="$order->status" :label="$order->statusLabel()"/>
                 </div>
                 <div class="k-card-body">
                     @if ($report = $order->report)
                         @if ($report->is_abnormal)
                             <div class="k-alert-warning mb-3">
-                                <x-icon name="alert" class="mt-0.5 h-5 w-5 shrink-0 text-amber-600"/>
+                                <x-dme::icon name="alert" class="mt-0.5 h-5 w-5 shrink-0 text-amber-600"/>
                                 <p class="text-sm text-amber-800">Compte rendu signalant une anomalie.</p>
                             </div>
                         @endif
@@ -45,13 +45,13 @@
                             @if ($report->reported_at)
                                 · {{ $report->reported_at->translatedFormat('d M Y à H:i') }}
                             @endif
-                            · <x-status-badge :status="$report->status"
+                            · <x-dme::status-badge :status="$report->status"
                                 :label="match ($report->status) {
                                     'draft' => 'Brouillon', 'final' => 'Définitif', default => 'Rectifié',
                                 }"/>
                         </p>
                     @else
-                        <x-empty-state icon="document" title="Compte rendu non rédigé"
+                        <x-dme::empty-state icon="document" title="Compte rendu non rédigé"
                                        message="Le compte rendu sera saisi par le radiologue après réalisation de l'examen."/>
                     @endif
                 </div>
@@ -65,7 +65,7 @@
                             {{ $order->report ? 'Modifier le compte rendu' : 'Rédiger le compte rendu' }}
                         </h2>
                     </div>
-                    <form action="{{ route('imaging.report.store', $order) }}" method="POST" class="k-card-body space-y-3">
+                    <form action="{{ route('dme.imaging.report.store', $order) }}" method="POST" class="k-card-body space-y-3">
                         @csrf
                         <div>
                             <label for="technique" class="k-label">Technique</label>
@@ -76,13 +76,13 @@
                             <label for="findings" class="k-label">Résultats <span class="text-red-600" aria-hidden="true">*</span></label>
                             <textarea id="findings" name="findings" rows="6" required maxlength="20000"
                                       class="k-textarea">{{ old('findings', $order->report?->findings) }}</textarea>
-                            <x-field-error name="findings"/>
+                            <x-dme::field-error name="findings"/>
                         </div>
                         <div>
                             <label for="conclusion" class="k-label">Conclusion <span class="text-red-600" aria-hidden="true">*</span></label>
                             <textarea id="conclusion" name="conclusion" rows="3" required maxlength="5000"
                                       class="k-textarea">{{ old('conclusion', $order->report?->conclusion) }}</textarea>
-                            <x-field-error name="conclusion"/>
+                            <x-dme::field-error name="conclusion"/>
                         </div>
                         <div class="flex flex-wrap items-end gap-4">
                             <div>
@@ -111,7 +111,7 @@
                     <ul class="k-card-body space-y-2">
                         @foreach ($documents as $document)
                             <li class="flex items-center justify-between gap-2 text-sm">
-                                <a href="{{ route('documents.show', $document) }}" class="text-clinic-700 hover:underline">
+                                <a href="{{ route('dme.documents.show', $document) }}" class="text-clinic-700 hover:underline">
                                     {{ $document->title }}
                                 </a>
                                 <span class="text-xs text-ink-500">{{ $document->humanSize() }}</span>
@@ -125,7 +125,7 @@
         <div class="space-y-4">
             <section class="k-card">
                 <div class="k-card-header"><h2 class="k-card-title">Patient</h2></div>
-                <div class="k-card-body"><x-patient-header :patient="$order->patient" compact/></div>
+                <div class="k-card-body"><x-dme::patient-header :patient="$order->patient" compact/></div>
             </section>
 
             <section class="k-card">

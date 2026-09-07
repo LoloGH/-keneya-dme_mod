@@ -7,9 +7,9 @@
 {{-- Contexte patient rappelé en permanence, alertes comprises (§13) --}}
 <section class="k-card mb-4">
     <div class="p-4 sm:p-5">
-        <x-patient-header :patient="$patient" compact/>
+        <x-dme::patient-header :patient="$patient" compact/>
         @if ($patient->criticalAllergies()->isNotEmpty() || $patient->activeConditions()->isNotEmpty())
-            <div class="mt-4"><x-medical-alerts :patient="$patient"/></div>
+            <div class="mt-4"><x-dme::medical-alerts :patient="$patient"/></div>
         @endif
     </div>
 </section>
@@ -19,7 +19,7 @@
     {{-- Informations générales --}}
     <fieldset class="k-fieldset">
         <legend class="k-fieldset-legend">
-            <x-icon name="stethoscope" class="h-4.5 w-4.5 text-clinic-600"/> Informations
+            <x-dme::icon name="stethoscope" class="h-4.5 w-4.5 text-clinic-600"/> Informations
         </legend>
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
@@ -28,12 +28,12 @@
                        max="{{ now()->format('Y-m-d\TH:i') }}"
                        value="{{ old('started_at', $consultation?->started_at->format('Y-m-d\TH:i') ?? now()->format('Y-m-d\TH:i')) }}"
                        class="k-input">
-                <x-field-error name="started_at"/>
+                <x-dme::field-error name="started_at"/>
             </div>
             <div>
                 <label for="type" class="k-label">Type <span class="text-red-600" aria-hidden="true">*</span></label>
                 <select id="type" name="type" required class="k-select">
-                    @foreach (\App\Models\Consultation::TYPES as $value => $label)
+                    @foreach (\Keneya\Dme\Models\Consultation::TYPES as $value => $label)
                         <option value="{{ $value }}" @selected(old('type', $consultation?->type) === $value)>{{ $label }}</option>
                     @endforeach
                 </select>
@@ -62,13 +62,13 @@
     {{-- Motif et histoire de la maladie --}}
     <fieldset class="k-fieldset">
         <legend class="k-fieldset-legend">
-            <x-icon name="document" class="h-4.5 w-4.5 text-clinic-600"/> Motif et anamnèse
+            <x-dme::icon name="document" class="h-4.5 w-4.5 text-clinic-600"/> Motif et anamnèse
         </legend>
         <div>
             <label for="reason" class="k-label">Motif de consultation</label>
             <textarea id="reason" name="reason" rows="2" maxlength="1000" class="k-textarea"
                       placeholder="Ce qui amène le patient aujourd’hui.">{{ old('reason', $consultation?->reason) }}</textarea>
-            <x-field-error name="reason"/>
+            <x-dme::field-error name="reason"/>
         </div>
         <div>
             <label for="history_of_illness" class="k-label">Histoire de la maladie</label>
@@ -80,7 +80,7 @@
     {{-- Constantes (§20) --}}
     <fieldset class="k-fieldset">
         <legend class="k-fieldset-legend">
-            <x-icon name="heart" class="h-4.5 w-4.5 text-red-600"/> Constantes vitales
+            <x-dme::icon name="heart" class="h-4.5 w-4.5 text-red-600"/> Constantes vitales
         </legend>
         @if ($lastVitals)
             <p class="k-hint">
@@ -106,7 +106,7 @@
                     <input id="vitals_{{ $field }}" name="vitals[{{ $field }}]" type="number"
                            step="{{ $step }}" min="{{ $min }}" max="{{ $max }}"
                            value="{{ old("vitals.$field") }}" class="k-input">
-                    <x-field-error :name="'vitals.'.$field"/>
+                    <x-dme::field-error :name="'vitals.'.$field"/>
                 </div>
             @endforeach
             <div>
@@ -119,10 +119,10 @@
     {{-- Examen clinique par appareil (§19) --}}
     <fieldset class="k-fieldset">
         <legend class="k-fieldset-legend">
-            <x-icon name="clipboard" class="h-4.5 w-4.5 text-clinic-600"/> Examen clinique
+            <x-dme::icon name="clipboard" class="h-4.5 w-4.5 text-clinic-600"/> Examen clinique
         </legend>
         <div class="grid gap-4 lg:grid-cols-2">
-            @foreach (\App\Models\ClinicalNote::SYSTEMS as $system => $label)
+            @foreach (\Keneya\Dme\Models\ClinicalNote::SYSTEMS as $system => $label)
                 <div>
                     <label for="exam_{{ $system }}" class="k-label">{{ $label }}</label>
                     <textarea id="exam_{{ $system }}" name="exam[{{ $system }}]" rows="2" maxlength="5000"
@@ -140,7 +140,7 @@
         ])->values()->all() ?? [])
     ) }})">
         <legend class="k-fieldset-legend">
-            <x-icon name="alert" class="h-4.5 w-4.5 text-clinic-600"/> Diagnostics
+            <x-dme::icon name="alert" class="h-4.5 w-4.5 text-clinic-600"/> Diagnostics
         </legend>
         <p class="k-hint">
             Le champ « code » accueille la CIM-10 (ex. I10 pour l’hypertension essentielle).
@@ -170,7 +170,7 @@
                 <div class="sm:col-span-2">
                     <label class="k-label" :for="'diag_status_' + index">Statut</label>
                     <select :id="'diag_status_' + index" :name="`diagnoses[${index}][status]`" x-model="row.status" class="k-select">
-                        @foreach (\App\Models\Diagnosis::STATUSES as $value => $label)
+                        @foreach (\Keneya\Dme\Models\Diagnosis::STATUSES as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
                         @endforeach
                     </select>
@@ -178,21 +178,21 @@
                 <div class="flex items-end sm:col-span-1">
                     <button type="button" @click="remove(index)" class="k-btn-ghost k-btn-sm w-full text-red-600"
                             aria-label="Retirer ce diagnostic">
-                        <x-icon name="trash" class="h-4 w-4"/>
+                        <x-dme::icon name="trash" class="h-4 w-4"/>
                     </button>
                 </div>
             </div>
         </template>
 
         <button type="button" @click="add()" class="k-btn-secondary k-btn-sm">
-            <x-icon name="plus" class="h-3.5 w-3.5"/> Ajouter un diagnostic
+            <x-dme::icon name="plus" class="h-3.5 w-3.5"/> Ajouter un diagnostic
         </button>
     </fieldset>
 
     {{-- Plan de soins --}}
     <fieldset class="k-fieldset">
         <legend class="k-fieldset-legend">
-            <x-icon name="check" class="h-4.5 w-4.5 text-keneya-600"/> Traitement et plan de soins
+            <x-dme::icon name="check" class="h-4.5 w-4.5 text-keneya-600"/> Traitement et plan de soins
         </legend>
         <div class="grid gap-4 lg:grid-cols-3">
             <div>

@@ -9,11 +9,11 @@
                         'border-red-500 bg-red-50 text-red-700' => $tone === 'danger',
                     ])"
              role="status" aria-live="polite">
-            <x-icon :name="$tone === 'success' ? 'check' : 'alert'" class="mt-0.5 h-4.5 w-4.5 shrink-0"/>
+            <x-dme::icon :name="$tone === 'success' ? 'check' : 'alert'" class="mt-0.5 h-4.5 w-4.5 shrink-0"/>
             <p class="flex-1">{{ session($key) }}</p>
             <button type="button" @click="visible = false" class="text-current/60 hover:text-current"
                     aria-label="Fermer">
-                <x-icon name="close" class="h-4 w-4"/>
+                <x-dme::icon name="close" class="h-4 w-4"/>
             </button>
         </div>
     @endif

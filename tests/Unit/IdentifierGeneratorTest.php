@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Keneya\Dme\Tests\Unit;
 
-use App\Services\Identifiers\IdentifierGenerator;
+use Keneya\Dme\Services\Identifiers\IdentifierGenerator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * Identifiants métier (§37) : format, incrément et stabilité.

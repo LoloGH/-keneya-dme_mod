@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Keneya\Dme\Tests\Feature;
 
-use App\Models\Patient;
-use App\Support\Rbac;
+use Keneya\Dme\Models\Patient;
+use Keneya\Dme\Support\Rbac;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * API REST (§43).
@@ -31,7 +31,7 @@ class ApiTest extends TestCase
     {
         $user = $this->userWithRole(Rbac::ROLE_DOCTOR);
 
-        $this->postJson(route('api.auth.token'), [
+        $this->postJson(route('dme.api.auth.token'), [
             'email' => $user->email,
             'password' => 'MotDePasseDeTest2026',
             'device_name' => 'Tests automatisés',
@@ -44,7 +44,7 @@ class ApiTest extends TestCase
     {
         $user = $this->userWithRole(Rbac::ROLE_DOCTOR, ['is_active' => false]);
 
-        $this->postJson(route('api.auth.token'), [
+        $this->postJson(route('dme.api.auth.token'), [
             'email' => $user->email,
             'password' => 'MotDePasseDeTest2026',
             'device_name' => 'Tests automatisés',
@@ -57,7 +57,7 @@ class ApiTest extends TestCase
 
         Sanctum::actingAs($this->userWithRole(Rbac::ROLE_DOCTOR));
 
-        $this->getJson(route('api.patients.index'))
+        $this->getJson(route('dme.api.patients.index'))
             ->assertOk()
             ->assertJsonCount(3, 'data')
             ->assertJsonStructure([
@@ -74,7 +74,7 @@ class ApiTest extends TestCase
 
         Sanctum::actingAs($this->userWithRole(Rbac::ROLE_DOCTOR));
 
-        $this->getJson(route('api.patients.index', ['q' => 'Traoré']))
+        $this->getJson(route('dme.api.patients.index', ['q' => 'Traoré']))
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.name.family', 'Traoré');
@@ -84,7 +84,7 @@ class ApiTest extends TestCase
     {
         Sanctum::actingAs($this->userWithRole(Rbac::ROLE_DOCTOR));
 
-        $this->postJson(route('api.patients.store'), [
+        $this->postJson(route('dme.api.patients.store'), [
             'last_name' => 'Konaté',
             'first_name' => 'Seydou',
             'sex' => 'male',
@@ -103,10 +103,10 @@ class ApiTest extends TestCase
 
         // Le laboratoire peut lire un patient…
         Sanctum::actingAs($this->userWithRole(Rbac::ROLE_LAB));
-        $this->getJson(route('api.patients.show', $patient))->assertOk();
+        $this->getJson(route('dme.api.patients.show', $patient))->assertOk();
 
         // …mais ne peut pas en créer.
-        $this->postJson(route('api.patients.store'), [
+        $this->postJson(route('dme.api.patients.store'), [
             'last_name' => 'Test', 'first_name' => 'Interdit', 'sex' => 'male',
         ])->assertForbidden();
     }
@@ -117,7 +117,7 @@ class ApiTest extends TestCase
 
         Sanctum::actingAs($this->userWithRole(Rbac::ROLE_PHARMACIST));
 
-        $this->postJson(route('api.patients.prescriptions.store', $patient), [
+        $this->postJson(route('dme.api.patients.prescriptions.store', $patient), [
             'issued_on' => now()->toDateString(),
             'items' => [['medication_name' => 'Amoxicilline']],
         ])->assertForbidden();
@@ -129,7 +129,7 @@ class ApiTest extends TestCase
     {
         $patient = Patient::factory()->create();
 
-        \App\Models\Allergy::create([
+        \Keneya\Dme\Models\Allergy::create([
             'patient_id' => $patient->id,
             'allergen' => 'Pénicilline',
             'severity' => 'severe',
@@ -138,7 +138,7 @@ class ApiTest extends TestCase
 
         Sanctum::actingAs($this->userWithRole(Rbac::ROLE_DOCTOR));
 
-        $this->postJson(route('api.patients.prescriptions.store', $patient), [
+        $this->postJson(route('dme.api.patients.prescriptions.store', $patient), [
             'issued_on' => now()->toDateString(),
             'items' => [['medication_name' => 'Amoxicilline', 'dosage' => '500 mg']],
         ])
@@ -152,7 +152,7 @@ class ApiTest extends TestCase
 
         Sanctum::actingAs($this->userWithRole(Rbac::ROLE_DOCTOR));
 
-        $this->postJson(route('api.patients.prescriptions.store', $patient), [
+        $this->postJson(route('dme.api.patients.prescriptions.store', $patient), [
             'issued_on' => now()->toDateString(),
             'items' => [],
         ])->assertStatus(422)->assertJsonValidationErrors('items');
@@ -167,14 +167,14 @@ class ApiTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $this->postJson(route('api.documents.store'), [
+        $this->postJson(route('dme.api.documents.store'), [
             'patient_id' => $patient->id,
             'title' => 'Compte rendu',
             'type' => 'imported',
             'file' => \Illuminate\Http\UploadedFile::fake()->create('cr.pdf', 20, 'application/pdf'),
         ])->assertCreated();
 
-        $response = $this->getJson(route('api.patients.documents', $patient))->assertOk();
+        $response = $this->getJson(route('dme.api.patients.documents', $patient))->assertOk();
 
         $payload = $response->json('data.0');
         $this->assertArrayNotHasKey('storage_path', $payload);

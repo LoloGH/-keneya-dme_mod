@@ -8,13 +8,13 @@
     </div>
 
     {{-- Filtres par type d'événement (§29) --}}
-    <form method="GET" action="{{ route('patients.show', $patient) }}" class="border-b border-ink-100 px-4 py-3">
+    <form method="GET" action="{{ route('dme.patients.show', $patient) }}" class="border-b border-ink-100 px-4 py-3">
         <input type="hidden" name="tab" value="historique">
         <input type="hidden" name="limit" value="{{ $tabData['limit'] }}">
         <fieldset>
             <legend class="k-label">Filtrer par type</legend>
             <div class="flex flex-wrap gap-2">
-                @foreach (\App\Services\Patients\MedicalTimeline::FILTER_LABELS as $value => $label)
+                @foreach (\Keneya\Dme\Services\Patients\MedicalTimeline::FILTER_LABELS as $value => $label)
                     <label class="flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition
                         {{ in_array($value, $filters, true) ? 'border-clinic-500 bg-clinic-50 text-clinic-700' : 'border-ink-300 text-ink-600 hover:bg-ink-50' }}">
                         <input type="checkbox" name="filters[]" value="{{ $value }}"
@@ -25,7 +25,7 @@
                 @endforeach
                 <button type="submit" class="k-btn-secondary k-btn-sm">Appliquer</button>
                 @if ($filters)
-                    <a href="{{ route('patients.show', [$patient, 'tab' => 'historique']) }}" class="k-btn-ghost k-btn-sm">
+                    <a href="{{ route('dme.patients.show', [$patient, 'tab' => 'historique']) }}" class="k-btn-ghost k-btn-sm">
                         Tout afficher
                     </a>
                 @endif
@@ -35,15 +35,15 @@
 
     <div class="k-card-body">
         @if ($tabData['timeline']->isEmpty())
-            <x-empty-state icon="clipboard" title="Aucun événement dans l’historique"
+            <x-dme::empty-state icon="clipboard" title="Aucun événement dans l’historique"
                            message="Consultations, prescriptions, examens et hospitalisations viendront alimenter cette chronologie."/>
         @else
-            <x-timeline :groups="$tabData['timeline']"/>
+            <x-dme::timeline :groups="$tabData['timeline']"/>
 
             {{-- Chargement progressif (§58) --}}
             @if ($tabData['timeline']->flatten(1)->count() >= $tabData['limit'])
                 <div class="mt-6 text-center">
-                    <a href="{{ route('patients.show', array_merge(
+                    <a href="{{ route('dme.patients.show', array_merge(
                             ['patient' => $patient, 'tab' => 'historique', 'limit' => $tabData['limit'] + 20],
                             $filters ? ['filters' => $filters] : []
                         )) }}"

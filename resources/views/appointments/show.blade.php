@@ -1,13 +1,13 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Rendez-vous '.$appointment->appointment_number)
 
 @section('content')
-    <x-page-header :title="'Rendez-vous '.$appointment->appointment_number"
+    <x-dme::page-header :title="'Rendez-vous '.$appointment->appointment_number"
                    :subtitle="$appointment->scheduled_for->translatedFormat('l d F Y à H:i')"
                    :breadcrumbs="[
-                       'Rendez-vous' => route('appointments.index'),
-                       $appointment->patient->fullName() => route('patients.show', $appointment->patient),
+                       'Rendez-vous' => route('dme.appointments.index'),
+                       $appointment->patient->fullName() => route('dme.patients.show', $appointment->patient),
                        $appointment->appointment_number => null,
                    ]"/>
 
@@ -16,7 +16,7 @@
             <section class="k-card">
                 <div class="k-card-header">
                     <h2 class="k-card-title">Détail du rendez-vous</h2>
-                    <x-status-badge :status="$appointment->status" :label="$appointment->statusLabel()"/>
+                    <x-dme::status-badge :status="$appointment->status" :label="$appointment->statusLabel()"/>
                 </div>
                 <dl class="k-card-body grid gap-4 sm:grid-cols-2">
                     @foreach ([
@@ -46,14 +46,14 @@
             @can('update', $appointment)
                 <section class="k-card">
                     <div class="k-card-header"><h2 class="k-card-title">Changer le statut</h2></div>
-                    <form action="{{ route('appointments.status', $appointment) }}" method="POST"
+                    <form action="{{ route('dme.appointments.status', $appointment) }}" method="POST"
                           class="k-card-body flex flex-wrap items-end gap-3">
                         @csrf
                         @method('PATCH')
                         <div class="min-w-48">
                             <label for="status" class="k-label">Statut</label>
                             <select id="status" name="status" required class="k-select">
-                                @foreach (\App\Models\Appointment::STATUSES as $value => $label)
+                                @foreach (\Keneya\Dme\Models\Appointment::STATUSES as $value => $label)
                                     <option value="{{ $value }}" @selected($appointment->status === $value)>{{ $label }}</option>
                                 @endforeach
                             </select>
@@ -68,13 +68,13 @@
             <section class="k-card">
                 <div class="k-card-header"><h2 class="k-card-title">Patient</h2></div>
                 <div class="k-card-body">
-                    <x-patient-header :patient="$appointment->patient" compact/>
+                    <x-dme::patient-header :patient="$appointment->patient" compact/>
                     <div class="mt-3 flex flex-wrap gap-2">
-                        <a href="{{ route('patients.show', $appointment->patient) }}" class="k-btn-secondary k-btn-sm">
+                        <a href="{{ route('dme.patients.show', $appointment->patient) }}" class="k-btn-secondary k-btn-sm">
                             Ouvrir le dossier
                         </a>
                         @can('consultations.create')
-                            <a href="{{ route('consultations.create', $appointment->patient) }}" class="k-btn-primary k-btn-sm">
+                            <a href="{{ route('dme.consultations.create', $appointment->patient) }}" class="k-btn-primary k-btn-sm">
                                 Démarrer la consultation
                             </a>
                         @endcan

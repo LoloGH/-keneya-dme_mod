@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Keneya\Dme\Tests\Feature;
 
-use App\Models\AuditLog;
-use App\Models\LabOrder;
-use App\Models\MedicalDocument;
-use App\Models\Patient;
-use App\Support\Rbac;
+use Keneya\Dme\Models\AuditLog;
+use Keneya\Dme\Models\LabOrder;
+use Keneya\Dme\Models\MedicalDocument;
+use Keneya\Dme\Models\Patient;
+use Keneya\Dme\Support\Rbac;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * Tests de sécurité (§57).
@@ -34,15 +34,18 @@ class SecurityTest extends TestCase
     // Accès non authentifié
     // -----------------------------------------------------------------
 
-    public function test_un_visiteur_non_authentifie_est_redirige_vers_la_connexion(): void
+    public function test_un_visiteur_non_authentifie_est_renvoye_vers_l_authentification_de_l_hote(): void
     {
         $patient = Patient::factory()->create();
 
+        // Le module n'authentifie plus personne : il laisse l'intergiciel
+        // `auth` renvoyer le visiteur vers la page de connexion de
+        // l'application hôte, déclarée ici comme le ferait un vrai hôte.
         foreach ([
-            route('dashboard'),
-            route('patients.index'),
-            route('patients.show', $patient),
-            route('audit.index'),
+            route('dme.dashboard'),
+            route('dme.patients.index'),
+            route('dme.patients.show', $patient),
+            route('dme.audit.index'),
         ] as $url) {
             $this->get($url)->assertRedirect(route('login'));
         }
@@ -50,7 +53,7 @@ class SecurityTest extends TestCase
 
     public function test_l_api_refuse_une_requete_sans_jeton(): void
     {
-        $this->getJson('/api/patients')->assertUnauthorized();
+        $this->getJson(config('dme.route.api.prefix').'/patients')->assertUnauthorized();
     }
 
     // -----------------------------------------------------------------
@@ -63,21 +66,21 @@ class SecurityTest extends TestCase
 
         // La radiologie possède patients.view : l'accès est légitime.
         $this->actingAs($this->userWithRole(Rbac::ROLE_RADIOLOGY))
-            ->get(route('patients.show', $patient))
+            ->get(route('dme.patients.show', $patient))
             ->assertOk();
 
         // Un utilisateur sans aucun rôle n'a aucune permission.
-        $this->actingAs(\App\Models\User::factory()->create())
-            ->get(route('patients.show', $patient))
+        $this->actingAs(\Keneya\Dme\Models\User::factory()->create())
+            ->get(route('dme.patients.show', $patient))
             ->assertForbidden();
     }
 
     public function test_un_acces_refuse_est_inscrit_au_journal_d_audit(): void
     {
         $patient = Patient::factory()->create();
-        $intrus = \App\Models\User::factory()->create();
+        $intrus = \Keneya\Dme\Models\User::factory()->create();
 
-        $this->actingAs($intrus)->get(route('patients.show', $patient))->assertForbidden();
+        $this->actingAs($intrus)->get(route('dme.patients.show', $patient))->assertForbidden();
 
         $this->assertDatabaseHas('activity_log', [
             'patient_id' => $patient->id,
@@ -100,7 +103,7 @@ class SecurityTest extends TestCase
 
         // On tente d'écrire dans la demande A un résultat appartenant à B.
         $this->actingAs($this->userWithRole(Rbac::ROLE_LAB))
-            ->post(route('laboratory.results.store', $demandeA), [
+            ->post(route('dme.laboratory.results.store', $demandeA), [
                 'results' => [[
                     'lab_order_item_id' => $examenDeB->id,
                     'parameter' => 'Glycémie',
@@ -118,7 +121,7 @@ class SecurityTest extends TestCase
         $proprietaire = $this->userWithRole(Rbac::ROLE_DOCTOR);
         $intrus = $this->userWithRole(Rbac::ROLE_DOCTOR);
 
-        app(\App\Services\Notifications\NotificationService::class)->store(
+        app(\Keneya\Dme\Services\Notifications\NotificationService::class)->store(
             user: $proprietaire,
             category: 'alert',
             title: 'Résultat critique',
@@ -128,7 +131,7 @@ class SecurityTest extends TestCase
         $notification = \Illuminate\Support\Facades\DB::table('notifications')->first();
 
         $this->actingAs($intrus)
-            ->post(route('notifications.read', $notification->id))
+            ->post(route('dme.notifications.read', $notification->id))
             ->assertRedirect();
 
         // La notification de l'autre utilisateur reste non lue.
@@ -152,11 +155,11 @@ class SecurityTest extends TestCase
 
         // L'infirmier possède documents.view mais pas documents.download.
         $this->actingAs($this->userWithRole(Rbac::ROLE_NURSE))
-            ->get(route('documents.download', $document))
+            ->get(route('dme.documents.download', $document))
             ->assertForbidden();
 
         $this->actingAs($medecin)
-            ->get(route('documents.download', $document))
+            ->get(route('dme.documents.download', $document))
             ->assertOk();
     }
 
@@ -168,7 +171,7 @@ class SecurityTest extends TestCase
         $medecin = $this->userWithRole(Rbac::ROLE_DOCTOR);
         $document = $this->actingAs($medecin)->uploadDocument($patient);
 
-        $response = $this->actingAs($medecin)->get(route('documents.show', $document));
+        $response = $this->actingAs($medecin)->get(route('dme.documents.show', $document));
 
         $response->assertOk();
         $response->assertDontSee($document->storage_path);
@@ -183,7 +186,7 @@ class SecurityTest extends TestCase
         $medecin = $this->userWithRole(Rbac::ROLE_DOCTOR);
         $document = $this->actingAs($medecin)->uploadDocument($patient);
 
-        $this->actingAs($medecin)->get(route('documents.download', $document))->assertOk();
+        $this->actingAs($medecin)->get(route('dme.documents.download', $document))->assertOk();
 
         $this->assertDatabaseHas('activity_log', [
             'action' => 'downloaded',
@@ -199,7 +202,7 @@ class SecurityTest extends TestCase
         $patient = Patient::factory()->create();
 
         $this->actingAs($this->userWithRole(Rbac::ROLE_DOCTOR))
-            ->post(route('documents.store', $patient), [
+            ->post(route('dme.documents.store', $patient), [
                 'title' => 'Script malveillant',
                 'type' => 'imported',
                 'file' => UploadedFile::fake()->create('exploit.php', 10, 'application/x-php'),
@@ -218,7 +221,7 @@ class SecurityTest extends TestCase
         Patient::factory()->count(3)->create();
 
         $this->actingAs($this->userWithRole(Rbac::ROLE_DOCTOR))
-            ->get(route('patients.index', ['q' => "'; DROP TABLE patients; --"]))
+            ->get(route('dme.patients.index', ['q' => "'; DROP TABLE patients; --"]))
             ->assertOk();
 
         // La table est intacte : la requête est paramétrée.
@@ -233,7 +236,7 @@ class SecurityTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->userWithRole(Rbac::ROLE_DOCTOR))
-            ->get(route('patients.show', $patient));
+            ->get(route('dme.patients.show', $patient));
 
         $response->assertOk();
         $response->assertDontSee('<script>alert("xss")</script>', escape: false);
@@ -266,7 +269,7 @@ class SecurityTest extends TestCase
     public function test_les_formulaires_emettent_un_jeton_csrf(): void
     {
         $response = $this->actingAs($this->userWithRole(Rbac::ROLE_DOCTOR))
-            ->get(route('patients.create'));
+            ->get(route('dme.patients.create'));
 
         $response->assertOk();
         $response->assertSee('name="_token"', escape: false);
@@ -281,7 +284,7 @@ class SecurityTest extends TestCase
         $medecin = $this->userWithRole(Rbac::ROLE_DOCTOR);
 
         $this->actingAs($medecin)
-            ->put(route('users.update', $medecin), [
+            ->put(route('dme.users.update', $medecin), [
                 'first_name' => $medecin->first_name,
                 'last_name' => $medecin->last_name,
                 'email' => $medecin->email,
@@ -299,7 +302,7 @@ class SecurityTest extends TestCase
         $admin = $this->userWithRole(Rbac::ROLE_ADMIN);
 
         $this->actingAs($admin)
-            ->put(route('users.update', $admin), [
+            ->put(route('dme.users.update', $admin), [
                 'first_name' => $admin->first_name,
                 'last_name' => $admin->last_name,
                 'email' => $admin->email,
@@ -349,7 +352,7 @@ class SecurityTest extends TestCase
      */
     private function uploadDocument(Patient $patient): MedicalDocument
     {
-        $this->post(route('documents.store', $patient), [
+        $this->post(route('dme.documents.store', $patient), [
             'title' => 'Compte rendu de test',
             'type' => 'imported',
             'file' => UploadedFile::fake()->create('compte-rendu.pdf', 30, 'application/pdf'),

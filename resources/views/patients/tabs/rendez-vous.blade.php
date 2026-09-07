@@ -7,7 +7,7 @@
         </div>
 
         @if ($tabData['appointments']->isEmpty())
-            <x-empty-state icon="calendar" title="Aucun rendez-vous"
+            <x-dme::empty-state icon="calendar" title="Aucun rendez-vous"
                            message="Programmez un rendez-vous : le patient recevra une confirmation par SMS et un rappel la veille."/>
         @else
             <div class="overflow-x-auto">
@@ -26,14 +26,14 @@
                         @foreach ($tabData['appointments'] as $appointment)
                             <tr>
                                 <td class="whitespace-nowrap">
-                                    <a href="{{ route('appointments.show', $appointment) }}" class="hover:text-clinic-700 hover:underline">
+                                    <a href="{{ route('dme.appointments.show', $appointment) }}" class="hover:text-clinic-700 hover:underline">
                                         {{ $appointment->scheduled_for->translatedFormat('d M Y · H:i') }}
                                     </a>
                                 </td>
                                 <td class="font-mono text-xs">{{ $appointment->appointment_number }}</td>
                                 <td>{{ $appointment->reason ?: 'Consultation' }}</td>
                                 <td>{{ $appointment->doctor?->displayName() ?? '—' }}</td>
-                                <td><x-status-badge :status="$appointment->status" :label="$appointment->statusLabel()"/></td>
+                                <td><x-dme::status-badge :status="$appointment->status" :label="$appointment->statusLabel()"/></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -46,14 +46,14 @@
     @can('appointments.manage')
         <section class="k-card self-start">
             <div class="k-card-header"><h2 class="k-card-title">Programmer un rendez-vous</h2></div>
-            <form action="{{ route('appointments.store', $patient) }}" method="POST" class="k-card-body space-y-3">
+            <form action="{{ route('dme.appointments.store', $patient) }}" method="POST" class="k-card-body space-y-3">
                 @csrf
                 <div>
                     <label for="scheduled_for" class="k-label">Date et heure <span class="text-red-600" aria-hidden="true">*</span></label>
                     <input id="scheduled_for" name="scheduled_for" type="datetime-local" required
                            min="{{ now()->format('Y-m-d\TH:i') }}"
                            value="{{ now()->addDay()->setTime(9, 0)->format('Y-m-d\TH:i') }}" class="k-input">
-                    <x-field-error name="scheduled_for"/>
+                    <x-dme::field-error name="scheduled_for"/>
                 </div>
                 <div>
                     <label for="duration_minutes" class="k-label">Durée (minutes) <span class="text-red-600" aria-hidden="true">*</span></label>
@@ -81,7 +81,7 @@
                            class="mt-0.5 h-4 w-4 rounded border-ink-300 text-clinic-600">
                     <span>
                         Envoyer un rappel SMS la veille
-                        @if (! \App\Services\Sms\PhoneNumber::isSendable($patient->phone))
+                        @if (! \Keneya\Dme\Support\PhoneNumber::isSendable($patient->phone))
                             <span class="block text-xs text-amber-700">
                                 Aucun numéro exploitable pour ce patient : le SMS ne sera pas émis.
                             </span>

@@ -1,17 +1,17 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Nouveau compte')
 
 @section('content')
-    <x-page-header title="Nouveau compte professionnel"
-                   :breadcrumbs="['Utilisateurs' => route('users.index'), 'Nouveau compte' => null]"/>
+    <x-dme::page-header title="Nouveau compte professionnel"
+                   :breadcrumbs="['Utilisateurs' => route('dme.users.index'), 'Nouveau compte' => null]"/>
 
-    <form action="{{ route('users.store') }}" method="POST" novalidate>
+    <form action="{{ route('dme.users.store') }}" method="POST" novalidate>
         @csrf
-        @include('users._form', ['user' => null])
+        @include('dme::users._form', ['user' => null])
         <div class="mt-5 flex flex-wrap gap-2">
             <button type="submit" class="k-btn-primary">Créer le compte</button>
-            <a href="{{ route('users.index') }}" class="k-btn-ghost">Annuler</a>
+            <a href="{{ route('dme.users.index') }}" class="k-btn-ghost">Annuler</a>
         </div>
     </form>
 @endsection

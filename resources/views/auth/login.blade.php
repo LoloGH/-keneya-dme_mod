@@ -6,9 +6,12 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#172554">
     <title>Connexion · {{ config('app.name') }}</title>
-    <link rel="icon" href="{{ asset('assets/logo-icon.png') }}">
-    <link rel="preload" as="image" href="{{ asset('assets/login-scene.webp') }}" type="image/webp">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="icon" href="{{ \Keneya\Dme\Dme::asset('assets/logo-icon.png') }}">
+    <link rel="preload" as="image" href="{{ \Keneya\Dme\Dme::asset('assets/login-scene.webp') }}" type="image/webp">
+    {{-- Feuilles de style et scripts du module, publiés dans le
+         répertoire public de l'hôte (vendor:publish --tag=dme-assets). --}}
+    <link rel="stylesheet" href="{{ \Keneya\Dme\Dme::asset('build/app.css') }}">
+    <script src="{{ \Keneya\Dme\Dme::asset('build/app.js') }}" defer></script>
 </head>
 <body class="h-full overflow-hidden bg-clinic-950">
 
@@ -46,8 +49,8 @@
          horizontalement : on recentre alors sur le couloir, faute de quoi le
          praticien se retrouve décapité derrière la carte. --}}
     <picture>
-        <source srcset="{{ asset('assets/login-scene.webp') }}" type="image/webp">
-        <img src="{{ asset('assets/login-scene.jpg') }}" alt="" aria-hidden="true"
+        <source srcset="{{ \Keneya\Dme\Dme::asset('assets/login-scene.webp') }}" type="image/webp">
+        <img src="{{ \Keneya\Dme\Dme::asset('assets/login-scene.jpg') }}" alt="" aria-hidden="true"
              width="1671" height="941" fetchpriority="high"
              class="absolute inset-0 h-full w-full object-cover object-[26%_center] lg:object-center">
     </picture>
@@ -64,7 +67,7 @@
         <header class="shrink-0 px-5 pt-5 sm:px-8 sm:pt-7 lg:px-12 lg:pt-9 xl:px-16 2xl:px-24
                        [@media(max-height:820px)]:pt-4 [@media(max-height:820px)]:lg:pt-4">
             <div class="flex items-center gap-3.5 lg:gap-4">
-                <img src="{{ asset('assets/logo-icon.png') }}" alt="Keneya DME"
+                <img src="{{ \Keneya\Dme\Dme::asset('assets/logo-icon.png') }}" alt="Keneya DME"
                      width="320" height="270"
                      class="h-12 w-auto drop-shadow-md sm:h-14 lg:h-16 xl:h-[4.5rem]
                             [@media(max-height:820px)]:h-11 [@media(max-height:820px)]:sm:h-12 [@media(max-height:820px)]:lg:h-[3.25rem] [@media(max-height:820px)]:xl:h-14">
@@ -100,7 +103,7 @@
                             <li class="flex items-center gap-3.5">
                                 <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full
                                              text-white/90 ring-1 ring-white/30 xl:h-10 xl:w-10" aria-hidden="true">
-                                    <x-icon :name="$feature['icon']" class="h-[1.15rem] w-[1.15rem]"/>
+                                    <x-dme::icon :name="$feature['icon']" class="h-[1.15rem] w-[1.15rem]"/>
                                 </span>
                                 <span class="text-[0.9rem] font-medium text-white drop-shadow-sm xl:text-[0.975rem]">
                                     {{ $feature['label'] }}
@@ -137,7 +140,7 @@
                                        focus-visible:outline-clinic-600"
                                 @click="langOpen = !langOpen" :aria-expanded="langOpen.toString()" aria-haspopup="listbox">
                             <span x-text="lang === 'fr' ? 'Français' : 'English'"></span>
-                            <x-icon name="chevron-down" class="h-3 w-3"/>
+                            <x-dme::icon name="chevron-down" class="h-3 w-3"/>
                         </button>
                         <ul x-cloak x-show="langOpen" x-transition.origin.top.right
                             class="absolute top-full right-0 z-10 mt-1 w-32 overflow-hidden rounded-lg border border-ink-200
@@ -148,7 +151,7 @@
                                         class="flex w-full items-center justify-between px-3 py-1.5 text-xs text-ink-700 hover:bg-ink-50"
                                         @click="lang = 'fr'; langOpen = false">
                                     Français
-                                    <x-icon name="check" class="h-3.5 w-3.5 text-keneya-600" x-show="lang === 'fr'"/>
+                                    <x-dme::icon name="check" class="h-3.5 w-3.5 text-keneya-600" x-show="lang === 'fr'"/>
                                 </button>
                             </li>
                             <li role="option" :aria-selected="lang === 'en'">
@@ -163,7 +166,7 @@
                     </div>
 
                     <div class="mt-1 flex flex-col items-center text-center">
-                        <img src="{{ asset('assets/logo-icon.png') }}" alt="Keneya DME"
+                        <img src="{{ \Keneya\Dme\Dme::asset('assets/logo-icon.png') }}" alt="Keneya DME"
                              width="320" height="270" class="h-20 w-auto object-contain [@media(max-height:820px)]:h-16">
                         <p class="mt-3 text-base font-medium text-ink-600 [@media(max-height:820px)]:mt-2">Connectez-vous pour accéder à votre espace</p>
                     </div>
@@ -175,13 +178,13 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('login') }}" method="POST" class="mt-5 space-y-3.5 [@media(max-height:820px)]:mt-3 [@media(max-height:820px)]:space-y-2.5" @submit="submitting = true">
+                    <form action="{{ route('dme.login') }}" method="POST" class="mt-5 space-y-3.5 [@media(max-height:820px)]:mt-3 [@media(max-height:820px)]:space-y-2.5" @submit="submitting = true">
                         @csrf
 
                         <div>
                             <label for="email" class="k-label">Adresse e-mail ou nom d'utilisateur</label>
                             <div class="relative">
-                                <x-icon name="mail" class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-400"/>
+                                <x-dme::icon name="mail" class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-400"/>
                                 <input id="email" name="email" type="email" value="{{ old('email') }}" x-ref="email"
                                        class="k-input pl-10 @error('email') border-red-500 @enderror"
                                        required autofocus autocomplete="username"
@@ -195,7 +198,7 @@
                         <div>
                             <label for="password" class="k-label">Mot de passe</label>
                             <div class="relative">
-                                <x-icon name="lock" class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-400"/>
+                                <x-dme::icon name="lock" class="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-400"/>
                                 <input id="password" name="password" :type="showPassword ? 'text' : 'password'" x-ref="password"
                                        class="k-input pr-11 pl-10 @error('password') border-red-500 @enderror"
                                        required autocomplete="current-password"
@@ -206,11 +209,11 @@
                                                focus-visible:outline-offset-2 focus-visible:outline-clinic-600"
                                         :aria-label="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
                                         :aria-pressed="showPassword.toString()">
-                                    <x-icon name="eye" class="h-4 w-4" x-show="!showPassword"/>
-                                    <x-icon name="eye-off" class="h-4 w-4" x-show="showPassword" x-cloak/>
+                                    <x-dme::icon name="eye" class="h-4 w-4" x-show="!showPassword"/>
+                                    <x-dme::icon name="eye-off" class="h-4 w-4" x-show="showPassword" x-cloak/>
                                 </button>
                             </div>
-                            <x-field-error name="password"/>
+                            <x-dme::field-error name="password"/>
                         </div>
 
                         <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-xs">
@@ -236,7 +239,7 @@
                                 class="k-btn w-full bg-linear-to-r from-clinic-700 to-keneya-600 text-white transition
                                        hover:from-clinic-800 hover:to-keneya-700 focus-visible:outline-clinic-700
                                        disabled:opacity-80">
-                            <x-icon name="login" class="h-4 w-4" x-show="!submitting"/>
+                            <x-dme::icon name="login" class="h-4 w-4" x-show="!submitting"/>
                             <svg x-show="submitting" x-cloak class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                                 <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z"/>
@@ -258,7 +261,7 @@
                                        hover:bg-clinic-50 hover:text-clinic-700 focus-visible:outline-2
                                        focus-visible:outline-offset-2 focus-visible:outline-clinic-600"
                                 @click="fillRole('medecin@keneya.test')">
-                            <x-icon name="stethoscope" class="h-3.5 w-3.5"/> Médecin
+                            <x-dme::icon name="stethoscope" class="h-3.5 w-3.5"/> Médecin
                         </button>
                         <button type="button"
                                 class="flex min-h-9 [@media(max-height:820px)]:min-h-8 items-center justify-center gap-1.5 rounded-lg border border-ink-200 px-2
@@ -266,7 +269,7 @@
                                        hover:bg-clinic-50 hover:text-clinic-700 focus-visible:outline-2
                                        focus-visible:outline-offset-2 focus-visible:outline-clinic-600"
                                 @click="fillRole('infirmier@keneya.test')">
-                            <x-icon name="heart" class="h-3.5 w-3.5"/> Infirmier
+                            <x-dme::icon name="heart" class="h-3.5 w-3.5"/> Infirmier
                         </button>
                         <button type="button"
                                 class="flex min-h-9 [@media(max-height:820px)]:min-h-8 items-center justify-center gap-1.5 rounded-lg border border-ink-200 px-2
@@ -274,7 +277,7 @@
                                        hover:bg-clinic-50 hover:text-clinic-700 focus-visible:outline-2
                                        focus-visible:outline-offset-2 focus-visible:outline-clinic-600"
                                 @click="fillRole('reception@keneya.test')">
-                            <x-icon name="clipboard" class="h-3.5 w-3.5"/> Réception
+                            <x-dme::icon name="clipboard" class="h-3.5 w-3.5"/> Réception
                         </button>
                         <button type="button"
                                 class="flex min-h-9 [@media(max-height:820px)]:min-h-8 items-center justify-center gap-1.5 rounded-lg border border-ink-200 px-2
@@ -282,17 +285,17 @@
                                        hover:bg-clinic-50 hover:text-clinic-700 focus-visible:outline-2
                                        focus-visible:outline-offset-2 focus-visible:outline-clinic-600"
                                 @click="fillRole('admin@keneya.test')">
-                            <x-icon name="cog" class="h-3.5 w-3.5"/> Admin
+                            <x-dme::icon name="cog" class="h-3.5 w-3.5"/> Admin
                         </button>
                     </div>
 
                     <p class="mt-5 flex items-center justify-center gap-1.5 text-center text-[11px] text-ink-400 [@media(max-height:820px)]:mt-3">
-                        <x-icon name="lock" class="h-3 w-3 shrink-0"/>
+                        <x-dme::icon name="lock" class="h-3 w-3 shrink-0"/>
                         Accès sécurisé
                     </p>
 
                     <p class="mt-2.5 text-center text-[11px] text-ink-300 [@media(max-height:820px)]:mt-1.5">
-                        © {{ date('Y') }} Keneya DME · v{{ config('keneya.version') }}
+                        © {{ date('Y') }} Keneya DME · v{{ config('dme.version') }}
                     </p>
                 </div>
             </div>
@@ -306,7 +309,7 @@
                         <li class="h-3 w-px bg-white/25" aria-hidden="true"></li>
                     @endif
                     <li class="flex items-center gap-2 drop-shadow-sm">
-                        <x-icon :name="$item['icon']" class="h-4 w-4 text-white/60"/>
+                        <x-dme::icon :name="$item['icon']" class="h-4 w-4 text-white/60"/>
                         {{ $item['label'] }}
                     </li>
                 @endforeach

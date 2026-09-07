@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders;
+namespace Keneya\Dme\Database\Seeders;
 
-use App\Models\Service;
+use Keneya\Dme\Models\Service;
 use Illuminate\Database\Seeder;
 
 /** Services de l'établissement de démonstration. */

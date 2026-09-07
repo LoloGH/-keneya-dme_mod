@@ -1,16 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Annuaire des professionnels du DME.
+ *
+ * Le module ne gère plus l'authentification : la session vient de
+ * l'application hôte. La table `users` reste néanmoins l'annuaire des
+ * praticiens du dossier médical — c'est elle que référencent les
+ * prescripteurs, les exécutants d'un soin, les auteurs d'un compte rendu
+ * et les colonnes `created_by` de tout le dossier.
+ *
+ * Elle n'est créée que si l'hôte n'en a pas déjà une : montée dans une
+ * application qui possède ses propres utilisateurs, cette migration ne
+ * fait rien, et les migrations suivantes se contentent d'ajouter les
+ * colonnes professionnelles à la table existante.
+ *
+ * Les tables `sessions` et `password_reset_tokens` ne sont volontairement
+ * pas créées ici : elles relèvent de l'authentification, donc de l'hôte.
+ */
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
+        if (Schema::hasTable('users')) {
+            return;
+        }
+
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -20,30 +40,13 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
-
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-        });
-
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
-        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
+        // La table n'est supprimée que si le module l'a lui-même créée :
+        // le repli inverse — effacer les utilisateurs de l'hôte — serait
+        // catastrophique. On ne peut pas le savoir après coup, on
+        // s'abstient donc toujours.
     }
 };

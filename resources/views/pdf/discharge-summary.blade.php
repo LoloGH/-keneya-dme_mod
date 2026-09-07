@@ -1,4 +1,4 @@
-@extends('pdf._layout', ['title' => 'Compte rendu d’hospitalisation'])
+@extends('dme::pdf._layout', ['title' => 'Compte rendu d’hospitalisation'])
 
 @section('content')
     <h2>Séjour</h2>

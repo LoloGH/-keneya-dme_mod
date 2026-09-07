@@ -1,19 +1,19 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Nouvelle consultation')
 
 @section('content')
-    <x-page-header title="Nouvelle consultation"
+    <x-dme::page-header title="Nouvelle consultation"
                    :subtitle="$patient->fullName().' — '.$patient->patient_number"
                    :breadcrumbs="[
-                       'Patients' => route('patients.index'),
-                       $patient->fullName() => route('patients.show', $patient),
+                       'Patients' => route('dme.patients.index'),
+                       $patient->fullName() => route('dme.patients.show', $patient),
                        'Nouvelle consultation' => null,
                    ]"/>
 
-    <form action="{{ route('consultations.store', $patient) }}" method="POST" novalidate>
+    <form action="{{ route('dme.consultations.store', $patient) }}" method="POST" novalidate>
         @csrf
-        @include('consultations._form', ['consultation' => null])
+        @include('dme::consultations._form', ['consultation' => null])
 
         <div class="mt-5 flex flex-wrap items-center gap-2">
             <button type="submit" name="action" value="save" class="k-btn-primary">Enregistrer</button>
@@ -22,7 +22,7 @@
                     Enregistrer et prescrire
                 </button>
             @endcan
-            <a href="{{ route('patients.show', $patient) }}" class="k-btn-ghost">Annuler</a>
+            <a href="{{ route('dme.patients.show', $patient) }}" class="k-btn-ghost">Annuler</a>
         </div>
     </form>
 @endsection

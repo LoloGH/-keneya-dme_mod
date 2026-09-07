@@ -2,17 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Keneya\Dme\Database\Factories;
 
-use App\Models\Patient;
-use App\Models\User;
+use Keneya\Dme\Models\Patient;
+use Keneya\Dme\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Keneya\Dme\Models\Prescription;
 
 /**
- * @extends Factory<\App\Models\Prescription>
+ * @extends Factory<\Keneya\Dme\Models\Prescription>
  */
 class PrescriptionFactory extends Factory
 {
+    /**
+     * Le modèle ne se devine pas depuis un package : les fabriques
+     * de Laravel supposent l'espace de noms App\Models.
+     *
+     * @var class-string<Prescription>
+     */
+    protected $model = Prescription::class;
+
     /**
      * @return array<string, mixed>
      */

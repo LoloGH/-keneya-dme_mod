@@ -1,23 +1,23 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Notifications')
 
 @section('content')
-    <x-page-header title="Notifications" subtitle="Alertes et informations qui vous sont adressées.">
+    <x-dme::page-header title="Notifications" subtitle="Alertes et informations qui vous sont adressées.">
         <x-slot:actions>
-            <form action="{{ route('notifications.read-all') }}" method="POST">
+            <form action="{{ route('dme.notifications.read-all') }}" method="POST">
                 @csrf
                 <button type="submit" class="k-btn-secondary">Tout marquer comme lu</button>
             </form>
         </x-slot:actions>
-    </x-page-header>
+    </x-dme::page-header>
 
     <div class="mb-4 flex flex-wrap gap-2">
-        <a href="{{ route('notifications.index') }}"
+        <a href="{{ route('dme.notifications.index') }}"
            class="k-btn-secondary k-btn-sm {{ ! request('unread') && ! request('category') ? 'border-clinic-500 text-clinic-700' : '' }}">
             Toutes
         </a>
-        <a href="{{ route('notifications.index', ['unread' => 1]) }}"
+        <a href="{{ route('dme.notifications.index', ['unread' => 1]) }}"
            class="k-btn-secondary k-btn-sm {{ request('unread') ? 'border-clinic-500 text-clinic-700' : '' }}">
             Non lues
         </a>
@@ -25,7 +25,7 @@
             'appointment' => 'Rendez-vous', 'lab_result' => 'Résultats',
             'prescription' => 'Ordonnances', 'alert' => 'Alertes',
         ] as $value => $label)
-            <a href="{{ route('notifications.index', ['category' => $value]) }}"
+            <a href="{{ route('dme.notifications.index', ['category' => $value]) }}"
                class="k-btn-secondary k-btn-sm {{ request('category') === $value ? 'border-clinic-500 text-clinic-700' : '' }}">
                 {{ $label }}
             </a>
@@ -34,7 +34,7 @@
 
     <div class="k-card">
         @if ($notifications->isEmpty())
-            <x-empty-state icon="bell" title="Aucune notification"
+            <x-dme::empty-state icon="bell" title="Aucune notification"
                            message="Les alertes de résultats, de rendez-vous et d'ordonnances vous seront adressées ici."/>
         @else
             <ul class="divide-y divide-ink-100">
@@ -47,7 +47,7 @@
                                 'bg-amber-100 text-amber-600' => $notification->level === 'warning',
                                 'bg-clinic-100 text-clinic-600' => $notification->level === 'info',
                             ])">
-                            <x-icon :name="$notification->level === 'critical' ? 'alert' : 'bell'" class="h-4 w-4"/>
+                            <x-dme::icon :name="$notification->level === 'critical' ? 'alert' : 'bell'" class="h-4 w-4"/>
                         </span>
 
                         <div class="min-w-0 flex-1">
@@ -64,7 +64,7 @@
                                 <a href="{{ $notification->action_url }}" class="k-btn-secondary k-btn-sm">Ouvrir</a>
                             @endif
                             @unless ($notification->read_at)
-                                <form action="{{ route('notifications.read', $notification->id) }}" method="POST">
+                                <form action="{{ route('dme.notifications.read', $notification->id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="k-btn-ghost k-btn-sm">Marquer comme lue</button>
                                 </form>

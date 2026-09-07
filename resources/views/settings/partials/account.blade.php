@@ -42,7 +42,7 @@
     <div class="space-y-4">
         <section class="k-card">
             <div class="k-card-header"><h2 class="k-card-title">Changer mon mot de passe</h2></div>
-            <form action="{{ route('settings.password.update') }}" method="POST" class="k-card-body space-y-3">
+            <form action="{{ route('dme.settings.password.update') }}" method="POST" class="k-card-body space-y-3">
                 @csrf
                 @method('PUT')
 
@@ -51,14 +51,14 @@
                     <input id="current_password" name="current_password" type="password" required
                            autocomplete="current-password"
                            class="k-input @error('current_password') border-red-500 @enderror">
-                    <x-field-error name="current_password"/>
+                    <x-dme::field-error name="current_password"/>
                 </div>
 
                 <div>
                     <label for="password" class="k-label">Nouveau mot de passe</label>
                     <input id="password" name="password" type="password" required autocomplete="new-password"
                            class="k-input @error('password') border-red-500 @enderror">
-                    <x-field-error name="password"/>
+                    <x-dme::field-error name="password"/>
                 </div>
 
                 <div>
@@ -73,7 +73,7 @@
                 </p>
 
                 <button type="submit" class="k-btn-primary w-full">
-                    <x-icon name="lock" class="h-4 w-4"/> Mettre à jour
+                    <x-dme::icon name="lock" class="h-4 w-4"/> Mettre à jour
                 </button>
             </form>
         </section>
@@ -95,7 +95,7 @@
                                 @endif
                             </p>
                         </div>
-                        <x-status-badge :status="$user->is_on_duty ? 'active' : 'inactive'"
+                        <x-dme::status-badge :status="$user->is_on_duty ? 'active' : 'inactive'"
                                         :label="$user->is_on_duty ? 'De garde' : 'Hors garde'"/>
                     </div>
 
@@ -107,12 +107,12 @@
                         @endif
                     </p>
 
-                    <form action="{{ route('settings.duty.toggle') }}" method="POST" class="mt-3">
+                    <form action="{{ route('dme.settings.duty.toggle') }}" method="POST" class="mt-3">
                         @csrf
                         @method('PATCH')
                         <button type="submit"
                                 class="{{ $user->is_on_duty ? 'k-btn-secondary' : 'k-btn-primary' }} w-full">
-                            <x-icon name="bolt" class="h-4 w-4"/>
+                            <x-dme::icon name="bolt" class="h-4 w-4"/>
                             {{ $user->is_on_duty ? 'Quitter la garde' : 'Prendre la garde' }}
                         </button>
                     </form>

@@ -1,22 +1,22 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Nouvelle ordonnance')
 
 @section('content')
-    <x-page-header title="Nouvelle ordonnance"
+    <x-dme::page-header title="Nouvelle ordonnance"
                    :subtitle="$patient->fullName().' — '.$patient->patient_number"
                    :breadcrumbs="[
-                       'Patients' => route('patients.index'),
-                       $patient->fullName() => route('patients.show', $patient),
+                       'Patients' => route('dme.patients.index'),
+                       $patient->fullName() => route('dme.patients.show', $patient),
                        'Nouvelle ordonnance' => null,
                    ]"/>
 
     {{-- Les allergies connues restent visibles pendant toute la saisie (§22) --}}
     <section class="k-card mb-4">
         <div class="p-4 sm:p-5">
-            <x-patient-header :patient="$patient" compact/>
+            <x-dme::patient-header :patient="$patient" compact/>
             @if ($patient->criticalAllergies()->isNotEmpty())
-                <div class="mt-4"><x-medical-alerts :patient="$patient"/></div>
+                <div class="mt-4"><x-dme::medical-alerts :patient="$patient"/></div>
                 <p class="mt-2 text-xs text-ink-500">
                     L’application confronte automatiquement les médicaments saisis aux allergies documentées
                     et vous avertit avant validation. Elle ne retire jamais une ligne : la décision vous appartient.
@@ -25,7 +25,7 @@
         </div>
     </section>
 
-    <form action="{{ route('prescriptions.store', $patient) }}" method="POST" novalidate>
+    <form action="{{ route('dme.prescriptions.store', $patient) }}" method="POST" novalidate>
         @csrf
         @if ($consultation)
             <input type="hidden" name="consultation_id" value="{{ $consultation->id }}">
@@ -33,7 +33,7 @@
 
         <fieldset class="k-fieldset mb-4">
             <legend class="k-fieldset-legend">
-                <x-icon name="document" class="h-4.5 w-4.5 text-clinic-600"/> En-tête
+                <x-dme::icon name="document" class="h-4.5 w-4.5 text-clinic-600"/> En-tête
             </legend>
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div>
@@ -42,19 +42,19 @@
                 </div>
                 <div>
                     <span class="k-label">Établissement</span>
-                    <p class="rounded-lg bg-ink-50 px-3 py-2 text-sm text-ink-700">{{ config('keneya.facility.name') }}</p>
+                    <p class="rounded-lg bg-ink-50 px-3 py-2 text-sm text-ink-700">{{ config('dme.facility.name') }}</p>
                 </div>
                 <div>
                     <label for="issued_on" class="k-label">Date <span class="text-red-600" aria-hidden="true">*</span></label>
                     <input id="issued_on" name="issued_on" type="date" required
                            value="{{ old('issued_on', now()->toDateString()) }}" class="k-input">
-                    <x-field-error name="issued_on"/>
+                    <x-dme::field-error name="issued_on"/>
                 </div>
                 <div>
                     <label for="valid_until" class="k-label">Valable jusqu’au</label>
                     <input id="valid_until" name="valid_until" type="date"
                            value="{{ old('valid_until', now()->addMonths(3)->toDateString()) }}" class="k-input">
-                    <x-field-error name="valid_until"/>
+                    <x-dme::field-error name="valid_until"/>
                 </div>
             </div>
             @if ($consultation)
@@ -70,7 +70,7 @@
         <fieldset class="k-fieldset mb-4"
                   x-data="prescriptionBuilder({{ Illuminate\Support\Js::from(old('items', [])) }})">
             <legend class="k-fieldset-legend">
-                <x-icon name="pill" class="h-4.5 w-4.5 text-clinic-600"/> Médicaments
+                <x-dme::icon name="pill" class="h-4.5 w-4.5 text-clinic-600"/> Médicaments
             </legend>
 
             @if ($usualMedications->isNotEmpty())
@@ -93,11 +93,11 @@
                         <div class="flex gap-1">
                             <button type="button" @click="duplicate(index)" class="k-btn-ghost k-btn-sm"
                                     aria-label="Dupliquer cette ligne">
-                                <x-icon name="copy" class="h-4 w-4"/>
+                                <x-dme::icon name="copy" class="h-4 w-4"/>
                             </button>
                             <button type="button" @click="remove(index)" class="k-btn-ghost k-btn-sm text-red-600"
                                     aria-label="Retirer cette ligne">
-                                <x-icon name="trash" class="h-4 w-4"/>
+                                <x-dme::icon name="trash" class="h-4 w-4"/>
                             </button>
                         </div>
                     </div>
@@ -152,10 +152,10 @@
             </template>
 
             <button type="button" @click="add()" class="k-btn-secondary">
-                <x-icon name="plus" class="h-4 w-4"/> Ajouter un médicament
+                <x-dme::icon name="plus" class="h-4 w-4"/> Ajouter un médicament
             </button>
 
-            <x-field-error name="items"/>
+            <x-dme::field-error name="items"/>
         </fieldset>
 
         <fieldset class="k-fieldset mb-4">
@@ -166,7 +166,7 @@
 
         <div class="flex flex-wrap items-center gap-2">
             <button type="submit" class="k-btn-primary">Enregistrer l’ordonnance</button>
-            <a href="{{ route('patients.show', $patient) }}" class="k-btn-ghost">Annuler</a>
+            <a href="{{ route('dme.patients.show', $patient) }}" class="k-btn-ghost">Annuler</a>
         </div>
     </form>
 @endsection

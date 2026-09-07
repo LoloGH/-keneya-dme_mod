@@ -1,4 +1,4 @@
-@extends('pdf._layout', ['title' => 'Ordonnance'])
+@extends('dme::pdf._layout', ['title' => 'Ordonnance'])
 
 @section('content')
     {{-- Alerte allergie reportée sur le document imprimé (§22) --}}

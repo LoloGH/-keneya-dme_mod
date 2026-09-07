@@ -18,6 +18,12 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // La table des rôles appartient à spatie/laravel-permission :
+        // l'hôte l'a peut-être déjà, avec ou sans cette colonne.
+        if (Schema::hasColumn('roles', 'label')) {
+            return;
+        }
+
         Schema::table('roles', function (Blueprint $table) {
             $table->string('label')->nullable()->after('name');
         });

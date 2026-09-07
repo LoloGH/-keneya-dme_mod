@@ -1,19 +1,19 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Tableau de bord')
 
 @section('content')
-    <x-page-header
+    <x-dme::page-header
         title="Bonjour, {{ auth()->user()->displayName() }}"
         subtitle="Activité médicale du {{ now()->translatedFormat('l d F Y') }}">
         <x-slot:actions>
             @can('patients.create')
-                <a href="{{ route('patients.create') }}" class="k-btn-primary">
-                    <x-icon name="plus" class="h-4 w-4"/> Nouveau patient
+                <a href="{{ route('dme.patients.create') }}" class="k-btn-primary">
+                    <x-dme::icon name="plus" class="h-4 w-4"/> Nouveau patient
                 </a>
             @endcan
         </x-slot:actions>
-    </x-page-header>
+    </x-dme::page-header>
 
     {{-- Indicateurs du jour (§10) --}}
     <section aria-label="Indicateurs du jour"
@@ -92,7 +92,7 @@
                         </div>
                     </div>
                 @empty
-                    <x-empty-state icon="stethoscope" title="Aucune consultation sur la période"
+                    <x-dme::empty-state icon="stethoscope" title="Aucune consultation sur la période"
                                    message="Les consultations enregistrées apparaîtront ici, réparties par service."/>
                 @endforelse
             </div>
@@ -106,7 +106,7 @@
             <div class="k-card-header">
                 <h2 class="k-card-title">Activité récente</h2>
                 @can('audit.view')
-                    <a href="{{ route('audit.index') }}" class="text-xs font-medium text-clinic-700 hover:underline">
+                    <a href="{{ route('dme.audit.index') }}" class="text-xs font-medium text-clinic-700 hover:underline">
                         Journal complet
                     </a>
                 @endcan
@@ -126,7 +126,7 @@
                         </div>
                     </div>
                 @empty
-                    <x-empty-state icon="clipboard" title="Aucune activité enregistrée"
+                    <x-dme::empty-state icon="clipboard" title="Aucune activité enregistrée"
                                    message="Les actions réalisées dans l'application apparaîtront ici."/>
                 @endforelse
             </div>
@@ -137,14 +137,14 @@
             <div class="k-card-header">
                 <h2 class="k-card-title">Prochains rendez-vous</h2>
                 @can('appointments.view')
-                    <a href="{{ route('appointments.index') }}" class="text-xs font-medium text-clinic-700 hover:underline">
+                    <a href="{{ route('dme.appointments.index') }}" class="text-xs font-medium text-clinic-700 hover:underline">
                         Calendrier
                     </a>
                 @endcan
             </div>
             <div class="k-card-body">
                 @forelse ($upcomingAppointments as $appointment)
-                    <a href="{{ route('appointments.show', $appointment) }}"
+                    <a href="{{ route('dme.appointments.show', $appointment) }}"
                        class="flex items-center gap-3 border-b border-ink-100 py-2.5 last:border-0 last:pb-0 first:pt-0
                               hover:bg-clinic-50/40">
                         <div class="w-14 shrink-0 text-center">
@@ -160,10 +160,10 @@
                                 @if ($appointment->doctor) · {{ $appointment->doctor->displayName() }} @endif
                             </p>
                         </div>
-                        <x-status-badge :status="$appointment->status" :label="$appointment->statusLabel()"/>
+                        <x-dme::status-badge :status="$appointment->status" :label="$appointment->statusLabel()"/>
                     </a>
                 @empty
-                    <x-empty-state icon="calendar" title="Aucun rendez-vous à venir"
+                    <x-dme::empty-state icon="calendar" title="Aucun rendez-vous à venir"
                                    message="Les rendez-vous programmés s'afficheront dans cette liste."/>
                 @endforelse
             </div>

@@ -1,30 +1,30 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Nouvelle admission')
 
 @section('content')
-    <x-page-header title="Nouvelle admission"
+    <x-dme::page-header title="Nouvelle admission"
                    :subtitle="$patient->fullName().' — '.$patient->patient_number"
                    :breadcrumbs="[
-                       'Patients' => route('patients.index'),
-                       $patient->fullName() => route('patients.show', $patient),
+                       'Patients' => route('dme.patients.index'),
+                       $patient->fullName() => route('dme.patients.show', $patient),
                        'Admission' => null,
                    ]"/>
 
     <section class="k-card mb-4">
         <div class="p-4 sm:p-5">
-            <x-patient-header :patient="$patient" compact/>
+            <x-dme::patient-header :patient="$patient" compact/>
             @if ($patient->criticalAllergies()->isNotEmpty() || $patient->activeConditions()->isNotEmpty())
-                <div class="mt-4"><x-medical-alerts :patient="$patient"/></div>
+                <div class="mt-4"><x-dme::medical-alerts :patient="$patient"/></div>
             @endif
         </div>
     </section>
 
-    <form action="{{ route('hospitalizations.store', $patient) }}" method="POST" novalidate>
+    <form action="{{ route('dme.hospitalizations.store', $patient) }}" method="POST" novalidate>
         @csrf
         <fieldset class="k-fieldset mb-4">
             <legend class="k-fieldset-legend">
-                <x-icon name="bed" class="h-4.5 w-4.5 text-clinic-600"/> Admission
+                <x-dme::icon name="bed" class="h-4.5 w-4.5 text-clinic-600"/> Admission
             </legend>
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div>
@@ -32,7 +32,7 @@
                     <input id="admitted_at" name="admitted_at" type="datetime-local" required
                            max="{{ now()->format('Y-m-d\TH:i') }}"
                            value="{{ old('admitted_at', now()->format('Y-m-d\TH:i')) }}" class="k-input">
-                    <x-field-error name="admitted_at"/>
+                    <x-dme::field-error name="admitted_at"/>
                 </div>
                 <div>
                     <label for="service_id" class="k-label">Service</label>
@@ -62,14 +62,14 @@
                     <label for="admission_reason" class="k-label">Motif d’admission <span class="text-red-600" aria-hidden="true">*</span></label>
                     <textarea id="admission_reason" name="admission_reason" rows="3" required maxlength="1000"
                               class="k-textarea">{{ old('admission_reason') }}</textarea>
-                    <x-field-error name="admission_reason"/>
+                    <x-dme::field-error name="admission_reason"/>
                 </div>
             </div>
         </fieldset>
 
         <div class="flex flex-wrap items-center gap-2">
             <button type="submit" class="k-btn-primary">Enregistrer l’admission</button>
-            <a href="{{ route('patients.show', $patient) }}" class="k-btn-ghost">Annuler</a>
+            <a href="{{ route('dme.patients.show', $patient) }}" class="k-btn-ghost">Annuler</a>
         </div>
     </form>
 @endsection

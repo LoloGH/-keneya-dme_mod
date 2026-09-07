@@ -1,4 +1,4 @@
-@extends('pdf._layout', ['title' => 'Fiche patient'])
+@extends('dme::pdf._layout', ['title' => 'Fiche patient'])
 
 @section('content')
     @if ($patient->criticalAllergies()->isNotEmpty())

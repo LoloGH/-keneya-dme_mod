@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Keneya\Dme\Tests\Feature;
 
-use App\Models\LabOrder;
-use App\Models\Patient;
-use App\Models\Prescription;
-use App\Support\Rbac;
+use Keneya\Dme\Models\LabOrder;
+use Keneya\Dme\Models\Patient;
+use Keneya\Dme\Models\Prescription;
+use Keneya\Dme\Support\Rbac;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * Tests d'autorisation par rôle (§56).
@@ -96,7 +96,7 @@ class AuthorizationTest extends TestCase
         string $route,
         bool $autorise,
     ): void {
-        $response = $this->actingAs($this->userWithRole($role))->get(route($route));
+        $response = $this->actingAs($this->userWithRole($role))->get(route('dme.'.$route));
 
         $autorise
             ? $response->assertOk()
@@ -108,7 +108,7 @@ class AuthorizationTest extends TestCase
         $patient = Patient::factory()->create();
 
         $this->actingAs($this->userWithRole(Rbac::ROLE_PHARMACIST))
-            ->get(route('prescriptions.create', $patient))
+            ->get(route('dme.prescriptions.create', $patient))
             ->assertForbidden();
     }
 
@@ -117,7 +117,7 @@ class AuthorizationTest extends TestCase
         $prescription = Prescription::factory()->validated()->create();
 
         $this->actingAs($this->userWithRole(Rbac::ROLE_DOCTOR))
-            ->post(route('prescriptions.dispense', $prescription))
+            ->post(route('dme.prescriptions.dispense', $prescription))
             ->assertForbidden();
     }
 
@@ -126,7 +126,7 @@ class AuthorizationTest extends TestCase
         $prescription = Prescription::factory()->validated()->create();
 
         $this->actingAs($this->userWithRole(Rbac::ROLE_PHARMACIST))
-            ->post(route('prescriptions.dispense', $prescription))
+            ->post(route('dme.prescriptions.dispense', $prescription))
             ->assertRedirect();
 
         $this->assertSame('dispensed', $prescription->fresh()->status);
@@ -138,7 +138,7 @@ class AuthorizationTest extends TestCase
         $order->items()->create(['exam_name' => 'Glycémie à jeun', 'status' => 'requested']);
 
         $this->actingAs($this->userWithRole(Rbac::ROLE_NURSE))
-            ->post(route('laboratory.results.store', $order), [
+            ->post(route('dme.laboratory.results.store', $order), [
                 'results' => [[
                     'lab_order_item_id' => $order->items->first()->id,
                     'parameter' => 'Glycémie',
@@ -154,7 +154,7 @@ class AuthorizationTest extends TestCase
         $patient = Patient::factory()->create();
 
         $this->actingAs($this->userWithRole(Rbac::ROLE_NURSE))
-            ->post(route('record.vitals.store', $patient), [
+            ->post(route('dme.record.vitals.store', $patient), [
                 'measured_at' => now()->format('Y-m-d H:i:s'),
                 'temperature' => 37.2,
                 'systolic' => 122,
@@ -165,22 +165,10 @@ class AuthorizationTest extends TestCase
         $this->assertSame(1, $patient->vitalSigns()->count());
     }
 
-    public function test_un_compte_desactive_ne_peut_pas_se_connecter(): void
-    {
-        $user = $this->userWithRole(Rbac::ROLE_DOCTOR, ['is_active' => false]);
-
-        $this->post(route('login'), [
-            'email' => $user->email,
-            'password' => 'MotDePasseDeTest2026',
-        ])->assertSessionHasErrors('email');
-
-        $this->assertGuest();
-    }
-
     public function test_un_compte_desactive_perd_ses_permissions(): void
     {
         $user = $this->userWithRole(Rbac::ROLE_ADMIN, ['is_active' => false]);
 
-        $this->actingAs($user)->get(route('patients.index'))->assertForbidden();
+        $this->actingAs($user)->get(route('dme.patients.index'))->assertForbidden();
     }
 }

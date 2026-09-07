@@ -3,23 +3,23 @@
     <div class="k-card-header">
         <h2 class="k-card-title">Consultations</h2>
         @can('consultations.create')
-            <a href="{{ route('consultations.create', $patient) }}" class="k-btn-primary k-btn-sm">
-                <x-icon name="plus" class="h-3.5 w-3.5"/> Nouvelle consultation
+            <a href="{{ route('dme.consultations.create', $patient) }}" class="k-btn-primary k-btn-sm">
+                <x-dme::icon name="plus" class="h-3.5 w-3.5"/> Nouvelle consultation
             </a>
         @endcan
     </div>
 
     @if ($tabData['consultations']->isEmpty())
-        <x-empty-state icon="stethoscope" title="Aucune consultation enregistrée"
+        <x-dme::empty-state icon="stethoscope" title="Aucune consultation enregistrée"
                        message="Ce patient n'a pas encore été vu en consultation.">
             <x-slot:action>
                 @can('consultations.create')
-                    <a href="{{ route('consultations.create', $patient) }}" class="k-btn-primary">
-                        <x-icon name="plus" class="h-4 w-4"/> Nouvelle consultation
+                    <a href="{{ route('dme.consultations.create', $patient) }}" class="k-btn-primary">
+                        <x-dme::icon name="plus" class="h-4 w-4"/> Nouvelle consultation
                     </a>
                 @endcan
             </x-slot:action>
-        </x-empty-state>
+        </x-dme::empty-state>
     @else
         <div class="overflow-x-auto">
             <table class="k-table">
@@ -45,10 +45,10 @@
                             <td>{{ $consultation->doctor?->displayName() ?? '—' }}</td>
                             <td>{{ $consultation->service?->name ?? '—' }}</td>
                             <td class="tabular-nums">{{ $consultation->diagnoses_count }}</td>
-                            <td><x-status-badge :status="$consultation->status" :label="$consultation->statusLabel()"/></td>
+                            <td><x-dme::status-badge :status="$consultation->status" :label="$consultation->statusLabel()"/></td>
                             <td class="text-right">
-                                <a href="{{ route('consultations.show', $consultation) }}" class="k-btn-ghost k-btn-sm">
-                                    Ouvrir <x-icon name="chevron-right" class="h-3.5 w-3.5"/>
+                                <a href="{{ route('dme.consultations.show', $consultation) }}" class="k-btn-ghost k-btn-sm">
+                                    Ouvrir <x-dme::icon name="chevron-right" class="h-3.5 w-3.5"/>
                                 </a>
                             </td>
                         </tr>

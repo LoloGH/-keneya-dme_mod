@@ -23,7 +23,7 @@
 
         <div class="k-card-body">
             @if ($tabData['careOrders']->isEmpty())
-                <x-empty-state icon="calendar" title="Aucun soin programmé"
+                <x-dme::empty-state icon="calendar" title="Aucun soin programmé"
                                message="Un soin prescrit apparaît ici jusqu’à sa réalisation. Confié à un soignant, il ne concerne que lui ; laissé ouvert, il revient au personnel de garde du service prescripteur."/>
             @else
                 <ul class="space-y-2.5">
@@ -37,7 +37,7 @@
                                 <div class="min-w-0">
                                     <div class="flex flex-wrap items-center gap-2">
                                         <span class="font-mono text-xs text-ink-500">{{ $order->reference }}</span>
-                                        <x-status-badge
+                                        <x-dme::status-badge
                                             :status="match ($order->status) {
                                                 'planned' => $order->isOverdue() ? 'cancelled' : 'active',
                                                 'completed' => 'active',
@@ -82,16 +82,16 @@
                                 @if ($order->isOpen())
                                     <div class="flex shrink-0 flex-wrap items-center gap-1.5">
                                         @can('execute', $order)
-                                            <form action="{{ route('care-orders.execute', $order) }}" method="POST">
+                                            <form action="{{ route('dme.care-orders.execute', $order) }}" method="POST">
                                                 @csrf @method('PATCH')
                                                 <input type="hidden" name="status" value="completed">
                                                 <button type="submit" class="k-btn-primary k-btn-sm">
-                                                    <x-icon name="check" class="h-3.5 w-3.5"/> Réalisé
+                                                    <x-dme::icon name="check" class="h-3.5 w-3.5"/> Réalisé
                                                 </button>
                                             </form>
                                         @endcan
                                         @can('assign', $order)
-                                            <form action="{{ route('care-orders.assign', $order) }}" method="POST"
+                                            <form action="{{ route('dme.care-orders.assign', $order) }}" method="POST"
                                                   class="flex items-center gap-1.5">
                                                 @csrf @method('PATCH')
                                                 <label class="sr-only" for="assign-{{ $order->id }}">Confier ce soin</label>
@@ -109,7 +109,7 @@
                                             </form>
                                         @endcan
                                         @can('cancel', $order)
-                                            <form action="{{ route('care-orders.cancel', $order) }}" method="POST"
+                                            <form action="{{ route('dme.care-orders.cancel', $order) }}" method="POST"
                                                   onsubmit="return (this.outcome.value = prompt('Motif d’annulation ?') || '') !== '';">
                                                 @csrf @method('PATCH')
                                                 <input type="hidden" name="outcome" value="">
@@ -131,7 +131,7 @@
                     <summary class="cursor-pointer px-3 py-2 text-sm font-medium text-clinic-700">
                         Prescrire un soin
                     </summary>
-                    <form action="{{ route('care-orders.store', $patient) }}" method="POST"
+                    <form action="{{ route('dme.care-orders.store', $patient) }}" method="POST"
                           class="space-y-3 border-t border-ink-100 p-3">
                         @csrf
 
@@ -142,14 +142,14 @@
                                        value="{{ old('title') }}"
                                        class="k-input @error('title') border-red-500 @enderror"
                                        placeholder="Pansement, surveillance, injection…">
-                                <x-field-error name="title"/>
+                                <x-dme::field-error name="title"/>
                             </div>
 
                             <div class="sm:col-span-2">
                                 <label for="care-instructions" class="k-label">Consignes</label>
                                 <textarea id="care-instructions" name="instructions" rows="2" maxlength="5000"
                                           class="k-textarea">{{ old('instructions') }}</textarea>
-                                <x-field-error name="instructions"/>
+                                <x-dme::field-error name="instructions"/>
                             </div>
 
                             <div>
@@ -157,7 +157,7 @@
                                 <input id="care-starts" name="starts_at" type="datetime-local" required
                                        value="{{ old('starts_at', now()->format('Y-m-d\TH:i')) }}"
                                        class="k-input @error('starts_at') border-red-500 @enderror">
-                                <x-field-error name="starts_at"/>
+                                <x-dme::field-error name="starts_at"/>
                             </div>
 
                             <div>
@@ -165,7 +165,7 @@
                                 <input id="care-ends" name="ends_at" type="datetime-local"
                                        value="{{ old('ends_at') }}"
                                        class="k-input @error('ends_at') border-red-500 @enderror">
-                                <x-field-error name="ends_at"/>
+                                <x-dme::field-error name="ends_at"/>
                             </div>
 
                             <div>
@@ -214,7 +214,7 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    <x-field-error name="assigned_nurse_id"/>
+                                    <x-dme::field-error name="assigned_nurse_id"/>
                                     @if ($tabData['assignableNurses']->isEmpty())
                                         <p class="k-hint mt-1">
                                             Aucun infirmier n’est rattaché à votre service : le soin restera
@@ -231,7 +231,7 @@
                         </p>
 
                         <button type="submit" class="k-btn-primary w-full sm:w-auto">
-                            <x-icon name="plus" class="h-4 w-4"/> Programmer le soin
+                            <x-dme::icon name="plus" class="h-4 w-4"/> Programmer le soin
                         </button>
                     </form>
                 </details>
@@ -248,7 +248,7 @@
         </div>
 
         @if ($tabData['nursingNotes']->isEmpty())
-            <x-empty-state icon="heart" title="Aucun soin enregistré"
+            <x-dme::empty-state icon="heart" title="Aucun soin enregistré"
                            message="Constantes, soins, administrations et transmissions se consignent ici, horodatés et signés."/>
         @else
             <div class="k-card-body">
@@ -270,7 +270,7 @@
                                         <span class="k-badge-info">{{ $note->typeLabel() }}</span>
                                     </div>
                                     @if ($note->severity !== 'info')
-                                        <x-status-badge :status="$note->severity"
+                                        <x-dme::status-badge :status="$note->severity"
                                             :label="$note->severity === 'critical' ? 'Critique' : 'Vigilance'"/>
                                     @endif
                                 </div>
@@ -298,13 +298,13 @@
     @can('nursing.create')
         <section class="k-card self-start">
             <div class="k-card-header"><h2 class="k-card-title">Enregistrer un soin</h2></div>
-            <form action="{{ route('nursing.store', $patient) }}" method="POST" class="k-card-body space-y-3"
+            <form action="{{ route('dme.nursing.store', $patient) }}" method="POST" class="k-card-body space-y-3"
                   x-data="{ type: 'care' }">
                 @csrf
                 <div>
                     <label for="nursing_type" class="k-label">Type <span class="text-red-600" aria-hidden="true">*</span></label>
                     <select id="nursing_type" name="type" x-model="type" required class="k-select">
-                        @foreach (\App\Models\NursingNote::TYPES as $value => $label)
+                        @foreach (\Keneya\Dme\Models\NursingNote::TYPES as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
                         @endforeach
                     </select>

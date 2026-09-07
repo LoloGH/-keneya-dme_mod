@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders;
+namespace Keneya\Dme\Database\Seeders;
 
-use App\Models\SmsTemplate;
+use Keneya\Dme\Models\SmsTemplate;
 use Illuminate\Database\Seeder;
 
 /**

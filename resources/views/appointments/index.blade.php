@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Rendez-vous')
 
 @section('content')
-    <x-page-header title="Rendez-vous"
+    <x-dme::page-header title="Rendez-vous"
                    :subtitle="$appointments->count().' rendez-vous du '.$start->translatedFormat('d M').' au '.$end->translatedFormat('d M Y')"/>
 
     {{-- Sélecteur de vue jour / semaine / mois (§27) --}}
@@ -11,7 +11,7 @@
         <div class="flex flex-wrap items-center gap-3">
             <div class="inline-flex rounded-lg border border-ink-300 p-0.5" role="group" aria-label="Mode d'affichage">
                 @foreach (['day' => 'Jour', 'week' => 'Semaine', 'month' => 'Mois'] as $value => $label)
-                    <a href="{{ route('appointments.index', array_merge(request()->query(), ['view' => $value])) }}"
+                    <a href="{{ route('dme.appointments.index', array_merge(request()->query(), ['view' => $value])) }}"
                        class="rounded-md px-3 py-1.5 text-sm font-medium transition
                               {{ $view === $value ? 'bg-clinic-600 text-white' : 'text-ink-600 hover:bg-ink-100' }}"
                        @if ($view === $value) aria-current="true" @endif>
@@ -27,15 +27,15 @@
             @endphp
 
             <div class="inline-flex items-center gap-1">
-                <a href="{{ route('appointments.index', array_merge(request()->query(), ['date' => $prev])) }}"
+                <a href="{{ route('dme.appointments.index', array_merge(request()->query(), ['date' => $prev])) }}"
                    class="k-btn-secondary k-btn-sm" aria-label="Période précédente">
-                    <x-icon name="chevron-left" class="h-4 w-4"/>
+                    <x-dme::icon name="chevron-left" class="h-4 w-4"/>
                 </a>
-                <a href="{{ route('appointments.index', array_merge(request()->query(), ['date' => now()->toDateString()])) }}"
+                <a href="{{ route('dme.appointments.index', array_merge(request()->query(), ['date' => now()->toDateString()])) }}"
                    class="k-btn-secondary k-btn-sm">Aujourd’hui</a>
-                <a href="{{ route('appointments.index', array_merge(request()->query(), ['date' => $next])) }}"
+                <a href="{{ route('dme.appointments.index', array_merge(request()->query(), ['date' => $next])) }}"
                    class="k-btn-secondary k-btn-sm" aria-label="Période suivante">
-                    <x-icon name="chevron-right" class="h-4 w-4"/>
+                    <x-dme::icon name="chevron-right" class="h-4 w-4"/>
                 </a>
             </div>
 
@@ -57,7 +57,7 @@
                     <label for="status" class="sr-only">Statut</label>
                     <select id="status" name="status" class="k-select">
                         <option value="">Tous les statuts</option>
-                        @foreach (\App\Models\Appointment::STATUSES as $value => $label)
+                        @foreach (\Keneya\Dme\Models\Appointment::STATUSES as $value => $label)
                             <option value="{{ $value }}" @selected(($filters['status'] ?? '') === $value)>{{ $label }}</option>
                         @endforeach
                     </select>
@@ -69,7 +69,7 @@
 
     @if ($appointments->isEmpty())
         <div class="k-card">
-            <x-empty-state icon="calendar" title="Aucun rendez-vous sur la période"
+            <x-dme::empty-state icon="calendar" title="Aucun rendez-vous sur la période"
                            message="Les rendez-vous se programment depuis le dossier d'un patient."/>
         </div>
     @else
@@ -95,7 +95,7 @@
                             <ul class="divide-y divide-ink-100">
                                 @foreach ($dayAppointments as $appointment)
                                     <li>
-                                        <a href="{{ route('appointments.show', $appointment) }}"
+                                        <a href="{{ route('dme.appointments.show', $appointment) }}"
                                            class="flex flex-wrap items-center gap-3 px-4 py-3 hover:bg-clinic-50/40">
                                             <span class="w-24 shrink-0 font-mono text-sm text-ink-700">
                                                 {{ $appointment->scheduled_for->format('H:i') }}
@@ -111,7 +111,7 @@
                                                     @if ($appointment->service) · {{ $appointment->service->name }} @endif
                                                 </span>
                                             </span>
-                                            <x-status-badge :status="$appointment->status" :label="$appointment->statusLabel()"/>
+                                            <x-dme::status-badge :status="$appointment->status" :label="$appointment->statusLabel()"/>
                                         </a>
                                     </li>
                                 @endforeach

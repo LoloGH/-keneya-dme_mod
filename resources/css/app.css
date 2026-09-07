@@ -1,9 +1,10 @@
 @import 'tailwindcss';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+/* Sources scrutées par Tailwind : les vues et scripts du module, plus les
+   vues de pagination de Laravel, que le module réutilise telles quelles. */
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
 /*
  * Système de design Keneya-DME

@@ -1,30 +1,30 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Séjour '.$hospitalization->hospitalization_number)
 
 @section('content')
-    <x-page-header :title="'Séjour '.$hospitalization->hospitalization_number"
+    <x-dme::page-header :title="'Séjour '.$hospitalization->hospitalization_number"
                    :subtitle="'Admis le '.$hospitalization->admitted_at->translatedFormat('d F Y à H:i').' · '.$hospitalization->lengthOfStay().' jour(s)'"
                    :breadcrumbs="[
-                       'Hospitalisations' => route('hospitalizations.index'),
-                       $hospitalization->patient->fullName() => route('patients.show', $hospitalization->patient),
+                       'Hospitalisations' => route('dme.hospitalizations.index'),
+                       $hospitalization->patient->fullName() => route('dme.patients.show', $hospitalization->patient),
                        $hospitalization->hospitalization_number => null,
                    ]">
         <x-slot:actions>
             @if ($hospitalization->status === 'discharged')
-                <a href="{{ route('hospitalizations.pdf', $hospitalization) }}" target="_blank" rel="noopener"
+                <a href="{{ route('dme.hospitalizations.pdf', $hospitalization) }}" target="_blank" rel="noopener"
                    class="k-btn-secondary">
-                    <x-icon name="print" class="h-4 w-4"/> Compte rendu PDF
+                    <x-dme::icon name="print" class="h-4 w-4"/> Compte rendu PDF
                 </a>
             @endif
         </x-slot:actions>
-    </x-page-header>
+    </x-dme::page-header>
 
     <section class="k-card mb-4">
         <div class="p-4 sm:p-5">
-            <x-patient-header :patient="$hospitalization->patient" compact/>
+            <x-dme::patient-header :patient="$hospitalization->patient" compact/>
             @if ($hospitalization->patient->criticalAllergies()->isNotEmpty() || $hospitalization->patient->activeConditions()->isNotEmpty())
-                <div class="mt-4"><x-medical-alerts :patient="$hospitalization->patient"/></div>
+                <div class="mt-4"><x-dme::medical-alerts :patient="$hospitalization->patient"/></div>
             @endif
         </div>
     </section>
@@ -36,7 +36,7 @@
             <section class="k-card">
                 <div class="k-card-header">
                     <h2 class="k-card-title">Suivi du séjour</h2>
-                    <x-status-badge :status="$hospitalization->status" :label="$hospitalization->statusLabel()"/>
+                    <x-dme::status-badge :status="$hospitalization->status" :label="$hospitalization->statusLabel()"/>
                 </div>
                 <div class="k-card-body">
                     <ol class="relative space-y-3 border-l border-ink-200 pl-5">
@@ -70,13 +70,13 @@
             @can('update', $hospitalization)
                 <section class="k-card">
                     <div class="k-card-header"><h2 class="k-card-title">Ajouter au suivi</h2></div>
-                    <form action="{{ route('hospitalizations.events.store', $hospitalization) }}" method="POST"
+                    <form action="{{ route('dme.hospitalizations.events.store', $hospitalization) }}" method="POST"
                           class="k-card-body grid gap-3 sm:grid-cols-2">
                         @csrf
                         <div>
                             <label for="event_type" class="k-label">Type <span class="text-red-600" aria-hidden="true">*</span></label>
                             <select id="event_type" name="type" required class="k-select">
-                                @foreach (\App\Models\HospitalizationEvent::TYPES as $value => $label)
+                                @foreach (\Keneya\Dme\Models\HospitalizationEvent::TYPES as $value => $label)
                                     <option value="{{ $value }}">{{ $label }}</option>
                                 @endforeach
                             </select>
@@ -113,7 +113,7 @@
                                 </span>
                                 <span class="k-badge-neutral">{{ $note->typeLabel() }}</span>
                                 @if ($note->severity !== 'info')
-                                    <x-status-badge :status="$note->severity"
+                                    <x-dme::status-badge :status="$note->severity"
                                         :label="$note->severity === 'critical' ? 'Critique' : 'Vigilance'"/>
                                 @endif
                             </div>
@@ -133,14 +133,14 @@
             @can('discharge', $hospitalization)
                 <section class="k-card">
                     <div class="k-card-header"><h2 class="k-card-title">Enregistrer la sortie</h2></div>
-                    <form action="{{ route('hospitalizations.discharge', $hospitalization) }}" method="POST"
+                    <form action="{{ route('dme.hospitalizations.discharge', $hospitalization) }}" method="POST"
                           class="k-card-body grid gap-3 sm:grid-cols-2">
                         @csrf
                         <div>
                             <label for="discharged_at" class="k-label">Date de sortie <span class="text-red-600" aria-hidden="true">*</span></label>
                             <input id="discharged_at" name="discharged_at" type="datetime-local" required
                                    value="{{ now()->format('Y-m-d\TH:i') }}" class="k-input">
-                            <x-field-error name="discharged_at"/>
+                            <x-dme::field-error name="discharged_at"/>
                         </div>
                         <div>
                             <label for="discharge_type" class="k-label">Mode de sortie <span class="text-red-600" aria-hidden="true">*</span></label>
@@ -155,7 +155,7 @@
                             <label for="discharge_diagnosis" class="k-label">Diagnostic de sortie <span class="text-red-600" aria-hidden="true">*</span></label>
                             <input id="discharge_diagnosis" name="discharge_diagnosis" type="text" required maxlength="200"
                                    class="k-input">
-                            <x-field-error name="discharge_diagnosis"/>
+                            <x-dme::field-error name="discharge_diagnosis"/>
                         </div>
                         <div>
                             <label for="discharge_treatment" class="k-label">Traitement de sortie</label>

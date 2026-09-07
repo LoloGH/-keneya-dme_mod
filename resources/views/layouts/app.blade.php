@@ -7,8 +7,11 @@
     {{-- Un dossier médical ne doit pas être mis en cache par un proxy. --}}
     <meta name="robots" content="noindex, nofollow">
     <title>@yield('title', 'Dossier médical') · {{ config('app.name') }}</title>
-    <link rel="icon" href="{{ asset('assets/logo_kdme.png') }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="icon" href="{{ \Keneya\Dme\Dme::asset('assets/logo_kdme.png') }}">
+    {{-- Feuilles de style et scripts du module, publiés dans le
+         répertoire public de l'hôte (vendor:publish --tag=dme-assets). --}}
+    <link rel="stylesheet" href="{{ \Keneya\Dme\Dme::asset('build/app.css') }}">
+    <script src="{{ \Keneya\Dme\Dme::asset('build/app.js') }}" defer></script>
 </head>
 <body class="h-full">
 <div class="min-h-full lg:flex" x-data="{ sidebarOpen: false }">
@@ -23,20 +26,20 @@
            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
            x-cloak
            aria-label="Navigation principale">
-        @include('partials.sidebar')
+        @include('dme::partials.sidebar')
     </aside>
 
     <div class="flex min-w-0 flex-1 flex-col">
-        @include('partials.topbar')
+        @include('dme::partials.topbar')
 
         <main class="flex-1 px-4 py-5 sm:px-6 lg:px-8" id="contenu-principal">
-            @include('partials.flash')
+            @include('dme::partials.flash')
             @yield('content')
         </main>
 
         <footer class="k-no-print border-t border-ink-200 px-4 py-4 text-xs text-ink-500 sm:px-6 lg:px-8">
             <div class="flex flex-wrap items-center justify-between gap-2">
-                <span>{{ config('keneya.facility.name') }} — Keneya-DME v{{ config('keneya.version') }}</span>
+                <span>{{ config('dme.facility.name') }} — Keneya-DME v{{ config('dme.version') }}</span>
                 <span>Données de démonstration fictives. Aucune donnée médicale réelle.</span>
             </div>
         </footer>

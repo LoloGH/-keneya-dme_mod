@@ -1,4 +1,4 @@
-@extends('pdf._layout', ['title' => $title])
+@extends('dme::pdf._layout', ['title' => $title])
 
 @section('content')
     <h2>{{ $title }}</h2>

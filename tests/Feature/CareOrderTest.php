@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Keneya\Dme\Tests\Feature;
 
-use App\Models\CareOrder;
-use App\Models\NursingNote;
-use App\Models\Patient;
-use App\Models\Service;
-use App\Models\User;
-use App\Support\Rbac;
+use Keneya\Dme\Models\CareOrder;
+use Keneya\Dme\Models\NursingNote;
+use Keneya\Dme\Models\Patient;
+use Keneya\Dme\Models\Service;
+use Keneya\Dme\Models\User;
+use Keneya\Dme\Support\Rbac;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * Soins programmés : prescription, attribution et portée de garde.
@@ -58,7 +58,7 @@ class CareOrderTest extends TestCase
     private function prescribe(User $doctor, array $overrides = []): CareOrder
     {
         $this->actingAs($doctor)
-            ->post(route('care-orders.store', $this->patient), array_merge([
+            ->post(route('dme.care-orders.store', $this->patient), array_merge([
                 'title' => 'Pansement',
                 'priority' => 'routine',
                 'starts_at' => now()->addHour()->format('Y-m-d H:i:s'),
@@ -81,7 +81,7 @@ class CareOrderTest extends TestCase
     public function test_un_infirmier_ne_peut_pas_prescrire(): void
     {
         $this->actingAs($this->nurse($this->cardiologie))
-            ->post(route('care-orders.store', $this->patient), [
+            ->post(route('dme.care-orders.store', $this->patient), [
                 'title' => 'Pansement',
                 'priority' => 'routine',
                 'starts_at' => now()->addHour()->format('Y-m-d H:i:s'),
@@ -148,7 +148,7 @@ class CareOrderTest extends TestCase
         $etranger = $this->nurse($this->pediatrie);
 
         $this->actingAs($this->doctor())
-            ->post(route('care-orders.store', $this->patient), [
+            ->post(route('dme.care-orders.store', $this->patient), [
                 'title' => 'Pansement',
                 'priority' => 'routine',
                 'starts_at' => now()->addHour()->format('Y-m-d H:i:s'),
@@ -165,7 +165,7 @@ class CareOrderTest extends TestCase
         $order = $this->prescribe($this->doctor(), ['assigned_nurse_id' => $nurse->id]);
 
         $this->actingAs($nurse)
-            ->patch(route('care-orders.execute', $order), [
+            ->patch(route('dme.care-orders.execute', $order), [
                 'status' => 'completed',
                 'outcome' => 'Plaie propre.',
             ])
@@ -188,7 +188,7 @@ class CareOrderTest extends TestCase
         $etranger = $this->nurse($this->pediatrie);
 
         $this->actingAs($etranger)
-            ->patch(route('care-orders.execute', $order), ['status' => 'completed'])
+            ->patch(route('dme.care-orders.execute', $order), ['status' => 'completed'])
             ->assertForbidden();
 
         $this->assertSame('planned', $order->fresh()->status);
@@ -200,15 +200,15 @@ class CareOrderTest extends TestCase
         $order = $this->prescribe($this->doctor(), ['assigned_nurse_id' => $nurse->id]);
 
         $this->actingAs($nurse)
-            ->patch(route('care-orders.execute', $order), ['status' => 'completed'])
+            ->patch(route('dme.care-orders.execute', $order), ['status' => 'completed'])
             ->assertRedirect();
 
         $this->actingAs($nurse)
-            ->patch(route('care-orders.execute', $order->fresh()), ['status' => 'completed'])
+            ->patch(route('dme.care-orders.execute', $order->fresh()), ['status' => 'completed'])
             ->assertForbidden();
 
         $this->actingAs($this->doctor())
-            ->patch(route('care-orders.assign', $order->fresh()), ['assigned_nurse_id' => null])
+            ->patch(route('dme.care-orders.assign', $order->fresh()), ['assigned_nurse_id' => null])
             ->assertForbidden();
     }
 
@@ -218,7 +218,7 @@ class CareOrderTest extends TestCase
         $order = $this->prescribe($this->doctor(), ['assigned_nurse_id' => $nurse->id]);
 
         $this->actingAs($nurse)
-            ->patch(route('care-orders.execute', $order), ['status' => 'refused'])
+            ->patch(route('dme.care-orders.execute', $order), ['status' => 'refused'])
             ->assertSessionHasErrors('outcome');
 
         $this->assertSame('planned', $order->fresh()->status);

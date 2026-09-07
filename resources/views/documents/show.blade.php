@@ -1,23 +1,23 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', $document->title)
 
 @section('content')
-    <x-page-header :title="$document->title"
+    <x-dme::page-header :title="$document->title"
                    :subtitle="$document->typeLabel().' · '.$document->document_number"
                    :breadcrumbs="[
-                       'Documents' => route('documents.index'),
-                       $document->patient->fullName() => route('patients.show', $document->patient),
+                       'Documents' => route('dme.documents.index'),
+                       $document->patient->fullName() => route('dme.patients.show', $document->patient),
                        $document->document_number => null,
                    ]">
         <x-slot:actions>
             @can('download', $document)
-                <a href="{{ route('documents.download', $document) }}" class="k-btn-primary">
-                    <x-icon name="download" class="h-4 w-4"/> Télécharger
+                <a href="{{ route('dme.documents.download', $document) }}" class="k-btn-primary">
+                    <x-dme::icon name="download" class="h-4 w-4"/> Télécharger
                 </a>
             @endcan
         </x-slot:actions>
-    </x-page-header>
+    </x-dme::page-header>
 
     <div class="grid gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2">
@@ -26,23 +26,23 @@
                 @can('download', $document)
                     <section class="k-card overflow-hidden">
                         <div class="k-card-header"><h2 class="k-card-title">Aperçu</h2></div>
-                        <iframe src="{{ route('documents.preview', $document) }}"
+                        <iframe src="{{ route('dme.documents.preview', $document) }}"
                                 title="Aperçu de {{ $document->title }}"
                                 class="h-[70vh] w-full border-0"></iframe>
                     </section>
                 @endcan
             @else
                 <div class="k-card">
-                    <x-empty-state icon="document" title="Aperçu indisponible"
+                    <x-dme::empty-state icon="document" title="Aperçu indisponible"
                                    message="Seuls les documents PDF disposent d'un aperçu intégré. Téléchargez le fichier pour le consulter.">
                         <x-slot:action>
                             @can('download', $document)
-                                <a href="{{ route('documents.download', $document) }}" class="k-btn-primary">
-                                    <x-icon name="download" class="h-4 w-4"/> Télécharger
+                                <a href="{{ route('dme.documents.download', $document) }}" class="k-btn-primary">
+                                    <x-dme::icon name="download" class="h-4 w-4"/> Télécharger
                                 </a>
                             @endcan
                         </x-slot:action>
-                    </x-empty-state>
+                    </x-dme::empty-state>
                 </div>
             @endif
         </div>
@@ -75,7 +75,7 @@
                         <div>
                             <dt class="text-xs text-ink-500">Version précédente</dt>
                             <dd>
-                                <a href="{{ route('documents.show', $document->previousVersion) }}"
+                                <a href="{{ route('dme.documents.show', $document->previousVersion) }}"
                                    class="font-mono text-xs text-clinic-700 hover:underline">
                                     {{ $document->previousVersion->document_number }}
                                 </a>

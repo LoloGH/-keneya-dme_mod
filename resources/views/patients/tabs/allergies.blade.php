@@ -7,7 +7,7 @@
         </div>
 
         @if ($tabData['allergies']->isEmpty())
-            <x-empty-state icon="alert" title="Aucune allergie documentée"
+            <x-dme::empty-state icon="alert" title="Aucune allergie documentée"
                            message="Renseignez les allergies connues : une allergie sévère devient une alerte permanente du dossier et sera confrontée à chaque nouvelle ordonnance."/>
         @else
             <div class="overflow-x-auto">
@@ -28,10 +28,10 @@
                             <tr class="{{ $allergy->isCritical() ? 'bg-red-50/60' : '' }}">
                                 <td class="font-medium text-ink-900">{{ $allergy->allergen }}</td>
                                 <td>{{ $allergy->reaction ?: '—' }}</td>
-                                <td><x-status-badge :status="$allergy->severity" :label="$allergy->severityLabel()"/></td>
+                                <td><x-dme::status-badge :status="$allergy->severity" :label="$allergy->severityLabel()"/></td>
                                 <td>{{ $allergy->observed_on?->translatedFormat('d M Y') ?: '—' }}</td>
                                 <td>
-                                    <x-status-badge :status="$allergy->status"
+                                    <x-dme::status-badge :status="$allergy->status"
                                         :label="match ($allergy->status) {
                                             'active' => 'Active', 'resolved' => 'Résolue', default => 'Invalidée',
                                         }"/>
@@ -48,7 +48,7 @@
     @can('update', $patient)
         <section class="k-card">
             <div class="k-card-header"><h2 class="k-card-title">Ajouter une allergie</h2></div>
-            <form action="{{ route('record.allergies.store', $patient) }}" method="POST" class="k-card-body space-y-3">
+            <form action="{{ route('dme.record.allergies.store', $patient) }}" method="POST" class="k-card-body space-y-3">
                 @csrf
                 <div>
                     <label for="allergen" class="k-label">Allergène <span class="text-red-600" aria-hidden="true">*</span></label>

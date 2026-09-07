@@ -1,27 +1,27 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Demande '.$order->order_number)
 
 @section('content')
-    <x-page-header :title="'Demande '.$order->order_number"
+    <x-dme::page-header :title="'Demande '.$order->order_number"
                    :subtitle="$order->requested_at->translatedFormat('l d F Y à H:i')"
                    :breadcrumbs="[
-                       'Laboratoire' => route('laboratory.index'),
-                       $order->patient->fullName() => route('patients.show', $order->patient),
+                       'Laboratoire' => route('dme.laboratory.index'),
+                       $order->patient->fullName() => route('dme.patients.show', $order->patient),
                        $order->order_number => null,
                    ]">
         <x-slot:actions>
-            <a href="{{ route('laboratory.pdf', $order) }}" target="_blank" rel="noopener" class="k-btn-secondary">
-                <x-icon name="print" class="h-4 w-4"/> Compte rendu PDF
+            <a href="{{ route('dme.laboratory.pdf', $order) }}" target="_blank" rel="noopener" class="k-btn-secondary">
+                <x-dme::icon name="print" class="h-4 w-4"/> Compte rendu PDF
             </a>
             @can('validateResults', $order)
-                <form action="{{ route('laboratory.validate', $order) }}" method="POST">
+                <form action="{{ route('dme.laboratory.validate', $order) }}" method="POST">
                     @csrf
                     <button type="submit" class="k-btn-primary">Valider les résultats</button>
                 </form>
             @endcan
         </x-slot:actions>
-    </x-page-header>
+    </x-dme::page-header>
 
     <div class="grid gap-4 lg:grid-cols-3">
         <div class="space-y-4 lg:col-span-2">
@@ -29,8 +29,8 @@
                 <div class="k-card-header">
                     <h2 class="k-card-title">Résultats</h2>
                     <div class="flex gap-2">
-                        <x-status-badge :status="$order->priority" :label="$order->priorityLabel()"/>
-                        <x-status-badge :status="$order->status" :label="$order->statusLabel()"/>
+                        <x-dme::status-badge :status="$order->priority" :label="$order->priorityLabel()"/>
+                        <x-dme::status-badge :status="$order->status" :label="$order->statusLabel()"/>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
@@ -56,7 +56,7 @@
                                         <td class="font-semibold tabular-nums">{{ $result->value }}</td>
                                         <td>{{ $result->unit }}</td>
                                         <td class="text-xs text-ink-500">{{ $result->reference_range ?: '—' }}</td>
-                                        <td><x-status-badge :status="$result->flag" :label="$result->flagLabel()"/></td>
+                                        <td><x-dme::status-badge :status="$result->flag" :label="$result->flagLabel()"/></td>
                                         <td class="text-xs text-ink-500">{{ $result->validator?->displayName() ?? 'En attente' }}</td>
                                     </tr>
                                 @empty
@@ -78,7 +78,7 @@
                         <h2 class="k-card-title">Saisir les résultats</h2>
                         <p class="text-xs text-ink-500">Un résultat critique alerte immédiatement le prescripteur.</p>
                     </div>
-                    <form action="{{ route('laboratory.results.store', $order) }}" method="POST" class="k-card-body space-y-3">
+                    <form action="{{ route('dme.laboratory.results.store', $order) }}" method="POST" class="k-card-body space-y-3">
                         @csrf
                         @foreach ($order->items as $index => $item)
                             <div class="rounded-lg border border-ink-200 p-3">
@@ -126,7 +126,7 @@
         <div class="space-y-4">
             <section class="k-card">
                 <div class="k-card-header"><h2 class="k-card-title">Patient</h2></div>
-                <div class="k-card-body"><x-patient-header :patient="$order->patient" compact/></div>
+                <div class="k-card-body"><x-dme::patient-header :patient="$order->patient" compact/></div>
             </section>
 
             <section class="k-card">

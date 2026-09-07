@@ -1,44 +1,44 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Consultation '.$consultation->consultation_number)
 
 @section('content')
-    <x-page-header :title="'Consultation '.$consultation->consultation_number"
+    <x-dme::page-header :title="'Consultation '.$consultation->consultation_number"
                    :subtitle="$consultation->started_at->translatedFormat('l d F Y à H:i')"
                    :breadcrumbs="[
-                       'Patients' => route('patients.index'),
-                       $consultation->patient->fullName() => route('patients.show', $consultation->patient),
+                       'Patients' => route('dme.patients.index'),
+                       $consultation->patient->fullName() => route('dme.patients.show', $consultation->patient),
                        $consultation->consultation_number => null,
                    ]">
         <x-slot:actions>
-            <a href="{{ route('consultations.report-pdf', $consultation) }}" target="_blank" rel="noopener"
+            <a href="{{ route('dme.consultations.report-pdf', $consultation) }}" target="_blank" rel="noopener"
                class="k-btn-secondary">
-                <x-icon name="print" class="h-4 w-4"/> Compte rendu PDF
+                <x-dme::icon name="print" class="h-4 w-4"/> Compte rendu PDF
             </a>
             @can('update', $consultation)
-                <a href="{{ route('consultations.edit', $consultation) }}" class="k-btn-secondary">Modifier</a>
+                <a href="{{ route('dme.consultations.edit', $consultation) }}" class="k-btn-secondary">Modifier</a>
             @endcan
             @can('complete', $consultation)
-                <form action="{{ route('consultations.complete', $consultation) }}" method="POST"
+                <form action="{{ route('dme.consultations.complete', $consultation) }}" method="POST"
                       onsubmit="return confirm('Terminer cette consultation ? Elle ne sera plus modifiable.');">
                     @csrf
                     <button type="submit" class="k-btn-primary">Terminer la consultation</button>
                 </form>
             @endcan
             @can('prescriptions.create')
-                <a href="{{ route('prescriptions.create', ['patient' => $consultation->patient, 'consultation' => $consultation->id]) }}"
+                <a href="{{ route('dme.prescriptions.create', ['patient' => $consultation->patient, 'consultation' => $consultation->id]) }}"
                    class="k-btn-primary">
-                    <x-icon name="plus" class="h-4 w-4"/> Ordonnance
+                    <x-dme::icon name="plus" class="h-4 w-4"/> Ordonnance
                 </a>
             @endcan
         </x-slot:actions>
-    </x-page-header>
+    </x-dme::page-header>
 
     <section class="k-card mb-4">
         <div class="p-4 sm:p-5">
-            <x-patient-header :patient="$consultation->patient" compact/>
+            <x-dme::patient-header :patient="$consultation->patient" compact/>
             @if ($consultation->patient->criticalAllergies()->isNotEmpty() || $consultation->patient->activeConditions()->isNotEmpty())
-                <div class="mt-4"><x-medical-alerts :patient="$consultation->patient"/></div>
+                <div class="mt-4"><x-dme::medical-alerts :patient="$consultation->patient"/></div>
             @endif
         </div>
     </section>
@@ -49,7 +49,7 @@
             <section class="k-card">
                 <div class="k-card-header">
                     <h2 class="k-card-title">Motif et anamnèse</h2>
-                    <x-status-badge :status="$consultation->status" :label="$consultation->statusLabel()"/>
+                    <x-dme::status-badge :status="$consultation->status" :label="$consultation->statusLabel()"/>
                 </div>
                 <div class="k-card-body space-y-3">
                     <div>
@@ -111,7 +111,7 @@
                                                 default => 'Différentiel',
                                             } }}
                                         </td>
-                                        <td><x-status-badge :status="$diagnosis->status" :label="$diagnosis->statusLabel()"/></td>
+                                        <td><x-dme::status-badge :status="$diagnosis->status" :label="$diagnosis->statusLabel()"/></td>
                                         <td class="text-xs text-ink-500">{{ $diagnosis->doctor?->displayName() ?? '—' }}</td>
                                     </tr>
                                 @endforeach
@@ -145,16 +145,16 @@
                     @php $v = $consultation->vitalSigns->first(); @endphp
                     @if ($v)
                         <div class="grid grid-cols-2 gap-2.5">
-                            <x-vital-card label="Tension" :value="$v->bloodPressure()" unit="mmHg"
+                            <x-dme::vital-card label="Tension" :value="$v->bloodPressure()" unit="mmHg"
                                           :abnormal="$v->isOutOfRange('systolic')"/>
-                            <x-vital-card label="Pouls" :value="$v->heart_rate" unit="bpm"
+                            <x-dme::vital-card label="Pouls" :value="$v->heart_rate" unit="bpm"
                                           :abnormal="$v->isOutOfRange('heart_rate')"/>
-                            <x-vital-card label="Température" :value="$v->temperature" unit="°C"
+                            <x-dme::vital-card label="Température" :value="$v->temperature" unit="°C"
                                           :abnormal="$v->isOutOfRange('temperature')"/>
-                            <x-vital-card label="SpO₂" :value="$v->oxygen_saturation" unit="%"
+                            <x-dme::vital-card label="SpO₂" :value="$v->oxygen_saturation" unit="%"
                                           :abnormal="$v->isOutOfRange('oxygen_saturation')"/>
-                            <x-vital-card label="Poids" :value="$v->weight" unit="kg"/>
-                            <x-vital-card label="IMC" :value="$v->bmi" unit="kg/m²"/>
+                            <x-dme::vital-card label="Poids" :value="$v->weight" unit="kg"/>
+                            <x-dme::vital-card label="IMC" :value="$v->bmi" unit="kg/m²"/>
                         </div>
                     @else
                         <p class="text-sm text-ink-500">Aucune constante relevée pour cette consultation.</p>
@@ -168,7 +168,7 @@
                     <div>
                         <h3 class="text-xs font-semibold tracking-wide text-ink-500 uppercase">Ordonnances</h3>
                         @forelse ($consultation->prescriptions as $prescription)
-                            <a href="{{ route('prescriptions.show', $prescription) }}"
+                            <a href="{{ route('dme.prescriptions.show', $prescription) }}"
                                class="mt-1 block font-mono text-xs text-clinic-700 hover:underline">
                                 {{ $prescription->prescription_number }}
                                 <span class="font-sans text-ink-500">
@@ -182,7 +182,7 @@
                     <div>
                         <h3 class="text-xs font-semibold tracking-wide text-ink-500 uppercase">Laboratoire</h3>
                         @forelse ($consultation->labOrders as $order)
-                            <a href="{{ route('laboratory.show', $order) }}"
+                            <a href="{{ route('dme.laboratory.show', $order) }}"
                                class="mt-1 block font-mono text-xs text-clinic-700 hover:underline">
                                 {{ $order->order_number }}
                                 <span class="font-sans text-ink-500">— {{ $order->items->count() }} examen(s)</span>
@@ -194,7 +194,7 @@
                     <div>
                         <h3 class="text-xs font-semibold tracking-wide text-ink-500 uppercase">Imagerie</h3>
                         @forelse ($consultation->imagingOrders as $order)
-                            <a href="{{ route('imaging.show', $order) }}"
+                            <a href="{{ route('dme.imaging.show', $order) }}"
                                class="mt-1 block text-xs text-clinic-700 hover:underline">
                                 {{ $order->modalityLabel() }} — {{ $order->order_number }}
                             </a>

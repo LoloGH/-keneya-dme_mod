@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Hospitalisations')
 
 @section('content')
-    <x-page-header title="Hospitalisations" subtitle="{{ $hospitalizations->total() }} séjour(s)."/>
+    <x-dme::page-header title="Hospitalisations" subtitle="{{ $hospitalizations->total() }} séjour(s)."/>
 
     <form method="GET" class="k-card mb-4 flex flex-wrap gap-3 p-4">
         <div class="min-w-56 flex-1">
@@ -15,7 +15,7 @@
             <label for="status" class="sr-only">Statut</label>
             <select id="status" name="status" class="k-select">
                 <option value="">Tous les statuts</option>
-                @foreach (\App\Models\Hospitalization::STATUSES as $value => $label)
+                @foreach (\Keneya\Dme\Models\Hospitalization::STATUSES as $value => $label)
                     <option value="{{ $value }}" @selected(($filters['status'] ?? '') === $value)>{{ $label }}</option>
                 @endforeach
             </select>
@@ -36,7 +36,7 @@
 
     <div class="k-card">
         @if ($hospitalizations->isEmpty())
-            <x-empty-state icon="bed" title="Aucune hospitalisation"
+            <x-dme::empty-state icon="bed" title="Aucune hospitalisation"
                            message="Les admissions se créent depuis le dossier d'un patient."/>
         @else
             <div class="overflow-x-auto">
@@ -59,7 +59,7 @@
                             <tr>
                                 <td class="font-mono text-xs">{{ $stay->hospitalization_number }}</td>
                                 <td>
-                                    <a href="{{ route('patients.show', $stay->patient) }}"
+                                    <a href="{{ route('dme.patients.show', $stay->patient) }}"
                                        class="font-medium text-ink-900 hover:text-clinic-700 hover:underline">
                                         {{ $stay->patient->fullName() }}
                                     </a>
@@ -71,10 +71,10 @@
                                 </td>
                                 <td>{{ $stay->service?->name ?? '—' }}</td>
                                 <td>{{ $stay->room ? $stay->room.' · '.$stay->bed : '—' }}</td>
-                                <td><x-status-badge :status="$stay->status" :label="$stay->statusLabel()"/></td>
+                                <td><x-dme::status-badge :status="$stay->status" :label="$stay->statusLabel()"/></td>
                                 <td class="text-right">
-                                    <a href="{{ route('hospitalizations.show', $stay) }}" class="k-btn-ghost k-btn-sm">
-                                        Suivi <x-icon name="chevron-right" class="h-3.5 w-3.5"/>
+                                    <a href="{{ route('dme.hospitalizations.show', $stay) }}" class="k-btn-ghost k-btn-sm">
+                                        Suivi <x-dme::icon name="chevron-right" class="h-3.5 w-3.5"/>
                                     </a>
                                 </td>
                             </tr>

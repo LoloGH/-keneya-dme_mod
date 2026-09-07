@@ -1,7 +1,7 @@
 {{-- Antécédents (§16) --}}
 <div class="grid gap-4 lg:grid-cols-3">
     <div class="space-y-4 lg:col-span-2">
-        @foreach (\App\Models\MedicalHistory::CATEGORIES as $key => $label)
+        @foreach (\Keneya\Dme\Models\MedicalHistory::CATEGORIES as $key => $label)
             @php $items = $tabData['histories'][$key] ?? collect(); @endphp
             <section class="k-card">
                 <div class="k-card-header">
@@ -39,13 +39,13 @@
     @can('update', $patient)
         <section class="k-card self-start">
             <div class="k-card-header"><h2 class="k-card-title">Ajouter un antécédent</h2></div>
-            <form action="{{ route('record.histories.store', $patient) }}" method="POST" class="k-card-body space-y-3"
+            <form action="{{ route('dme.record.histories.store', $patient) }}" method="POST" class="k-card-body space-y-3"
                   x-data="{ category: 'personal' }">
                 @csrf
                 <div>
                     <label for="category" class="k-label">Catégorie <span class="text-red-600" aria-hidden="true">*</span></label>
                     <select id="category" name="category" x-model="category" required class="k-select">
-                        @foreach (\App\Models\MedicalHistory::CATEGORIES as $value => $label)
+                        @foreach (\Keneya\Dme\Models\MedicalHistory::CATEGORIES as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
                         @endforeach
                     </select>
@@ -89,7 +89,7 @@
                 </div>
 
                 <button type="submit" class="k-btn-primary w-full">
-                    <x-icon name="plus" class="h-4 w-4"/> Ajouter un antécédent
+                    <x-dme::icon name="plus" class="h-4 w-4"/> Ajouter un antécédent
                 </button>
             </form>
         </section>

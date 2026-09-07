@@ -1,12 +1,12 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Paramètres')
 
 @section('content')
-    <x-page-header title="Paramètres"
+    <x-dme::page-header title="Paramètres"
                    subtitle="Configuration effective de l’application. Les valeurs proviennent des fichiers de configuration et des variables d’environnement ; aucun secret n’est affiché."/>
 
-    @include('settings.partials.account')
+    @include('dme::settings.partials.account')
 
     <h2 class="mt-6 mb-3 text-sm font-semibold tracking-wide text-ink-500 uppercase">
         Administration
@@ -16,7 +16,7 @@
 
         <section class="k-card">
             <div class="k-card-header"><h2 class="k-card-title">Établissement</h2></div>
-            <form action="{{ route('settings.facility.update') }}" method="POST" class="k-card-body space-y-3">
+            <form action="{{ route('dme.settings.facility.update') }}" method="POST" class="k-card-body space-y-3">
                 @csrf
                 @method('PUT')
                 @foreach ([
@@ -37,7 +37,7 @@
                 @endforeach
                 <div class="flex justify-end pt-1">
                     <button type="submit" class="k-btn-primary">
-                        <x-icon name="check" class="h-4 w-4"/> Enregistrer
+                        <x-dme::icon name="check" class="h-4 w-4"/> Enregistrer
                     </button>
                 </div>
             </form>
@@ -45,7 +45,7 @@
 
         <section class="k-card">
             <div class="k-card-header"><h2 class="k-card-title">Identifiants métier</h2></div>
-            <form action="{{ route('settings.identifiers.update') }}" method="POST" class="k-card-body">
+            <form action="{{ route('dme.settings.identifiers.update') }}" method="POST" class="k-card-body">
                 @csrf
                 @method('PUT')
                 <p class="mb-3 text-sm text-ink-600">
@@ -73,7 +73,7 @@
                 @enderror
                 <div class="flex justify-end pt-3">
                     <button type="submit" class="k-btn-primary">
-                        <x-icon name="check" class="h-4 w-4"/> Enregistrer
+                        <x-dme::icon name="check" class="h-4 w-4"/> Enregistrer
                     </button>
                 </div>
             </form>
@@ -145,11 +145,11 @@
             <div class="k-card-header">
                 <h2 class="k-card-title">Rôles et permissions</h2>
                 <span class="text-xs text-ink-500">
-                    {{ count(\App\Support\Rbac::allPermissions()) }} permissions · {{ $roles->count() }} rôles
+                    {{ count(\Keneya\Dme\Support\Rbac::allPermissions()) }} permissions · {{ $roles->count() }} rôles
                 </span>
             </div>
 
-            <form action="{{ route('settings.roles.update') }}" method="POST" class="k-card-body">
+            <form action="{{ route('dme.settings.roles.update') }}" method="POST" class="k-card-body">
                 @csrf
                 @method('PUT')
 
@@ -200,7 +200,7 @@
                                         @foreach ($roleLabels as $roleKey => $roleLabel)
                                             @php
                                                 $granted = in_array($permission, $rolePermissions[$roleKey] ?? [], true);
-                                                $locked = $roleKey === \App\Support\Rbac::ROLE_ADMIN
+                                                $locked = $roleKey === \Keneya\Dme\Support\Rbac::ROLE_ADMIN
                                                     && in_array($permission, $lockedPermissions, true);
                                             @endphp
                                             <td class="text-center">
@@ -217,10 +217,10 @@
                                                     <input type="hidden"
                                                            name="permissions[{{ $roleKey }}][]"
                                                            value="{{ $permission }}">
-                                                    <x-icon name="lock" class="mx-auto h-4 w-4 text-ink-400"/>
+                                                    <x-dme::icon name="lock" class="mx-auto h-4 w-4 text-ink-400"/>
                                                     <span class="sr-only">{{ $roleLabel }} : verrouillé</span>
                                                 @elseif ($granted)
-                                                    <x-icon name="check" class="mx-auto h-4 w-4 text-keneya-600"/>
+                                                    <x-dme::icon name="check" class="mx-auto h-4 w-4 text-keneya-600"/>
                                                     <span class="sr-only">{{ $roleLabel }} : autorisé</span>
                                                 @else
                                                     <span class="text-ink-300" aria-hidden="true">—</span>
@@ -238,7 +238,7 @@
                 @if ($canEditRoles)
                     <div class="mt-4 flex flex-wrap items-center justify-end gap-2">
                         <button type="submit" class="k-btn-primary">
-                            <x-icon name="check" class="h-4 w-4"/> Enregistrer la matrice
+                            <x-dme::icon name="check" class="h-4 w-4"/> Enregistrer la matrice
                         </button>
                     </div>
                 @endif
@@ -246,11 +246,11 @@
 
             @if ($canEditRoles)
                 <div class="border-t border-ink-100 px-4 py-3">
-                    <form action="{{ route('settings.roles.reset') }}" method="POST"
+                    <form action="{{ route('dme.settings.roles.reset') }}" method="POST"
                           onsubmit="return confirm('Rétablir la matrice d’origine ? Les modifications en cours seront perdues.');">
                         @csrf
                         <button type="submit" class="k-btn-ghost text-xs">
-                            <x-icon name="arrow-left" class="h-3.5 w-3.5"/>
+                            <x-dme::icon name="arrow-left" class="h-3.5 w-3.5"/>
                             Rétablir la configuration d’origine
                         </button>
                     </form>
@@ -259,7 +259,7 @@
 
             @if ($canEditRoles)
                 <div class="border-t border-ink-100 px-4 py-3">
-                    <form action="{{ route('settings.roles.store') }}" method="POST"
+                    <form action="{{ route('dme.settings.roles.store') }}" method="POST"
                           class="flex flex-wrap items-end gap-2">
                         @csrf
                         <div>
@@ -271,7 +271,7 @@
                             @enderror
                         </div>
                         <button type="submit" class="k-btn-secondary">
-                            <x-icon name="plus" class="h-4 w-4"/> Créer
+                            <x-dme::icon name="plus" class="h-4 w-4"/> Créer
                         </button>
                     </form>
                     <p class="mt-1.5 text-xs text-ink-500">
@@ -290,14 +290,14 @@
                             <p class="text-sm font-medium text-ink-900">{{ $service->name }}</p>
                             <p class="font-mono text-xs text-ink-500">{{ $service->code }}</p>
                         </div>
-                        <x-status-badge :status="$service->is_active ? 'active' : 'cancelled'"
+                        <x-dme::status-badge :status="$service->is_active ? 'active' : 'cancelled'"
                                         :label="$service->is_active ? 'Actif' : 'Inactif'"/>
                     </div>
                 @endforeach
             </div>
 
             <div class="border-t border-ink-100 px-4 py-3">
-                <form action="{{ route('settings.services.store') }}" method="POST"
+                <form action="{{ route('dme.settings.services.store') }}" method="POST"
                       class="flex flex-wrap items-end gap-2">
                     @csrf
                     <div>
@@ -325,7 +325,7 @@
                         </select>
                     </div>
                     <button type="submit" class="k-btn-secondary">
-                        <x-icon name="plus" class="h-4 w-4"/> Ajouter
+                        <x-dme::icon name="plus" class="h-4 w-4"/> Ajouter
                     </button>
                 </form>
             </div>

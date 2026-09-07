@@ -3,14 +3,14 @@
     <div class="k-card-header">
         <h2 class="k-card-title">Examens d’imagerie</h2>
         @can('imaging.create')
-            <a href="{{ route('imaging.create', $patient) }}" class="k-btn-primary k-btn-sm">
-                <x-icon name="plus" class="h-3.5 w-3.5"/> Nouvelle demande
+            <a href="{{ route('dme.imaging.create', $patient) }}" class="k-btn-primary k-btn-sm">
+                <x-dme::icon name="plus" class="h-3.5 w-3.5"/> Nouvelle demande
             </a>
         @endcan
     </div>
 
     @if ($tabData['imagingOrders']->isEmpty())
-        <x-empty-state icon="scan" title="Aucun examen d’imagerie"
+        <x-dme::empty-state icon="scan" title="Aucun examen d’imagerie"
                        message="Les demandes d'imagerie et leurs comptes rendus apparaîtront ici."/>
     @else
         <ul class="divide-y divide-ink-100">
@@ -19,11 +19,11 @@
                     <div class="flex flex-wrap items-start justify-between gap-3">
                         <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-2">
-                                <a href="{{ route('imaging.show', $order) }}"
+                                <a href="{{ route('dme.imaging.show', $order) }}"
                                    class="text-sm font-medium text-clinic-700 hover:underline">
                                     {{ $order->modalityLabel() }}{{ $order->body_site ? ' — '.$order->body_site : '' }}
                                 </a>
-                                <x-status-badge :status="$order->status" :label="$order->statusLabel()"/>
+                                <x-dme::status-badge :status="$order->status" :label="$order->statusLabel()"/>
                             </div>
                             <p class="mt-0.5 text-xs text-ink-500">
                                 <span class="font-mono">{{ $order->order_number }}</span>
@@ -40,8 +40,8 @@
                                 </div>
                             @endif
                         </div>
-                        <a href="{{ route('imaging.show', $order) }}" class="k-btn-ghost k-btn-sm">
-                            Détail <x-icon name="chevron-right" class="h-3.5 w-3.5"/>
+                        <a href="{{ route('dme.imaging.show', $order) }}" class="k-btn-ghost k-btn-sm">
+                            Détail <x-dme::icon name="chevron-right" class="h-3.5 w-3.5"/>
                         </a>
                     </div>
                 </li>

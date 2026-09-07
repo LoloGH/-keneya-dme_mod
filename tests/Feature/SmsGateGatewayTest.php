@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Keneya\Dme\Tests\Feature;
 
-use App\Models\SmsMessage;
-use App\Services\Sms\Gateways\SmsGateGateway;
-use App\Services\Sms\SmsGatewayManager;
-use App\Services\Sms\SmsResult;
-use App\Services\Sms\SmsService;
-use App\Services\Sms\TracksDeliveryStatus;
+use Keneya\Dme\Models\SmsMessage;
+use Keneya\Dme\Sms\Pipeline\Gateways\SmsGateGateway;
+use Keneya\Dme\Sms\Pipeline\SmsGatewayManager;
+use Keneya\Dme\Sms\Pipeline\SmsResult;
+use Keneya\Dme\Sms\Pipeline\SmsService;
+use Keneya\Dme\Sms\Pipeline\TracksDeliveryStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * Passerelle SMSGate — passerelle de production du projet.
@@ -40,8 +40,8 @@ class SmsGateGatewayTest extends TestCase
      */
     private function useSmsGate(array $overrides = []): void
     {
-        config()->set('sms.gateway', 'smsgate');
-        config()->set('sms.gateways.smsgate', array_merge([
+        config()->set('dme.sms.gateway', 'smsgate');
+        config()->set('dme.sms.gateways.smsgate', array_merge([
             'driver' => 'smsgate',
             'base_url' => self::BASE,
             'username' => 'utilisateur-test',

@@ -2,56 +2,72 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Web\AppointmentController;
-use App\Http\Controllers\Web\AuditController;
-use App\Http\Controllers\Web\Auth\LoginController;
-use App\Http\Controllers\Web\ConsultationController;
-use App\Http\Controllers\Web\DashboardController;
-use App\Http\Controllers\Web\DocumentController;
-use App\Http\Controllers\Web\HospitalizationController;
-use App\Http\Controllers\Web\ImagingController;
-use App\Http\Controllers\Web\LaboratoryController;
-use App\Http\Controllers\Web\NotificationController;
-use App\Http\Controllers\Web\CareOrderController;
-use App\Http\Controllers\Web\NursingController;
-use App\Http\Controllers\Web\PatientController;
-use App\Http\Controllers\Web\PatientRecordController;
-use App\Http\Controllers\Web\PrescriptionController;
-use App\Http\Controllers\Web\SearchController;
-use App\Http\Controllers\Web\RolePermissionController;
-use App\Http\Controllers\Web\ServiceController;
-use App\Http\Controllers\Web\SettingsController;
-use App\Http\Controllers\Web\SmsController;
-use App\Http\Controllers\Web\UserController;
+use Keneya\Dme\Http\Controllers\Web\AppointmentController;
+use Keneya\Dme\Http\Controllers\Web\AuditController;
+use Keneya\Dme\Http\Controllers\Web\Auth\LoginController;
+use Keneya\Dme\Http\Controllers\Web\ConsultationController;
+use Keneya\Dme\Http\Controllers\Web\DashboardController;
+use Keneya\Dme\Http\Controllers\Web\DocumentController;
+use Keneya\Dme\Http\Controllers\Web\HospitalizationController;
+use Keneya\Dme\Http\Controllers\Web\ImagingController;
+use Keneya\Dme\Http\Controllers\Web\LaboratoryController;
+use Keneya\Dme\Http\Controllers\Web\NotificationController;
+use Keneya\Dme\Http\Controllers\Web\CareOrderController;
+use Keneya\Dme\Http\Controllers\Web\NursingController;
+use Keneya\Dme\Http\Controllers\Web\PatientController;
+use Keneya\Dme\Http\Controllers\Web\PatientRecordController;
+use Keneya\Dme\Http\Controllers\Web\PrescriptionController;
+use Keneya\Dme\Http\Controllers\Web\SearchController;
+use Keneya\Dme\Http\Controllers\Web\RolePermissionController;
+use Keneya\Dme\Http\Controllers\Web\ServiceController;
+use Keneya\Dme\Http\Controllers\Web\SettingsController;
+use Keneya\Dme\Contracts\SmsDispatcherContract;
+use Keneya\Dme\Sms\Pipeline\Http\SmsPipelineController;
+use Keneya\Dme\Sms\Pipeline\QueuedSmsDispatcher;
+use Keneya\Dme\Http\Controllers\Web\UserController;
+use Keneya\Dme\Standalone\StandaloneMode;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Routes web de Keneya-DME
+| Routes web du module Keneya-DME
 |--------------------------------------------------------------------------
 |
-| Toutes les routes applicatives exigent une session authentifiée. Les
-| autorisations fines sont portées par les policies : le middleware
-| `can:` déclaré ici est une première barrière, la policy reste la
-| référence (§32).
+| Ce fichier est chargé par DmeServiceProvider à l'intérieur d'un groupe
+| qui porte le préfixe d'URL du module, le préfixe de nom `dme.` et
+| l'intergiciel `dme.access` : aucune de ces routes n'est atteignable sans
+| que l'application hôte ait accordé l'accès au dossier médical.
+|
+| Toutes les routes exigent en outre une session authentifiée, fournie par
+| l'hôte. Les autorisations fines restent portées par les policies (§32).
 |
 | Aucun fichier n'est servi depuis le système de fichiers : les documents
 | passent par documents.download, contrôlé par MedicalDocumentPolicy (§42).
 |
 */
 
-Route::middleware('guest')->group(function (): void {
-    Route::get('/connexion', [LoginController::class, 'show'])->name('login');
-    Route::post('/connexion', [LoginController::class, 'store'])->middleware('throttle:login');
-});
+/*
+| Authentification locale — développement uniquement.
+|
+| En fonctionnement normal, le module s'appuie sur la session déjà
+| authentifiée par l'application hôte : il n'expose ni page de connexion,
+| ni déconnexion. Ces routes n'existent que sous DME_STANDALONE_DEV, pour
+| que le module reste navigable tant qu'aucun hôte ne le porte.
+*/
+if (app(StandaloneMode::class)->enabled()) {
+    Route::middleware('guest')->group(function (): void {
+        Route::get('/connexion', [LoginController::class, 'show'])->name('login');
+        Route::post('/connexion', [LoginController::class, 'store'])->middleware('throttle:dme-login');
+    });
 
-Route::post('/deconnexion', [LoginController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('logout');
+    Route::post('/deconnexion', [LoginController::class, 'destroy'])
+        ->middleware('auth')
+        ->name('logout');
+}
 
 Route::middleware('auth')->group(function (): void {
 
-    Route::redirect('/', '/tableau-de-bord');
+    Route::get('/', fn () => redirect()->route('dme.dashboard'))->name('home');
     Route::get('/tableau-de-bord', DashboardController::class)->name('dashboard');
 
     Route::get('/recherche', SearchController::class)->name('search');
@@ -209,9 +225,14 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/utilisateurs/{user}/modifier', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/utilisateurs/{user}', [UserController::class, 'update'])->name('users.update');
 
-    Route::get('/sms', [SmsController::class, 'index'])->name('sms.index');
-    Route::post('/sms', [SmsController::class, 'store'])->name('sms.store');
-    Route::post('/sms/{smsMessage}/rejouer', [SmsController::class, 'retry'])->name('sms.retry');
+    // Console du pipeline SMS interne. Elle disparaît dès que l'hôte
+    // fournit sa propre implémentation de SmsDispatcherContract : c'est
+    // alors à lui qu'appartiennent l'historique et les réessais.
+    if (app(SmsDispatcherContract::class) instanceof QueuedSmsDispatcher) {
+        Route::get('/sms', [SmsPipelineController::class, 'index'])->name('sms.index');
+        Route::post('/sms', [SmsPipelineController::class, 'store'])->name('sms.store');
+        Route::post('/sms/{smsMessage}/rejouer', [SmsPipelineController::class, 'retry'])->name('sms.retry');
+    }
 
     Route::get('/parametres', [SettingsController::class, 'index'])->name('settings.index');
     // Son propre compte : ouvert à tous, aucune permission ne le conditionne.

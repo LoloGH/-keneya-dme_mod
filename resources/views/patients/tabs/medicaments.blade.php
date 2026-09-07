@@ -7,7 +7,7 @@
         </div>
 
         @if ($tabData['medications']->isEmpty())
-            <x-empty-state icon="pill" title="Aucun traitement habituel"
+            <x-dme::empty-state icon="pill" title="Aucun traitement habituel"
                            message="Les traitements de fond du patient, distincts des ordonnances ponctuelles, se saisissent ici."/>
         @else
             <div class="overflow-x-auto">
@@ -33,7 +33,7 @@
                                 <td>{{ $medication->route ?: '—' }}</td>
                                 <td>{{ $medication->started_on?->translatedFormat('M Y') ?: '—' }}</td>
                                 <td class="text-xs text-ink-500">{{ $medication->prescriber?->displayName() ?? '—' }}</td>
-                                <td><x-status-badge :status="$medication->status" :label="$medication->statusLabel()"/></td>
+                                <td><x-dme::status-badge :status="$medication->status" :label="$medication->statusLabel()"/></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -45,7 +45,7 @@
     @can('update', $patient)
         <section class="k-card self-start">
             <div class="k-card-header"><h2 class="k-card-title">Ajouter un traitement</h2></div>
-            <form action="{{ route('record.medications.store', $patient) }}" method="POST" class="k-card-body space-y-3">
+            <form action="{{ route('dme.record.medications.store', $patient) }}" method="POST" class="k-card-body space-y-3">
                 @csrf
                 <div>
                     <label for="med_name" class="k-label">Médicament <span class="text-red-600" aria-hidden="true">*</span></label>
@@ -79,7 +79,7 @@
                 <div>
                     <label for="med_status" class="k-label">Statut <span class="text-red-600" aria-hidden="true">*</span></label>
                     <select id="med_status" name="status" required class="k-select">
-                        @foreach (\App\Models\Medication::STATUSES as $value => $label)
+                        @foreach (\Keneya\Dme\Models\Medication::STATUSES as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
                         @endforeach
                     </select>

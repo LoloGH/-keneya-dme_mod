@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Keneya\Dme\Tests\Unit;
 
-use App\Models\Allergy;
-use App\Models\ChronicCondition;
-use App\Models\Patient;
+use Keneya\Dme\Models\Allergy;
+use Keneya\Dme\Models\ChronicCondition;
+use Keneya\Dme\Models\Patient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * Modèle Patient : identifiant, âge, recherche et alertes cliniques.

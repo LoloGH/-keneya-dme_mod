@@ -1,36 +1,36 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Ordonnance '.$prescription->prescription_number)
 
 @section('content')
-    <x-page-header :title="'Ordonnance '.$prescription->prescription_number"
+    <x-dme::page-header :title="'Ordonnance '.$prescription->prescription_number"
                    :subtitle="$prescription->issued_on->translatedFormat('l d F Y')"
                    :breadcrumbs="[
-                       'Ordonnances' => route('prescriptions.index'),
-                       $prescription->patient->fullName() => route('patients.show', $prescription->patient),
+                       'Ordonnances' => route('dme.prescriptions.index'),
+                       $prescription->patient->fullName() => route('dme.patients.show', $prescription->patient),
                        $prescription->prescription_number => null,
                    ]">
         <x-slot:actions>
-            <a href="{{ route('prescriptions.pdf', $prescription) }}" target="_blank" rel="noopener" class="k-btn-secondary">
-                <x-icon name="print" class="h-4 w-4"/> Imprimer / PDF
+            <a href="{{ route('dme.prescriptions.pdf', $prescription) }}" target="_blank" rel="noopener" class="k-btn-secondary">
+                <x-dme::icon name="print" class="h-4 w-4"/> Imprimer / PDF
             </a>
             @can('documents.upload')
-                <a href="{{ route('prescriptions.pdf', [$prescription, 'archive' => 1]) }}" target="_blank" rel="noopener"
+                <a href="{{ route('dme.prescriptions.pdf', [$prescription, 'archive' => 1]) }}" target="_blank" rel="noopener"
                    class="k-btn-secondary">Archiver au dossier</a>
             @endcan
             @can('dispense', $prescription)
-                <form action="{{ route('prescriptions.dispense', $prescription) }}" method="POST">
+                <form action="{{ route('dme.prescriptions.dispense', $prescription) }}" method="POST">
                     @csrf
                     <button type="submit" class="k-btn-primary">Marquer comme délivrée</button>
                 </form>
             @endcan
         </x-slot:actions>
-    </x-page-header>
+    </x-dme::page-header>
 
     {{-- Avertissement allergie (§22) : visible, explicite, jamais bloquant --}}
     @if ($prescription->hasAllergyWarnings())
         <div class="k-alert-critical mb-4" role="alert">
-            <x-icon name="alert" class="mt-0.5 h-5 w-5 shrink-0 text-red-600"/>
+            <x-dme::icon name="alert" class="mt-0.5 h-5 w-5 shrink-0 text-red-600"/>
             <div>
                 <p class="text-sm font-semibold text-red-800">
                     Contrôle d’allergie — {{ count($prescription->allergy_warnings) }} correspondance(s)
@@ -63,7 +63,7 @@
             <section class="k-card">
                 <div class="k-card-header">
                     <h2 class="k-card-title">Médicaments prescrits</h2>
-                    <x-status-badge :status="$prescription->status" :label="$prescription->statusLabel()"/>
+                    <x-dme::status-badge :status="$prescription->status" :label="$prescription->statusLabel()"/>
                 </div>
                 <div class="k-card-body">
                     <ol class="space-y-3">
@@ -113,7 +113,7 @@
             @can('validate', $prescription)
                 <section class="k-card">
                     <div class="k-card-header"><h2 class="k-card-title">Validation de l’ordonnance</h2></div>
-                    <form action="{{ route('prescriptions.validate', $prescription) }}" method="POST" class="k-card-body space-y-3">
+                    <form action="{{ route('dme.prescriptions.validate', $prescription) }}" method="POST" class="k-card-body space-y-3">
                         @csrf
                         @if ($prescription->hasAllergyWarnings())
                             <label class="flex items-start gap-2 rounded-lg border border-red-300 bg-red-50 p-3 text-sm">
@@ -124,7 +124,7 @@
                                     maintenir cette prescription en connaissance de cause.
                                 </span>
                             </label>
-                            <x-field-error name="acknowledge_allergy"/>
+                            <x-dme::field-error name="acknowledge_allergy"/>
                             <div>
                                 <label for="allergy_justification" class="k-label">Justification clinique (recommandée)</label>
                                 <textarea id="allergy_justification" name="allergy_justification" rows="2" maxlength="1000"
@@ -147,7 +147,7 @@
             <section class="k-card">
                 <div class="k-card-header"><h2 class="k-card-title">Patient</h2></div>
                 <div class="k-card-body">
-                    <x-patient-header :patient="$prescription->patient" compact/>
+                    <x-dme::patient-header :patient="$prescription->patient" compact/>
                 </div>
             </section>
 
@@ -180,7 +180,7 @@
                         <div>
                             <dt class="text-xs text-ink-500">Consultation liée</dt>
                             <dd>
-                                <a href="{{ route('consultations.show', $prescription->consultation) }}"
+                                <a href="{{ route('dme.consultations.show', $prescription->consultation) }}"
                                    class="font-mono text-xs text-clinic-700 hover:underline">
                                     {{ $prescription->consultation->consultation_number }}
                                 </a>
@@ -197,7 +197,7 @@
                         @foreach ($prescription->patient->allergies as $allergy)
                             <li class="flex items-center justify-between gap-2">
                                 <span class="text-ink-800">{{ $allergy->allergen }}</span>
-                                <x-status-badge :status="$allergy->severity" :label="$allergy->severityLabel()"/>
+                                <x-dme::status-badge :status="$allergy->severity" :label="$allergy->severityLabel()"/>
                             </li>
                         @endforeach
                     </ul>

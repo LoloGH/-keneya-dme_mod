@@ -18,7 +18,7 @@
             <h2 class="text-lg font-semibold text-ink-900">{{ $patient->fullName() }}</h2>
             <span class="k-badge-neutral font-mono">{{ $patient->patient_number }}</span>
             @if ($patient->status !== 'active')
-                <x-status-badge :status="$patient->status" :label="ucfirst($patient->status)"/>
+                <x-dme::status-badge :status="$patient->status" :label="ucfirst($patient->status)"/>
             @endif
         </div>
 

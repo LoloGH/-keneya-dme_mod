@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Keneya\Dme\Tests\Feature;
 
-use App\Support\Rbac;
+use Keneya\Dme\Support\Rbac;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
- * Vérifie que chaque écran de l'application se rend réellement.
+ * Vérifie que chaque écran du module se rend réellement, monté dans une
+ * application hôte.
  *
  * Ce test est délibérément large : il attrape les erreurs de vue, de
  * relation manquante et de chargement paresseux (le mode strict
@@ -24,13 +25,6 @@ class SmokeTest extends TestCase
     {
         parent::setUp();
         $this->seedReferenceData();
-    }
-
-    public function test_la_page_de_connexion_repond(): void
-    {
-        $this->get(route('login'))
-            ->assertOk()
-            ->assertSee('Connexion');
     }
 
     /**
@@ -63,7 +57,7 @@ class SmokeTest extends TestCase
         $admin = $this->userWithRole(Rbac::ROLE_ADMIN);
 
         $this->actingAs($admin)
-            ->get(route($route))
+            ->get(route('dme.'.$route))
             ->assertOk();
     }
 
@@ -87,15 +81,15 @@ class SmokeTest extends TestCase
     public function test_chaque_onglet_du_dossier_se_rend(string $tab): void
     {
         $this->seed([
-            \Database\Seeders\DemoUserSeeder::class,
-            \Database\Seeders\DemoMedicalDataSeeder::class,
+            \Keneya\Dme\Database\Seeders\DemoUserSeeder::class,
+            \Keneya\Dme\Database\Seeders\DemoMedicalDataSeeder::class,
         ]);
 
         $admin = $this->userWithRole(Rbac::ROLE_ADMIN);
-        $patient = \App\Models\Patient::where('last_name', 'Traoré')->firstOrFail();
+        $patient = \Keneya\Dme\Models\Patient::where('last_name', 'Traoré')->firstOrFail();
 
         $this->actingAs($admin)
-            ->get(route('patients.show', ['patient' => $patient, 'tab' => $tab]))
+            ->get(route('dme.patients.show', ['patient' => $patient, 'tab' => $tab]))
             ->assertOk()
             ->assertSee($patient->patient_number);
     }

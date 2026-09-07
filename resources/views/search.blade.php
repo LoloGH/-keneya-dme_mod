@@ -1,14 +1,14 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Recherche')
 
 @section('content')
-    <x-page-header title="Recherche globale"
+    <x-dme::page-header title="Recherche globale"
                    :subtitle="$term ? 'Résultats pour « '.$term.' »' : 'Saisissez au moins deux caractères dans la barre de recherche.'"/>
 
     @if ($groups->isEmpty())
         <div class="k-card">
-            <x-empty-state icon="search"
+            <x-dme::empty-state icon="search"
                            :title="$term ? 'Aucun résultat' : 'Lancez une recherche'"
                            message="La recherche porte sur les patients, consultations, ordonnances, examens, documents et rendez-vous auxquels vous avez accès."/>
         </div>

@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Keneya\Dme\Tests\Feature;
 
-use App\Jobs\SendSmsMessage;
-use App\Models\Patient;
-use App\Models\SmsMessage;
-use App\Services\Sms\PhoneNumber;
-use App\Services\Sms\SmsGateway;
-use App\Services\Sms\SmsGatewayManager;
-use App\Services\Sms\SmsResult;
-use App\Services\Sms\SmsService;
-use App\Support\Rbac;
+use Keneya\Dme\Sms\Pipeline\SendSmsMessage;
+use Keneya\Dme\Models\Patient;
+use Keneya\Dme\Models\SmsMessage;
+use Keneya\Dme\Support\PhoneNumber;
+use Keneya\Dme\Sms\Pipeline\SmsGateway;
+use Keneya\Dme\Sms\Pipeline\SmsGatewayManager;
+use Keneya\Dme\Sms\Pipeline\SmsResult;
+use Keneya\Dme\Sms\Pipeline\SmsService;
+use Keneya\Dme\Support\Rbac;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use RuntimeException;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * Service SMS transversal (§35, §53).
@@ -142,7 +142,7 @@ class SmsServiceTest extends TestCase
             'recipient' => '+22370001001',
             'body' => 'Message de test.',
             'status' => 'failed',
-            'attempts' => config('sms.retry.max_attempts'),
+            'attempts' => config('dme.sms.retry.max_attempts'),
         ]);
 
         $this->assertFalse($message->isRetryable());
@@ -159,7 +159,7 @@ class SmsServiceTest extends TestCase
         // étrangère : c'est la condition de l'extraction du service en phase 2.
         $message = app(SmsService::class)->send('+22370001001', 'Message de test.', [
             'patient_id' => 999999,
-            'context_type' => 'App\\Models\\Inexistant',
+            'context_type' => 'Keneya\\Dme\\Models\\Inexistant',
             'context_id' => 42,
         ]);
 
@@ -174,7 +174,7 @@ class SmsServiceTest extends TestCase
         $patient = Patient::factory()->create();
 
         $this->actingAs($this->userWithRole(Rbac::ROLE_RECEPTION))
-            ->post(route('sms.store'), [
+            ->post(route('dme.sms.store'), [
                 'recipient' => '+22370001001',
                 'body' => 'Rappel de rendez-vous.',
                 'patient_id' => $patient->id,
@@ -192,7 +192,7 @@ class SmsServiceTest extends TestCase
     public function test_un_role_sans_permission_ne_peut_pas_envoyer_de_sms(): void
     {
         $this->actingAs($this->userWithRole(Rbac::ROLE_LAB))
-            ->post(route('sms.store'), [
+            ->post(route('dme.sms.store'), [
                 'recipient' => '+22370001001',
                 'body' => 'Message non autorisé.',
             ])

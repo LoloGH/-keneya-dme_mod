@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Keneya\Dme\Tests\Unit;
 
-use App\Models\Allergy;
-use App\Models\Patient;
-use App\Services\Prescriptions\AllergyChecker;
+use Keneya\Dme\Models\Allergy;
+use Keneya\Dme\Models\Patient;
+use Keneya\Dme\Services\Prescriptions\AllergyChecker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * Contrôle d'allergie à la prescription (§22).

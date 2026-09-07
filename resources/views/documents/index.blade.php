@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Documents')
 
 @section('content')
-    <x-page-header title="Documents médicaux" subtitle="{{ $documents->total() }} document(s)."/>
+    <x-dme::page-header title="Documents médicaux" subtitle="{{ $documents->total() }} document(s)."/>
 
     <form method="GET" class="k-card mb-4 flex flex-wrap gap-3 p-4">
         <div class="min-w-56 flex-1">
@@ -15,7 +15,7 @@
             <label for="type" class="sr-only">Type</label>
             <select id="type" name="type" class="k-select">
                 <option value="">Tous les types</option>
-                @foreach (\App\Models\MedicalDocument::TYPES as $value => $label)
+                @foreach (\Keneya\Dme\Models\MedicalDocument::TYPES as $value => $label)
                     <option value="{{ $value }}" @selected(($filters['type'] ?? '') === $value)>{{ $label }}</option>
                 @endforeach
             </select>
@@ -25,7 +25,7 @@
 
     <div class="k-card">
         @if ($documents->isEmpty())
-            <x-empty-state icon="document" title="Aucun document"
+            <x-dme::empty-state icon="document" title="Aucun document"
                            message="Les documents s'importent depuis le dossier d'un patient. Les PDF générés par l'application peuvent y être archivés."/>
         @else
             <div class="overflow-x-auto">
@@ -49,14 +49,14 @@
                         @foreach ($documents as $document)
                             <tr>
                                 <td class="font-medium text-ink-900">
-                                    <a href="{{ route('documents.show', $document) }}" class="hover:text-clinic-700 hover:underline">
+                                    <a href="{{ route('dme.documents.show', $document) }}" class="hover:text-clinic-700 hover:underline">
                                         {{ $document->title }}
                                     </a>
                                 </td>
                                 <td class="font-mono text-xs">{{ $document->document_number }}</td>
                                 <td>{{ $document->typeLabel() }}</td>
                                 <td>
-                                    <a href="{{ route('patients.show', $document->patient) }}"
+                                    <a href="{{ route('dme.patients.show', $document->patient) }}"
                                        class="hover:text-clinic-700 hover:underline">
                                         {{ $document->patient->fullName() }}
                                     </a>
@@ -67,11 +67,11 @@
                                 <td class="whitespace-nowrap">{{ $document->created_at->translatedFormat('d M Y') }}</td>
                                 <td class="tabular-nums">{{ $document->humanSize() }}</td>
                                 <td class="tabular-nums">v{{ $document->version }}</td>
-                                <td><x-status-badge :status="$document->status" :label="ucfirst($document->status)"/></td>
+                                <td><x-dme::status-badge :status="$document->status" :label="ucfirst($document->status)"/></td>
                                 <td class="text-right">
                                     @can('download', $document)
-                                        <a href="{{ route('documents.download', $document) }}" class="k-btn-ghost k-btn-sm">
-                                            <x-icon name="download" class="h-3.5 w-3.5"/>
+                                        <a href="{{ route('dme.documents.download', $document) }}" class="k-btn-ghost k-btn-sm">
+                                            <x-dme::icon name="download" class="h-3.5 w-3.5"/>
                                             <span class="sr-only">Télécharger {{ $document->title }}</span>
                                         </a>
                                     @endcan

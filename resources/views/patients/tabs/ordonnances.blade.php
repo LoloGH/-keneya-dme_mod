@@ -3,14 +3,14 @@
     <div class="k-card-header">
         <h2 class="k-card-title">Ordonnances</h2>
         @can('prescriptions.create')
-            <a href="{{ route('prescriptions.create', $patient) }}" class="k-btn-primary k-btn-sm">
-                <x-icon name="plus" class="h-3.5 w-3.5"/> Nouvelle ordonnance
+            <a href="{{ route('dme.prescriptions.create', $patient) }}" class="k-btn-primary k-btn-sm">
+                <x-dme::icon name="plus" class="h-3.5 w-3.5"/> Nouvelle ordonnance
             </a>
         @endcan
     </div>
 
     @if ($tabData['prescriptions']->isEmpty())
-        <x-empty-state icon="pill" title="Aucune ordonnance"
+        <x-dme::empty-state icon="pill" title="Aucune ordonnance"
                        message="Les prescriptions établies pour ce patient apparaîtront ici."/>
     @else
         <ul class="divide-y divide-ink-100">
@@ -19,14 +19,14 @@
                     <div class="flex flex-wrap items-start justify-between gap-3">
                         <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-2">
-                                <a href="{{ route('prescriptions.show', $prescription) }}"
+                                <a href="{{ route('dme.prescriptions.show', $prescription) }}"
                                    class="font-mono text-sm font-medium text-clinic-700 hover:underline">
                                     {{ $prescription->prescription_number }}
                                 </a>
-                                <x-status-badge :status="$prescription->status" :label="$prescription->statusLabel()"/>
+                                <x-dme::status-badge :status="$prescription->status" :label="$prescription->statusLabel()"/>
                                 @if ($prescription->hasAllergyWarnings())
                                     <span class="k-badge-danger">
-                                        <x-icon name="alert" class="h-3 w-3"/> Alerte allergie
+                                        <x-dme::icon name="alert" class="h-3 w-3"/> Alerte allergie
                                     </span>
                                 @endif
                             </div>
@@ -45,9 +45,9 @@
                                 @endforeach
                             </ul>
                         </div>
-                        <a href="{{ route('prescriptions.pdf', $prescription) }}" target="_blank" rel="noopener"
+                        <a href="{{ route('dme.prescriptions.pdf', $prescription) }}" target="_blank" rel="noopener"
                            class="k-btn-secondary k-btn-sm">
-                            <x-icon name="print" class="h-3.5 w-3.5"/> PDF
+                            <x-dme::icon name="print" class="h-3.5 w-3.5"/> PDF
                         </a>
                     </div>
                 </li>

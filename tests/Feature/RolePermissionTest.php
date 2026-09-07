@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Keneya\Dme\Tests\Feature;
 
-use App\Models\AuditLog;
-use App\Support\Rbac;
-use Database\Seeders\RoleAndPermissionSeeder;
+use Keneya\Dme\Models\AuditLog;
+use Keneya\Dme\Support\Rbac;
+use Keneya\Dme\Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * Matrice rôles / permissions modifiable, et écran Paramètres différencié.
@@ -41,7 +41,7 @@ class RolePermissionTest extends TestCase
         $this->assertContains('appointments.manage', $before);
 
         $this->actingAs($admin)
-            ->put(route('settings.roles.update'), [
+            ->put(route('dme.settings.roles.update'), [
                 'permissions' => [
                     Rbac::ROLE_RECEPTION => array_values(array_diff($before, ['appointments.manage'])),
                 ],
@@ -57,7 +57,7 @@ class RolePermissionTest extends TestCase
         $reception = $this->userWithRole(Rbac::ROLE_RECEPTION);
         $this->assertTrue($reception->can('appointments.manage'));
 
-        $this->actingAs($admin)->put(route('settings.roles.update'), [
+        $this->actingAs($admin)->put(route('dme.settings.roles.update'), [
             'permissions' => [
                 Rbac::ROLE_RECEPTION => array_values(array_diff(
                     $this->permissionsOf(Rbac::ROLE_RECEPTION), ['appointments.manage'],
@@ -74,7 +74,7 @@ class RolePermissionTest extends TestCase
 
         // Tentative de tout retirer au rôle administrateur.
         $this->actingAs($admin)
-            ->put(route('settings.roles.update'), ['permissions' => [Rbac::ROLE_ADMIN => []]])
+            ->put(route('dme.settings.roles.update'), ['permissions' => [Rbac::ROLE_ADMIN => []]])
             ->assertRedirect();
 
         $remaining = $this->permissionsOf(Rbac::ROLE_ADMIN);
@@ -96,7 +96,7 @@ class RolePermissionTest extends TestCase
         $this->assertTrue($user->can('roles.manage'));
 
         $this->actingAs($user)
-            ->put(route('settings.roles.update'), ['permissions' => ['superviseur' => ['patients.view']]])
+            ->put(route('dme.settings.roles.update'), ['permissions' => ['superviseur' => ['patients.view']]])
             ->assertRedirect();
 
         $this->assertTrue($user->fresh()->can('roles.manage'));
@@ -107,7 +107,7 @@ class RolePermissionTest extends TestCase
         $admin = $this->userWithRole(Rbac::ROLE_ADMIN);
         $before = $this->permissionsOf(Rbac::ROLE_NURSE);
 
-        $this->actingAs($admin)->put(route('settings.roles.update'), [
+        $this->actingAs($admin)->put(route('dme.settings.roles.update'), [
             'permissions' => [Rbac::ROLE_RECEPTION => $this->permissionsOf(Rbac::ROLE_RECEPTION)],
         ]);
 
@@ -118,7 +118,7 @@ class RolePermissionTest extends TestCase
     {
         $admin = $this->userWithRole(Rbac::ROLE_ADMIN);
 
-        $this->actingAs($admin)->put(route('settings.roles.update'), [
+        $this->actingAs($admin)->put(route('dme.settings.roles.update'), [
             'permissions' => [Rbac::ROLE_RECEPTION => ['patients.view', 'tout.pouvoir']],
         ]);
 
@@ -129,7 +129,7 @@ class RolePermissionTest extends TestCase
     {
         $admin = $this->userWithRole(Rbac::ROLE_ADMIN);
 
-        $this->actingAs($admin)->put(route('settings.roles.update'), [
+        $this->actingAs($admin)->put(route('dme.settings.roles.update'), [
             'permissions' => [Rbac::ROLE_RECEPTION => ['patients.view']],
         ]);
 
@@ -145,7 +145,7 @@ class RolePermissionTest extends TestCase
             $before = $this->permissionsOf(Rbac::ROLE_RECEPTION);
 
             $this->actingAs($this->userWithRole($role))
-                ->put(route('settings.roles.update'), ['permissions' => [Rbac::ROLE_RECEPTION => []]])
+                ->put(route('dme.settings.roles.update'), ['permissions' => [Rbac::ROLE_RECEPTION => []]])
                 ->assertForbidden();
 
             $this->assertSame($before, $this->permissionsOf(Rbac::ROLE_RECEPTION));
@@ -157,12 +157,12 @@ class RolePermissionTest extends TestCase
         $admin = $this->userWithRole(Rbac::ROLE_ADMIN);
         $origine = $this->permissionsOf(Rbac::ROLE_NURSE);
 
-        $this->actingAs($admin)->put(route('settings.roles.update'), [
+        $this->actingAs($admin)->put(route('dme.settings.roles.update'), [
             'permissions' => [Rbac::ROLE_NURSE => ['patients.view']],
         ]);
         $this->assertSame(['patients.view'], $this->permissionsOf(Rbac::ROLE_NURSE));
 
-        $this->actingAs($admin)->post(route('settings.roles.reset'))->assertRedirect();
+        $this->actingAs($admin)->post(route('dme.settings.roles.reset'))->assertRedirect();
 
         $this->assertSame($origine, $this->permissionsOf(Rbac::ROLE_NURSE));
     }
@@ -171,7 +171,7 @@ class RolePermissionTest extends TestCase
     {
         $admin = $this->userWithRole(Rbac::ROLE_ADMIN);
 
-        $this->actingAs($admin)->put(route('settings.roles.update'), [
+        $this->actingAs($admin)->put(route('dme.settings.roles.update'), [
             'permissions' => [Rbac::ROLE_NURSE => ['patients.view']],
         ]);
 
@@ -198,10 +198,10 @@ class RolePermissionTest extends TestCase
     public function test_l_ecran_parametres_se_limite_au_compte_sans_settings_manage(): void
     {
         foreach ([Rbac::ROLE_DOCTOR, Rbac::ROLE_NURSE, Rbac::ROLE_RECEPTION] as $role) {
-            $response = $this->actingAs($this->userWithRole($role))->get(route('settings.index'));
+            $response = $this->actingAs($this->userWithRole($role))->get(route('dme.settings.index'));
 
             $response->assertOk()
-                ->assertViewIs('settings.account')
+                ->assertViewIs('dme::settings.account')
                 ->assertSee('Mes informations')
                 ->assertSee('Changer mon mot de passe')
                 ->assertDontSee('Rôles et permissions');
@@ -211,9 +211,9 @@ class RolePermissionTest extends TestCase
     public function test_l_administrateur_obtient_l_ecran_complet(): void
     {
         $this->actingAs($this->userWithRole(Rbac::ROLE_ADMIN))
-            ->get(route('settings.index'))
+            ->get(route('dme.settings.index'))
             ->assertOk()
-            ->assertViewIs('settings.index')
+            ->assertViewIs('dme::settings.index')
             ->assertSee('Rôles et permissions')
             ->assertSee('Mes informations');
     }
@@ -223,7 +223,7 @@ class RolePermissionTest extends TestCase
         $user = $this->userWithRole(Rbac::ROLE_NURSE);
 
         $this->actingAs($user)
-            ->put(route('settings.password.update'), [
+            ->put(route('dme.settings.password.update'), [
                 'current_password' => 'mauvais',
                 'password' => 'NouveauMotDePasse2026!',
                 'password_confirmation' => 'NouveauMotDePasse2026!',
@@ -231,7 +231,7 @@ class RolePermissionTest extends TestCase
             ->assertSessionHasErrors('current_password');
 
         $this->actingAs($user)
-            ->put(route('settings.password.update'), [
+            ->put(route('dme.settings.password.update'), [
                 'current_password' => 'MotDePasseDeTest2026',
                 'password' => 'NouveauMotDePasse2026!',
                 'password_confirmation' => 'NouveauMotDePasse2026!',
@@ -247,7 +247,7 @@ class RolePermissionTest extends TestCase
     {
         $user = $this->userWithRole(Rbac::ROLE_NURSE);
 
-        $this->actingAs($user)->put(route('settings.password.update'), [
+        $this->actingAs($user)->put(route('dme.settings.password.update'), [
             'current_password' => 'MotDePasseDeTest2026',
             'password' => 'NouveauMotDePasse2026!',
             'password_confirmation' => 'NouveauMotDePasse2026!',
@@ -263,13 +263,13 @@ class RolePermissionTest extends TestCase
         $nurse = $this->userWithRole(Rbac::ROLE_NURSE);
         $this->assertFalse($nurse->is_on_duty);
 
-        $this->actingAs($nurse)->patch(route('settings.duty.toggle'))->assertRedirect();
+        $this->actingAs($nurse)->patch(route('dme.settings.duty.toggle'))->assertRedirect();
 
         $this->assertTrue($nurse->fresh()->is_on_duty);
         $this->assertNotNull($nurse->fresh()->on_duty_since);
         $this->assertDatabaseHas('activity_log', ['action' => 'duty_started']);
 
-        $this->actingAs($nurse->fresh())->patch(route('settings.duty.toggle'));
+        $this->actingAs($nurse->fresh())->patch(route('dme.settings.duty.toggle'));
         $this->assertFalse($nurse->fresh()->is_on_duty);
         $this->assertDatabaseHas('activity_log', ['action' => 'duty_ended']);
     }

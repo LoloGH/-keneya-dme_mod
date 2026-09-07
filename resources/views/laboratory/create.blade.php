@@ -1,17 +1,17 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Nouvelle demande d’analyse')
 
 @section('content')
-    <x-page-header title="Nouvelle demande d’analyse"
+    <x-dme::page-header title="Nouvelle demande d’analyse"
                    :subtitle="$patient->fullName().' — '.$patient->patient_number"
                    :breadcrumbs="[
-                       'Patients' => route('patients.index'),
-                       $patient->fullName() => route('patients.show', $patient),
+                       'Patients' => route('dme.patients.index'),
+                       $patient->fullName() => route('dme.patients.show', $patient),
                        'Demande d’analyse' => null,
                    ]"/>
 
-    <form action="{{ route('laboratory.store', $patient) }}" method="POST" novalidate>
+    <form action="{{ route('dme.laboratory.store', $patient) }}" method="POST" novalidate>
         @csrf
         @if ($consultationId)
             <input type="hidden" name="consultation_id" value="{{ $consultationId }}">
@@ -19,19 +19,19 @@
 
         <fieldset class="k-fieldset mb-4">
             <legend class="k-fieldset-legend">
-                <x-icon name="flask" class="h-4.5 w-4.5 text-clinic-600"/> Demande
+                <x-dme::icon name="flask" class="h-4.5 w-4.5 text-clinic-600"/> Demande
             </legend>
             <div class="grid gap-4 sm:grid-cols-3">
                 <div>
                     <label for="requested_at" class="k-label">Date <span class="text-red-600" aria-hidden="true">*</span></label>
                     <input id="requested_at" name="requested_at" type="datetime-local" required
                            value="{{ old('requested_at', now()->format('Y-m-d\TH:i')) }}" class="k-input">
-                    <x-field-error name="requested_at"/>
+                    <x-dme::field-error name="requested_at"/>
                 </div>
                 <div>
                     <label for="priority" class="k-label">Urgence <span class="text-red-600" aria-hidden="true">*</span></label>
                     <select id="priority" name="priority" required class="k-select">
-                        @foreach (\App\Models\LabOrder::PRIORITIES as $value => $label)
+                        @foreach (\Keneya\Dme\Models\LabOrder::PRIORITIES as $value => $label)
                             <option value="{{ $value }}" @selected(old('priority') === $value)>{{ $label }}</option>
                         @endforeach
                     </select>
@@ -50,10 +50,10 @@
 
         <fieldset class="k-fieldset mb-4">
             <legend class="k-fieldset-legend">
-                <x-icon name="check" class="h-4.5 w-4.5 text-clinic-600"/> Examens demandés
+                <x-dme::icon name="check" class="h-4.5 w-4.5 text-clinic-600"/> Examens demandés
                 <span class="text-red-600" aria-hidden="true">*</span>
             </legend>
-            <x-field-error name="exams"/>
+            <x-dme::field-error name="exams"/>
 
             <div class="grid gap-4 sm:grid-cols-2">
                 @foreach ($catalogue as $category => $exams)
@@ -76,7 +76,7 @@
 
         <div class="flex flex-wrap items-center gap-2">
             <button type="submit" class="k-btn-primary">Créer la demande</button>
-            <a href="{{ route('patients.show', $patient) }}" class="k-btn-ghost">Annuler</a>
+            <a href="{{ route('dme.patients.show', $patient) }}" class="k-btn-ghost">Annuler</a>
         </div>
     </form>
 @endsection

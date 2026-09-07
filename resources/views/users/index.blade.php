@@ -1,17 +1,17 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Utilisateurs')
 
 @section('content')
-    <x-page-header title="Utilisateurs" subtitle="{{ $users->total() }} compte(s) professionnel(s).">
+    <x-dme::page-header title="Utilisateurs" subtitle="{{ $users->total() }} compte(s) professionnel(s).">
         <x-slot:actions>
             @can('users.manage')
-                <a href="{{ route('users.create') }}" class="k-btn-primary">
-                    <x-icon name="plus" class="h-4 w-4"/> Nouveau compte
+                <a href="{{ route('dme.users.create') }}" class="k-btn-primary">
+                    <x-dme::icon name="plus" class="h-4 w-4"/> Nouveau compte
                 </a>
             @endcan
         </x-slot:actions>
-    </x-page-header>
+    </x-dme::page-header>
 
     <form method="GET" class="k-card mb-4 flex flex-wrap gap-3 p-4">
         <div class="min-w-56 flex-1">
@@ -33,7 +33,7 @@
 
     <div class="k-card">
         @if ($users->isEmpty())
-            <x-empty-state icon="shield" title="Aucun utilisateur" message="Créez un premier compte professionnel."/>
+            <x-dme::empty-state icon="shield" title="Aucun utilisateur" message="Créez un premier compte professionnel."/>
         @else
             <div class="overflow-x-auto">
                 <table class="k-table">
@@ -69,12 +69,12 @@
                                     {{ $user->last_login_at?->translatedFormat('d M Y H:i') ?? 'Jamais' }}
                                 </td>
                                 <td>
-                                    <x-status-badge :status="$user->is_active ? 'active' : 'cancelled'"
+                                    <x-dme::status-badge :status="$user->is_active ? 'active' : 'cancelled'"
                                                     :label="$user->is_active ? 'Actif' : 'Désactivé'"/>
                                 </td>
                                 <td class="text-right">
                                     @can('update', $user)
-                                        <a href="{{ route('users.edit', $user) }}" class="k-btn-ghost k-btn-sm">Modifier</a>
+                                        <a href="{{ route('dme.users.edit', $user) }}" class="k-btn-ghost k-btn-sm">Modifier</a>
                                     @endcan
                                 </td>
                             </tr>

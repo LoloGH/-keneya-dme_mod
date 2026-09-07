@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Schema;
  * l'établissement, préfixes des identifiants métier. Une simple table
  * clé/valeur suffit — ces réglages sont peu nombreux et lus en bloc au
  * démarrage de chaque requête (AppServiceProvider) pour surcharger
- * config('keneya.*'), qui reste la valeur par défaut tant qu'aucune
+ * config('dme.*'), qui reste la valeur par défaut tant qu'aucune
  * ligne ne l'y remplace.
  */
 return new class extends Migration

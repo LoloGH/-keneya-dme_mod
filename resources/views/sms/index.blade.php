@@ -1,15 +1,15 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Service SMS')
 
 @section('content')
-    <x-page-header title="Service SMS"
+    <x-dme::page-header title="Service SMS"
                    subtitle="Service transversal : il ne dépend d’aucun module médical et pourra être extrait tel quel en phase 2."/>
 
     {{-- Avertissement explicite lorsque rien n'est réellement émis --}}
     @if ($simulated)
         <div class="k-alert-warning mb-4" role="status">
-            <x-icon name="alert" class="mt-0.5 h-5 w-5 shrink-0 text-amber-600"/>
+            <x-dme::icon name="alert" class="mt-0.5 h-5 w-5 shrink-0 text-amber-600"/>
             <div>
                 <p class="text-sm font-semibold text-amber-800">
                     Passerelle de simulation — aucun SMS n’est réellement envoyé
@@ -65,7 +65,7 @@
                         <label for="status" class="sr-only">Statut</label>
                         <select id="status" name="status" class="k-select">
                             <option value="">Tous</option>
-                            @foreach (\App\Models\SmsMessage::STATUSES as $value => $label)
+                            @foreach (\Keneya\Dme\Models\SmsMessage::STATUSES as $value => $label)
                                 <option value="{{ $value }}" @selected(($filters['status'] ?? '') === $value)>{{ $label }}</option>
                             @endforeach
                         </select>
@@ -74,7 +74,7 @@
                 </div>
 
                 @if ($messages->isEmpty())
-                    <x-empty-state icon="chat" title="Aucun message"
+                    <x-dme::empty-state icon="chat" title="Aucun message"
                                    message="Les SMS déclenchés par les rendez-vous, résultats et ordonnances apparaîtront ici."/>
                 @else
                     <div class="overflow-x-auto">
@@ -106,7 +106,7 @@
                                         </td>
                                         <td class="text-xs">
                                             @if ($message->patient)
-                                                <a href="{{ route('patients.show', $message->patient) }}"
+                                                <a href="{{ route('dme.patients.show', $message->patient) }}"
                                                    class="text-clinic-700 hover:underline">
                                                     {{ $message->patient->patient_number }}
                                                 </a>
@@ -115,10 +115,10 @@
                                             @endif
                                         </td>
                                         <td class="tabular-nums">{{ $message->attempts }}</td>
-                                        <td><x-status-badge :status="$message->status" :label="$message->statusLabel()"/></td>
+                                        <td><x-dme::status-badge :status="$message->status" :label="$message->statusLabel()"/></td>
                                         <td class="text-right">
                                             @can('retry', $message)
-                                                <form action="{{ route('sms.retry', $message) }}" method="POST">
+                                                <form action="{{ route('dme.sms.retry', $message) }}" method="POST">
                                                     @csrf
                                                     <button type="submit" class="k-btn-ghost k-btn-sm">Rejouer</button>
                                                 </form>
@@ -138,13 +138,13 @@
             @can('sms.send')
                 <section class="k-card">
                     <div class="k-card-header"><h2 class="k-card-title">Envoi manuel</h2></div>
-                    <form action="{{ route('sms.store') }}" method="POST" class="k-card-body space-y-3">
+                    <form action="{{ route('dme.sms.store') }}" method="POST" class="k-card-body space-y-3">
                         @csrf
                         <div>
                             <label for="recipient" class="k-label">Destinataire <span class="text-red-600" aria-hidden="true">*</span></label>
                             <input id="recipient" name="recipient" type="tel" required maxlength="30" class="k-input"
                                    value="{{ old('recipient') }}" placeholder="+223 70 00 10 01">
-                            <x-field-error name="recipient"/>
+                            <x-dme::field-error name="recipient"/>
                         </div>
                         <div>
                             <label for="body" class="k-label">Message <span class="text-red-600" aria-hidden="true">*</span></label>
@@ -153,7 +153,7 @@
                             <p class="k-hint">
                                 N’inscrivez jamais de résultat clinique dans un SMS : le réseau n’est pas maîtrisé.
                             </p>
-                            <x-field-error name="body"/>
+                            <x-dme::field-error name="body"/>
                         </div>
                         <button type="submit" class="k-btn-primary w-full">Placer dans la file d’envoi</button>
                     </form>

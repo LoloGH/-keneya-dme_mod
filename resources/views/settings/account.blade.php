@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Paramètres')
 
@@ -7,10 +7,10 @@
          La configuration de l'établissement, les passerelles SMS et la
          matrice de permissions ne leur sont pas rendues : ce n'est pas un
          masquage d'affichage, le contrôleur ne les charge pas. --}}
-    <x-page-header title="Paramètres"
+    <x-dme::page-header title="Paramètres"
                    subtitle="Votre compte et votre mot de passe. La configuration de l’application relève de l’administration."/>
 
-    @include('settings.partials.account')
+    @include('dme::settings.partials.account')
 
     <section class="k-card mt-4">
         <div class="k-card-header"><h2 class="k-card-title">Besoin d’autre chose ?</h2></div>

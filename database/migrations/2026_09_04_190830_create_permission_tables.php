@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // spatie/laravel-permission est peut-être déjà installé chez l'hôte,
+        // avec ses tables : dans ce cas le module s'appuie sur les siennes.
+        if (Schema::hasTable('permissions')) {
+            return;
+        }
+
         $teams = config('permission.teams');
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');

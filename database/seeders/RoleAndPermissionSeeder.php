@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders;
+namespace Keneya\Dme\Database\Seeders;
 
-use App\Support\Rbac;
+use Keneya\Dme\Support\Rbac;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;

@@ -1,18 +1,31 @@
 import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 
+/**
+ * Construction des ressources du module.
+ *
+ * Un module ne peut pas compter sur l'application hôte pour compiler ses
+ * feuilles de style : elle a sa propre chaîne d'assets, ses propres
+ * entrées Vite, et n'a aucune raison de connaître les nôtres. Les
+ * ressources sont donc construites ici, sous des noms stables et sans
+ * manifeste, puis versionnées dans `public/build/` et copiées chez l'hôte
+ * par `php artisan vendor:publish --tag=dme-assets`.
+ */
 export default defineConfig({
-    plugins: [
-        laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
-            refresh: true,
-        }),
-        tailwindcss(),
-    ],
-    server: {
-        watch: {
-            ignored: ['**/storage/framework/views/**'],
+    plugins: [tailwindcss()],
+    build: {
+        outDir: 'public/build',
+        emptyOutDir: true,
+        manifest: false,
+        rollupOptions: {
+            input: {
+                app: 'resources/js/app.js',
+            },
+            output: {
+                entryFileNames: '[name].js',
+                chunkFileNames: '[name].js',
+                assetFileNames: '[name].[ext]',
+            },
         },
     },
 });

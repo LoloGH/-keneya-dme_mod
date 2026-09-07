@@ -24,24 +24,29 @@
 @endphp
 
 <div class="flex h-20 items-center gap-3 border-b border-ink-200 px-5">
-    <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5">
-        <img src="{{ asset('assets/logo_kdme.png') }}" alt="" class="h-14 w-14 rounded-lg object-contain">
+    <a href="{{ route('dme.dashboard') }}" class="flex items-center gap-2.5">
+        <img src="{{ \Keneya\Dme\Dme::asset('assets/logo_kdme.png') }}" alt="" class="h-14 w-14 rounded-lg object-contain">
         <span class="text-lg font-semibold tracking-tight text-ink-900">Keneya-DME</span>
     </a>
     <button type="button" class="ml-auto rounded-lg p-2 text-ink-500 hover:bg-ink-100 lg:hidden"
             @click="sidebarOpen = false" aria-label="Fermer la navigation">
-        <x-icon name="close" class="h-5 w-5"/>
+        <x-dme::icon name="close" class="h-5 w-5"/>
     </button>
 </div>
 
 <nav class="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
     @foreach ($navigation as $item)
+        {{-- Les noms sont ceux du module ; le préfixe est celui sous lequel
+             l'hôte l'a monté. Une entrée dont la route n'existe pas — la
+             console SMS quand l'hôte fournit son propre envoi — disparaît. --}}
+        @php $name = 'dme.'.$item['route']; @endphp
+        @continue(! Route::has($name))
         @continue($item['permission'] && ! auth()->user()->can($item['permission']))
-        @php $active = request()->routeIs(Str::before($item['route'], '.').'.*') || request()->routeIs($item['route']); @endphp
-        <a href="{{ route($item['route']) }}"
+        @php $active = request()->routeIs(Str::before($name, '.', 2).'.*') || request()->routeIs($name); @endphp
+        <a href="{{ route($name) }}"
            class="{{ $active ? 'k-nav-link-active' : 'k-nav-link' }}"
            @if ($active) aria-current="page" @endif>
-            <x-icon :name="$item['icon']" class="h-5 w-5 shrink-0"/>
+            <x-dme::icon :name="$item['icon']" class="h-5 w-5 shrink-0"/>
             <span>{{ $item['label'] }}</span>
         </a>
     @endforeach
@@ -50,6 +55,6 @@
 <div class="border-t border-ink-200 p-3">
     <div class="rounded-lg bg-ink-50 px-3 py-2.5">
         <p class="text-xs font-medium text-ink-500">Établissement</p>
-        <p class="mt-0.5 text-sm font-semibold text-ink-800">{{ config('keneya.facility.name') }}</p>
+        <p class="mt-0.5 text-sm font-semibold text-ink-800">{{ config('dme.facility.name') }}</p>
     </div>
 </div>

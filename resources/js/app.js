@@ -1,3 +1,8 @@
+/* La feuille de style du module est importée ici : la construction du
+   package n'a qu'un point d'entrée, pour produire app.js et app.css sous
+   des noms stables. */
+import '../css/app.css';
+
 import './bootstrap';
 
 import Alpine from 'alpinejs';

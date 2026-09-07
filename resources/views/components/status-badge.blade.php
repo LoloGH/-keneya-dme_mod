@@ -25,7 +25,7 @@
 
 <span {{ $attributes->merge(['class' => "k-badge-{$tone}"]) }}>
     @if ($tone === 'danger')
-        <x-icon name="alert" class="h-3 w-3"/>
+        <x-dme::icon name="alert" class="h-3 w-3"/>
     @endif
     {{ $label ?? $slot }}
 </span>

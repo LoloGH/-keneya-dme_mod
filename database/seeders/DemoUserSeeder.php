@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders;
+namespace Keneya\Dme\Database\Seeders;
 
-use App\Models\Service;
-use App\Models\User;
-use App\Support\Rbac;
+use Keneya\Dme\Models\Service;
+use Keneya\Dme\Models\User;
+use Keneya\Dme\Support\Rbac;
 use Illuminate\Database\Seeder;
 use RuntimeException;
 
@@ -33,7 +33,7 @@ class DemoUserSeeder extends Seeder
             return;
         }
 
-        $password = config('keneya.demo.password');
+        $password = config('dme.demo.password');
 
         if (blank($password)) {
             throw new RuntimeException(

@@ -2,17 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Keneya\Dme\Database\Factories;
 
-use App\Models\Service;
+use Keneya\Dme\Models\Service;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Keneya\Dme\Models\User;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<\App\Models\User>
+ * @extends Factory<\Keneya\Dme\Models\User>
  */
 class UserFactory extends Factory
 {
+    /**
+     * Le modèle ne se devine pas depuis un package : les fabriques
+     * de Laravel supposent l'espace de noms App\Models.
+     *
+     * @var class-string<User>
+     */
+    protected $model = User::class;
+
     /**
      * @return array<string, mixed>
      */

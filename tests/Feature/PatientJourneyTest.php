@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Keneya\Dme\Tests\Feature;
 
-use App\Models\Allergy;
-use App\Models\Appointment;
-use App\Models\Consultation;
-use App\Models\Hospitalization;
-use App\Models\ImagingOrder;
-use App\Models\LabOrder;
-use App\Models\MedicalDocument;
-use App\Models\NursingNote;
-use App\Models\Patient;
-use App\Models\Prescription;
-use App\Models\Service;
-use App\Models\SmsMessage;
-use App\Models\User;
-use App\Support\Rbac;
+use Keneya\Dme\Models\Allergy;
+use Keneya\Dme\Models\Appointment;
+use Keneya\Dme\Models\Consultation;
+use Keneya\Dme\Models\Hospitalization;
+use Keneya\Dme\Models\ImagingOrder;
+use Keneya\Dme\Models\LabOrder;
+use Keneya\Dme\Models\MedicalDocument;
+use Keneya\Dme\Models\NursingNote;
+use Keneya\Dme\Models\Patient;
+use Keneya\Dme\Models\Prescription;
+use Keneya\Dme\Models\Service;
+use Keneya\Dme\Models\SmsMessage;
+use Keneya\Dme\Models\User;
+use Keneya\Dme\Support\Rbac;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * Parcours patient complet — critère d'acceptation global (§67).
@@ -77,7 +77,7 @@ class PatientJourneyTest extends TestCase
         // 1. Création du patient par la réception (§12)
         // ---------------------------------------------------------
         $this->actingAs($this->reception)
-            ->post(route('patients.store'), [
+            ->post(route('dme.patients.store'), [
                 'last_name' => 'Traoré',
                 'first_name' => 'Mamadou',
                 'sex' => 'male',
@@ -110,7 +110,7 @@ class PatientJourneyTest extends TestCase
         // 2. Ouverture du DME (§13-14)
         // ---------------------------------------------------------
         $this->actingAs($this->doctor)
-            ->get(route('patients.show', $patient))
+            ->get(route('dme.patients.show', $patient))
             ->assertOk()
             ->assertSee($patient->patient_number)
             ->assertSee('Pénicilline')
@@ -120,7 +120,7 @@ class PatientJourneyTest extends TestCase
         // 3-6. Consultation avec constantes, examen clinique, diagnostic (§19-21)
         // ---------------------------------------------------------
         $this->actingAs($this->doctor)
-            ->post(route('consultations.store', $patient), [
+            ->post(route('dme.consultations.store', $patient), [
                 'started_at' => now()->format('Y-m-d\TH:i'),
                 'type' => 'follow_up',
                 'service_id' => $service->id,
@@ -164,7 +164,7 @@ class PatientJourneyTest extends TestCase
         // 7. Ordonnance et contrôle d'allergie (§22)
         // ---------------------------------------------------------
         $this->actingAs($this->doctor)
-            ->post(route('prescriptions.store', $patient), [
+            ->post(route('dme.prescriptions.store', $patient), [
                 'consultation_id' => $consultation->id,
                 'issued_on' => now()->toDateString(),
                 'items' => [
@@ -187,13 +187,13 @@ class PatientJourneyTest extends TestCase
 
         // Validation sans confirmation explicite : refusée.
         $this->actingAs($this->doctor)
-            ->post(route('prescriptions.validate', $prescription))
+            ->post(route('dme.prescriptions.validate', $prescription))
             ->assertSessionHasErrors('acknowledge_allergy');
         $this->assertSame('draft', $prescription->fresh()->status);
 
         // Validation avec prise de connaissance de l'alerte : acceptée et tracée.
         $this->actingAs($this->doctor)
-            ->post(route('prescriptions.validate', $prescription), [
+            ->post(route('dme.prescriptions.validate', $prescription), [
                 'acknowledge_allergy' => 1,
                 'allergy_justification' => 'Allergie ancienne, réévaluée en consultation d’allergologie.',
             ])
@@ -207,7 +207,7 @@ class PatientJourneyTest extends TestCase
         // 8-9. Laboratoire : demande puis résultat (§23)
         // ---------------------------------------------------------
         $this->actingAs($this->doctor)
-            ->post(route('laboratory.store', $patient), [
+            ->post(route('dme.laboratory.store', $patient), [
                 'consultation_id' => $consultation->id,
                 'requested_at' => now()->format('Y-m-d\TH:i'),
                 'priority' => 'routine',
@@ -223,7 +223,7 @@ class PatientJourneyTest extends TestCase
         $items = $labOrder->items;
 
         $this->actingAs($this->labTechnician)
-            ->post(route('laboratory.results.store', $labOrder), [
+            ->post(route('dme.laboratory.results.store', $labOrder), [
                 'results' => [
                     ['lab_order_item_id' => $items[0]->id, 'parameter' => 'Glycémie',
                      'value' => '1.42', 'unit' => 'g/L', 'reference_range' => '0.70 – 1.10', 'flag' => 'high'],
@@ -237,7 +237,7 @@ class PatientJourneyTest extends TestCase
         $this->assertSame('available', $labOrder->fresh()->status);
 
         $this->actingAs($this->labTechnician)
-            ->post(route('laboratory.validate', $labOrder))
+            ->post(route('dme.laboratory.validate', $labOrder))
             ->assertRedirect();
         $this->assertSame('validated', $labOrder->fresh()->status);
 
@@ -245,7 +245,7 @@ class PatientJourneyTest extends TestCase
         // 10. Imagerie et compte rendu (§24)
         // ---------------------------------------------------------
         $this->actingAs($this->doctor)
-            ->post(route('imaging.store', $patient), [
+            ->post(route('dme.imaging.store', $patient), [
                 'consultation_id' => $consultation->id,
                 'modality' => 'ultrasound',
                 'body_site' => 'Abdomen complet',
@@ -259,7 +259,7 @@ class PatientJourneyTest extends TestCase
         $this->assertNotNull($imaging->accession_number, 'Aucun numéro d’accession attribué.');
 
         $this->actingAs($this->radiologist)
-            ->post(route('imaging.report.store', $imaging), [
+            ->post(route('dme.imaging.report.store', $imaging), [
                 'findings' => 'Foie hyperéchogène homogène. Vésicule alithiasique.',
                 'conclusion' => 'Stéatose hépatique de grade 1.',
                 'is_abnormal' => 1,
@@ -274,7 +274,7 @@ class PatientJourneyTest extends TestCase
         // 11-12. Hospitalisation, suivi et soins (§25-26)
         // ---------------------------------------------------------
         $this->actingAs($this->doctor)
-            ->post(route('hospitalizations.store', $patient), [
+            ->post(route('dme.hospitalizations.store', $patient), [
                 'service_id' => $service->id,
                 'admitted_at' => now()->format('Y-m-d\TH:i'),
                 'admission_reason' => 'Poussée hypertensive avec céphalées intenses.',
@@ -289,7 +289,7 @@ class PatientJourneyTest extends TestCase
         $this->assertSame(1, $stay->events()->count());
 
         $this->actingAs($this->nurse)
-            ->post(route('nursing.store', $patient), [
+            ->post(route('dme.nursing.store', $patient), [
                 'hospitalization_id' => $stay->id,
                 'type' => 'medication_administration',
                 'occurred_at' => now()->format('Y-m-d\TH:i'),
@@ -304,7 +304,7 @@ class PatientJourneyTest extends TestCase
         $this->assertSame(1, NursingNote::where('patient_id', $patient->id)->count());
 
         $this->actingAs($this->doctor)
-            ->post(route('hospitalizations.discharge', $stay), [
+            ->post(route('dme.hospitalizations.discharge', $stay), [
                 'discharged_at' => now()->addDays(3)->format('Y-m-d\TH:i'),
                 'discharge_diagnosis' => 'Poussée hypertensive contrôlée',
                 'discharge_recommendations' => 'Régime hyposodé, autocontrôle tensionnel.',
@@ -320,7 +320,7 @@ class PatientJourneyTest extends TestCase
         // 13. Rendez-vous — déclenche notification et SMS (§27, §36, §53)
         // ---------------------------------------------------------
         $this->actingAs($this->reception)
-            ->post(route('appointments.store', $patient), [
+            ->post(route('dme.appointments.store', $patient), [
                 'doctor_id' => $this->doctor->id,
                 'scheduled_for' => now()->addDays(8)->setTime(9, 30)->format('Y-m-d\TH:i'),
                 'duration_minutes' => 30,
@@ -336,7 +336,7 @@ class PatientJourneyTest extends TestCase
         // 14. Documents (§28, §42)
         // ---------------------------------------------------------
         $this->actingAs($this->doctor)
-            ->post(route('documents.store', $patient), [
+            ->post(route('dme.documents.store', $patient), [
                 'title' => 'Compte rendu d’échographie',
                 'type' => 'imaging_report',
                 'file' => UploadedFile::fake()->create('echographie.pdf', 40, 'application/pdf'),
@@ -348,14 +348,14 @@ class PatientJourneyTest extends TestCase
         Storage::disk('local')->assertExists($document->storage_path);
 
         $this->actingAs($this->doctor)
-            ->get(route('documents.download', $document))
+            ->get(route('dme.documents.download', $document))
             ->assertOk()
             ->assertHeader('content-type', 'application/pdf');
 
         // ---------------------------------------------------------
         // 15. Historique : tous les actes remontent dans la timeline (§29)
         // ---------------------------------------------------------
-        $timeline = app(\App\Services\Patients\MedicalTimeline::class)->build($patient->fresh());
+        $timeline = app(\Keneya\Dme\Services\Patients\MedicalTimeline::class)->build($patient->fresh());
         $types = $timeline->pluck('type')->unique();
 
         foreach (['consultations', 'diagnoses', 'prescriptions', 'laboratory', 'imaging', 'hospitalizations', 'documents'] as $type) {
@@ -397,7 +397,7 @@ class PatientJourneyTest extends TestCase
         // 19. Le pharmacien peut délivrer l'ordonnance validée (§31)
         // ---------------------------------------------------------
         $this->actingAs($this->pharmacist)
-            ->post(route('prescriptions.dispense', $prescription))
+            ->post(route('dme.prescriptions.dispense', $prescription))
             ->assertRedirect();
 
         $this->assertSame('dispensed', $prescription->fresh()->status);

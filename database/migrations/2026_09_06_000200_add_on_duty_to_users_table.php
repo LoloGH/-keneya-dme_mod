@@ -21,9 +21,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_on_duty')->default(false)->after('is_active');
-            $table->dateTime('on_duty_since')->nullable()->after('is_on_duty');
-            $table->index(['service_id', 'is_on_duty']);
+            if (! Schema::hasColumn('users', 'is_on_duty')) {
+                $table->boolean('is_on_duty')->default(false);
+                $table->index(['service_id', 'is_on_duty']);
+            }
+
+            if (! Schema::hasColumn('users', 'on_duty_since')) {
+                $table->dateTime('on_duty_since')->nullable();
+            }
         });
     }
 

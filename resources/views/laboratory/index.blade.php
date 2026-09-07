@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('dme::layouts.app')
 
 @section('title', 'Laboratoire')
 
 @section('content')
-    <x-page-header title="Laboratoire" subtitle="{{ $orders->total() }} demande(s) d’analyse."/>
+    <x-dme::page-header title="Laboratoire" subtitle="{{ $orders->total() }} demande(s) d’analyse."/>
 
     <form method="GET" class="k-card mb-4 flex flex-wrap gap-3 p-4">
         <div class="min-w-56 flex-1">
@@ -15,7 +15,7 @@
             <label for="status" class="sr-only">Statut</label>
             <select id="status" name="status" class="k-select">
                 <option value="">Tous les statuts</option>
-                @foreach (\App\Models\LabOrder::STATUSES as $value => $label)
+                @foreach (\Keneya\Dme\Models\LabOrder::STATUSES as $value => $label)
                     <option value="{{ $value }}" @selected(($filters['status'] ?? '') === $value)>{{ $label }}</option>
                 @endforeach
             </select>
@@ -24,7 +24,7 @@
             <label for="priority" class="sr-only">Urgence</label>
             <select id="priority" name="priority" class="k-select">
                 <option value="">Toutes urgences</option>
-                @foreach (\App\Models\LabOrder::PRIORITIES as $value => $label)
+                @foreach (\Keneya\Dme\Models\LabOrder::PRIORITIES as $value => $label)
                     <option value="{{ $value }}" @selected(($filters['priority'] ?? '') === $value)>{{ $label }}</option>
                 @endforeach
             </select>
@@ -34,7 +34,7 @@
 
     <div class="k-card">
         @if ($orders->isEmpty())
-            <x-empty-state icon="flask" title="Aucune demande d’analyse"
+            <x-dme::empty-state icon="flask" title="Aucune demande d’analyse"
                            message="Les demandes se créent depuis le dossier d'un patient ou depuis une consultation."/>
         @else
             <div class="overflow-x-auto">
@@ -58,18 +58,18 @@
                                 <td class="font-mono text-xs">{{ $order->order_number }}</td>
                                 <td class="whitespace-nowrap">{{ $order->requested_at->translatedFormat('d M Y H:i') }}</td>
                                 <td>
-                                    <a href="{{ route('patients.show', $order->patient) }}"
+                                    <a href="{{ route('dme.patients.show', $order->patient) }}"
                                        class="font-medium text-ink-900 hover:text-clinic-700 hover:underline">
                                         {{ $order->patient->fullName() }}
                                     </a>
                                 </td>
                                 <td class="max-w-xs truncate">{{ $order->items->pluck('exam_name')->implode(', ') }}</td>
                                 <td>{{ $order->doctor?->displayName() ?? '—' }}</td>
-                                <td><x-status-badge :status="$order->priority" :label="$order->priorityLabel()"/></td>
-                                <td><x-status-badge :status="$order->status" :label="$order->statusLabel()"/></td>
+                                <td><x-dme::status-badge :status="$order->priority" :label="$order->priorityLabel()"/></td>
+                                <td><x-dme::status-badge :status="$order->status" :label="$order->statusLabel()"/></td>
                                 <td class="text-right">
-                                    <a href="{{ route('laboratory.show', $order) }}" class="k-btn-ghost k-btn-sm">
-                                        Ouvrir <x-icon name="chevron-right" class="h-3.5 w-3.5"/>
+                                    <a href="{{ route('dme.laboratory.show', $order) }}" class="k-btn-ghost k-btn-sm">
+                                        Ouvrir <x-dme::icon name="chevron-right" class="h-3.5 w-3.5"/>
                                     </a>
                                 </td>
                             </tr>

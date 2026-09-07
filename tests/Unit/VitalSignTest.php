@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Keneya\Dme\Tests\Unit;
 
-use App\Models\Patient;
-use App\Models\VitalSign;
+use Keneya\Dme\Models\Patient;
+use Keneya\Dme\Models\VitalSign;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Keneya\Dme\Tests\TestCase;
 
 /**
  * Constantes vitales (§20) : calcul de l'IMC et détection des valeurs
