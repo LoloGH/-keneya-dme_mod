@@ -33,6 +33,7 @@ workbench:
     - migrate-refresh
   assets:
     - laravel-assets
+    - dme-assets
   sync: []
 
 env:

@@ -13,6 +13,9 @@ import tailwindcss from '@tailwindcss/vite';
  */
 export default defineConfig({
     plugins: [tailwindcss()],
+    // Le répertoire public/ du module contient déjà ses images : Vite ne
+    // doit pas le recopier dans public/build.
+    publicDir: false,
     build: {
         outDir: 'public/build',
         emptyOutDir: true,

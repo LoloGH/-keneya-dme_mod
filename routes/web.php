@@ -57,7 +57,9 @@ use Illuminate\Support\Facades\Route;
 if (app(StandaloneMode::class)->enabled()) {
     Route::middleware('guest')->group(function (): void {
         Route::get('/connexion', [LoginController::class, 'show'])->name('login');
-        Route::post('/connexion', [LoginController::class, 'store'])->middleware('throttle:dme-login');
+        Route::post('/connexion', [LoginController::class, 'store'])
+            ->middleware('throttle:dme-login')
+            ->name('login.attempt');
     });
 
     Route::post('/deconnexion', [LoginController::class, 'destroy'])

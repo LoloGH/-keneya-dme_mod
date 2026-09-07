@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keneya\Dme;
 
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Model;
@@ -382,6 +383,11 @@ class DmeServiceProvider extends ServiceProvider
         if (! $standalone->enabled()) {
             return;
         }
+
+        // Le module porte alors lui-même l'authentification : un visiteur
+        // anonyme doit atterrir sur sa page de connexion locale, et non
+        // sur celle d'un hôte qui n'existe pas.
+        Authenticate::redirectUsing(static fn () => route('dme.login'));
 
         // Les relations non chargées et les attributions de masse
         // silencieuses deviennent des erreurs, ce qui fait remonter les

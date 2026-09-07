@@ -20,10 +20,11 @@ return [
 
 
     /*
-    | Version fonctionnelle de l'application (§63). Affichée dans
-    | l'interface et dans les documents générés.
+    | Version fonctionnelle du module (§63). Affichée dans l'interface, dans
+    | les documents générés, et ajoutée aux URL des ressources statiques
+    | pour invalider le cache du navigateur à chaque mise à jour.
     */
-    'version' => '0.1.0',
+    'version' => '0.2.0',
 
     /*
     | Établissement de santé exploitant l'application. Ces valeurs sont
