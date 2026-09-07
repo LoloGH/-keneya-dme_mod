@@ -246,17 +246,21 @@ vérifier que le module se monte, et à le parcourir sans Keneya Workflow.
 
 ```bash
 composer install
-composer build      # crée la base SQLite, migre, publie les assets
+composer build      # publie les assets, crée la base SQLite, migre et amorce
 composer serve      # http://127.0.0.1:8000
 ```
 
 L'accueil de l'hôte de test affiche l'état du montage (préfixe, mode autonome,
-implémentation SMS active) et un lien vers le dossier médical. Pour disposer de
-données :
+implémentation SMS active) et un lien vers le dossier médical. La connexion se
+fait avec le praticien de développement, `dev@keneya.test`, dont le mot de passe
+est celui de `DME_STANDALONE_USER_PASSWORD` dans `testbench.yaml`.
 
-```bash
-php vendor/bin/testbench db:seed --class="Workbench\Database\Seeders\DatabaseSeeder"
-```
+> **`composer build` est à rejouer après chaque `composer install` ou
+> `composer dump-autoload`.** Ces commandes déclenchent
+> `testbench package:purge-skeleton`, qui remet l'application hôte à neuf : sa
+> base SQLite et ses assets publiés disparaissent avec elle. Le symptôme est
+> sans ambiguïté — `SQLSTATE[HY000]: no such table: users`, sur la connexion
+> `testing` en mémoire. `composer build` reconstruit le tout.
 
 La suite de tests s'exécute dans cette même application hôte — donc dans la
 situation réelle du module, et non dans l'application autonome de la phase 1 :
