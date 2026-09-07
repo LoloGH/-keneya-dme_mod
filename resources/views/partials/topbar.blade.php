@@ -10,7 +10,7 @@
         ->count();
 @endphp
 
-<header class="k-no-print sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-ink-200 bg-white px-4 sm:px-6 lg:px-8">
+<header class="k-no-print sticky top-0 z-20 flex h-20 items-center gap-3 border-b border-ink-200 bg-white px-4 sm:px-6 lg:px-8">
     <button type="button" class="rounded-lg p-2 text-ink-600 hover:bg-ink-100 lg:hidden"
             @click="sidebarOpen = true" aria-label="Ouvrir la navigation">
         <x-icon name="menu"/>
@@ -54,7 +54,7 @@
                 <span class="hidden text-left sm:block">
                     <span class="block text-sm font-medium text-ink-900">{{ auth()->user()->displayName() }}</span>
                     <span class="block text-xs text-ink-500">
-                        {{ \App\Support\Rbac::roleLabels()[auth()->user()->getRoleNames()->first()] ?? 'Utilisateur' }}
+                        {{ \App\Support\Rbac::allRoleLabels()[auth()->user()->getRoleNames()->first()] ?? 'Utilisateur' }}
                     </span>
                 </span>
             </button>
