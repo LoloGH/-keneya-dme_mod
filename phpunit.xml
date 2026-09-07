@@ -24,6 +24,18 @@
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_STORE" value="array"/>
         <env name="DB_CONNECTION" value="testing"/>
+
+        <!--
+            Testbench monte sa connexion `testing` avec les cles etrangeres
+            DESACTIVEES par defaut (Bootstrap\LoadConfiguration). La suite ne
+            verifiait donc aucune des contraintes que les migrations declarent :
+            une cascade `ON DELETE` ne se declenchait pas, une reference
+            orpheline passait sans bruit, et MariaDB decouvrait les deux au
+            premier deploiement. Le reglage vient d'ici parce que testbench
+            l'applique apres defineEnvironment() : un config()->set() serait
+            ecrase sans que rien ne le dise.
+        -->
+        <env name="DB_FOREIGN_KEYS" value="true"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>

@@ -8,11 +8,13 @@ use Keneya\Dme\Dme;
 use Keneya\Dme\Http\Controllers\Controller;
 use Keneya\Dme\Http\Controllers\Web\CareOrderController;
 use Keneya\Dme\Http\Requests\StorePatientRequest;
+use Keneya\Dme\Models\AuditLog;
 use Keneya\Dme\Models\Allergy;
 use Keneya\Dme\Models\ChronicCondition;
 use Keneya\Dme\Models\Consultation;
 use Keneya\Dme\Models\Patient;
 use Keneya\Dme\Models\Service;
+use Keneya\Dme\Models\SmsMessage;
 use Keneya\Dme\Services\Documents\PdfGenerator;
 use Keneya\Dme\Services\Patients\MedicalTimeline;
 use Keneya\Dme\Support\Rbac;
@@ -20,6 +22,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -62,7 +65,15 @@ class PatientController extends Controller
             ])
             ->search($filters['q'] ?? null)
             ->when($filters['sex'] ?? null, fn ($query, $sex) => $query->where('sex', $sex))
-            ->when($filters['status'] ?? null, fn ($query, $status) => $query->where('status', $status))
+            // Sans filtre explicite, les dossiers archivés ne figurent pas
+            // dans la liste : c'est ce que veut dire archiver. Ils restent
+            // atteignables en choisissant « Archivé » dans le filtre, et par
+            // recherche directe sur leur numéro.
+            ->when(
+                ($filters['status'] ?? null) ?: null,
+                fn ($query, $status) => $query->where('status', $status),
+                fn ($query) => $query->where('status', '!=', 'archived'),
+            )
             ->when($filters['doctor'] ?? null, fn ($query, $doctor) => $query->where('attending_doctor_id', $doctor))
             ->when($filters['age_min'] ?? null, fn ($query, $min) => $query
                 ->whereDate('birth_date', '<=', now()->subYears((int) $min)))
@@ -159,6 +170,108 @@ class PatientController extends Controller
 
         return redirect()->route('dme.patients.show', $patient)
             ->with('success', 'Dossier mis à jour.');
+    }
+
+    /**
+     * Archive un dossier : il sort des listes et n'est plus modifiable,
+     * mais reste entièrement consultable, et se restaure.
+     *
+     * Rien n'est détruit — c'est tout l'intérêt. Un dossier qui n'a plus
+     * lieu de figurer parmi les patients suivis se range ici, et le geste
+     * n'engage à rien d'irréversible.
+     */
+    public function archive(Patient $patient): RedirectResponse
+    {
+        $this->authorize('archive', $patient);
+
+        $patient->update(['status' => 'archived']);
+
+        return redirect()->route('dme.patients.show', $patient)
+            ->with('success', 'Dossier '.$patient->patient_number.' archivé. Il reste consultable et peut être restauré.');
+    }
+
+    public function restore(Patient $patient): RedirectResponse
+    {
+        $this->authorize('restore', $patient);
+
+        $patient->update(['status' => 'active']);
+
+        return redirect()->route('dme.patients.show', $patient)
+            ->with('success', 'Dossier '.$patient->patient_number.' restauré.');
+    }
+
+    /**
+     * Détruit définitivement un dossier et tout son contenu clinique (§40).
+     *
+     * Opération sensible, donc encadrée comme celle de l'hôte : le numéro de
+     * dossier doit être retapé à l'identique et un motif est obligatoire.
+     *
+     * Le contenu clinique part par la base : toutes les tables qui pendent
+     * de `patients` sont en `ON DELETE CASCADE`, un seul `forceDelete()`
+     * emporte donc consultations, ordonnances, examens, hospitalisations,
+     * documents et identifiants externes. `forceDelete()` et non `delete()` :
+     * le modèle est en suppression douce, et une suppression douce ne
+     * déclenche aucune cascade — le dossier semblerait parti tout en restant
+     * entier en base.
+     *
+     * Deux choses survivent, délibérément : les entrées du journal d'audit,
+     * qui ne référencent le patient par aucune clé étrangère, et les
+     * enregistrements de l'application hôte, que le module ne touche jamais.
+     */
+    public function destroy(Request $request, Patient $patient): RedirectResponse
+    {
+        $this->authorize('purge', $patient);
+
+        $data = $request->validate([
+            'patient_number' => ['required', 'string'],
+            'reason' => ['required', 'string', 'min:3', 'max:500'],
+        ], [], [
+            'patient_number' => 'numéro de dossier',
+            'reason' => 'motif',
+        ]);
+
+        if ($data['patient_number'] !== $patient->patient_number) {
+            return back()->withErrors([
+                'patient_number' => 'Le numéro de dossier saisi ne correspond pas.',
+            ])->withInput();
+        }
+
+        // Journalisé AVANT : après, il ne resterait plus rien à désigner.
+        // L'entrée d'audit ne porte aucune clé étrangère vers le patient,
+        // elle survit donc à sa disparition.
+        AuditLog::record(
+            action: 'purged',
+            patientId: $patient->getKey(),
+            description: sprintf(
+                'Dossier %s (%s) supprimé définitivement. Motif : %s',
+                $patient->patient_number,
+                $patient->fullName(),
+                $data['reason'],
+            ),
+        );
+
+        // Les chemins sont relevés maintenant, mais les fichiers ne partiront
+        // qu'après la transaction : le disque ne sait pas revenir en arrière.
+        // Supprimés à l'intérieur, ils seraient détruits même quand la
+        // transaction échoue ensuite.
+        $fichiers = $patient->documents()->pluck('storage_path', 'disk');
+
+        DB::transaction(function () use ($patient): void {
+            // Ni SMS ni notifications ne portent de clé étrangère vers le
+            // patient — seulement un index. La cascade ne les emporte donc
+            // pas, et ils resteraient à désigner un dossier disparu.
+            SmsMessage::where('patient_id', $patient->getKey())->delete();
+            DB::table('dme_notifications')->where('patient_id', $patient->getKey())->delete();
+
+            $patient->forceDelete();
+        });
+
+        foreach ($fichiers as $disque => $chemin) {
+            Storage::disk($disque ?: config('dme.documents.disk'))->delete($chemin);
+        }
+
+        return redirect()->route('dme.patients.index')
+            ->with('success', 'Dossier '.$patient->patient_number.' supprimé définitivement.');
     }
 
     /**

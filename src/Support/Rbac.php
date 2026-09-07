@@ -99,6 +99,7 @@ final class Rbac
                 'patients.create' => 'Créer un patient',
                 'patients.update' => 'Modifier un patient',
                 'patients.delete' => 'Archiver un patient',
+                'patients.purge' => 'Supprimer définitivement un dossier',
             ],
             'Consultations' => [
                 'consultations.view' => 'Consulter les consultations',

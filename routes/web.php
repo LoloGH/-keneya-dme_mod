@@ -93,6 +93,17 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/patients/{patient}/fiche.pdf', [PatientController::class, 'summaryPdf'])
         ->name('patients.summary-pdf');
 
+    // Archiver range un dossier sans rien detruire, et se defait. Supprimer
+    // detruit le dossier et tout son contenu clinique : verbe HTTP distinct,
+    // permission distincte, et un dossier deja archive pour seul point de
+    // depart — on ne detruit pas un dossier actif d'un seul clic.
+    Route::patch('/patients/{patient}/archiver', [PatientController::class, 'archive'])
+        ->name('patients.archive');
+    Route::patch('/patients/{patient}/restaurer', [PatientController::class, 'restore'])
+        ->name('patients.restore');
+    Route::delete('/patients/{patient}', [PatientController::class, 'destroy'])
+        ->name('patients.destroy');
+
     // Enregistrements du dossier saisis depuis les onglets du DME
     Route::prefix('/patients/{patient}')->name('record.')->group(function (): void {
         Route::post('/antecedents', [PatientRecordController::class, 'storeHistory'])->name('histories.store');
