@@ -42,7 +42,14 @@
         @php $name = 'dme.'.$item['route']; @endphp
         @continue(! Route::has($name))
         @continue($item['permission'] && ! auth()->user()->can($item['permission']))
-        @php $active = request()->routeIs(Str::before($name, '.', 2).'.*') || request()->routeIs($name); @endphp
+        @php
+            // La famille se calcule sur le nom AVANT préfixage : « patients »
+            // et non « dme ». La calculer sur le nom préfixé rendrait toutes
+            // les entrées actives en même temps, puisqu'elles commencent
+            // toutes par « dme. ».
+            $famille = 'dme.'.Str::before($item['route'], '.');
+            $active = request()->routeIs($famille.'.*') || request()->routeIs($name);
+        @endphp
         <a href="{{ route($name) }}"
            class="{{ $active ? 'k-nav-link-active' : 'k-nav-link' }}"
            @if ($active) aria-current="page" @endif>
