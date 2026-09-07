@@ -54,7 +54,7 @@ class AppointmentController extends Controller
             'start' => $start,
             'end' => $end,
             'filters' => $request->only(['doctor', 'status']),
-            'doctors' => Dme::userQuery()->role(Rbac::ROLE_DOCTOR)->where('is_active', true)
+            'doctors' => Dme::usersWithRole(Rbac::ROLE_DOCTOR)->where('is_active', true)
                 ->orderBy('last_name')->get(['id', 'name', 'first_name', 'last_name', 'title']),
         ]);
     }

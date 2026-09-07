@@ -161,6 +161,33 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | Correspondance des rôles avec ceux de l'hôte
+    |----------------------------------------------------------------------
+    |
+    | Le module a son propre vocabulaire clinique — médecin, infirmier,
+    | laboratoire — et une application hôte a le sien, souvent construit
+    | autour de ses interfaces plutôt que des métiers. Ce tableau traduit
+    | l'un dans l'autre partout où le module cherche des praticiens : la
+    | liste des médecins d'un rendez-vous, les soignants à qui confier un
+    | soin, le filtre de l'annuaire.
+    |
+    |   'roles' => [
+    |       'medecin'   => 'doctor',
+    |       'reception' => 'receptionist',
+    |   ],
+    |
+    | Une valeur peut être une chaîne ou une liste. Un rôle non déclaré se
+    | traduit par lui-même, ce qui laisse le module fonctionner seul.
+    |
+    | Un rôle sans équivalent chez l'hôte donne une liste vide, jamais une
+    | erreur : le personnel concerné n'est simplement pas proposé.
+    */
+    'roles' => [
+        //
+    ],
+
+    /*
+    |----------------------------------------------------------------------
     | Autorisation d'accès de haut niveau (décidée par l'hôte)
     |----------------------------------------------------------------------
     |

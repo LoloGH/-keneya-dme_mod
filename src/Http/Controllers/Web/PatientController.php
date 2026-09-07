@@ -10,6 +10,7 @@ use Keneya\Dme\Http\Controllers\Web\CareOrderController;
 use Keneya\Dme\Http\Requests\StorePatientRequest;
 use Keneya\Dme\Models\Allergy;
 use Keneya\Dme\Models\ChronicCondition;
+use Keneya\Dme\Models\Consultation;
 use Keneya\Dme\Models\Patient;
 use Keneya\Dme\Models\Service;
 use Keneya\Dme\Services\Documents\PdfGenerator;
@@ -46,9 +47,18 @@ class PatientController extends Controller
             ->addSelect([
                 // Dernière consultation en sous-requête : évite de charger
                 // toutes les consultations pour afficher une seule date.
-                'last_consultation_at' => DB::table('dme_consultations')
+                //
+                // Les deux tables se nomment par leur modele plutot qu'en dur :
+                // elles portent un prefixe qui leur evite d'entrer en collision
+                // avec celles de l'application hote, et une chaine ecrite ici
+                // finirait par diverger sans que rien ne le signale — jusqu'a
+                // ce qu'un « Unknown column » remonte a l'ecran.
+                'last_consultation_at' => DB::table((new Consultation)->getTable())
                     ->selectRaw('MAX(started_at)')
-                    ->whereColumn('consultations.patient_id', 'patients.id'),
+                    ->whereColumn(
+                        (new Consultation)->qualifyColumn('patient_id'),
+                        (new Patient)->qualifyColumn('id'),
+                    ),
             ])
             ->search($filters['q'] ?? null)
             ->when($filters['sex'] ?? null, fn ($query, $sex) => $query->where('sex', $sex))
@@ -377,7 +387,7 @@ class PatientController extends Controller
      */
     private function doctors()
     {
-        return Dme::userQuery()->role(Rbac::ROLE_DOCTOR)
+        return Dme::usersWithRole(Rbac::ROLE_DOCTOR)
             ->where('is_active', true)
             ->orderBy('last_name')
             ->get(['id', 'name', 'first_name', 'last_name', 'title', 'speciality']);

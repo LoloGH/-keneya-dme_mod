@@ -35,7 +35,11 @@ class UserController extends Controller
 
         $users = Dme::userQuery()
             ->with(['roles:id,name', 'service:id,name'])
-            ->when($request->string('role')->toString(), fn ($q, $role) => $q->role($role))
+            // `role()` de spatie leve une exception sur un role inconnu : un
+            // filtre saisi dans l'URL ne doit pas faire tomber la liste, il
+            // doit simplement ne rien ramener.
+            ->when($request->string('role')->toString(), fn ($q, $role) => $q
+                ->whereHas('roles', fn ($r) => $r->where('name', $role)))
             ->when($request->string('q')->toString(), fn ($q, $term) => $q->where(fn ($inner) => $inner
                 ->where('last_name', 'like', '%'.$term.'%')
                 ->orWhere('first_name', 'like', '%'.$term.'%')

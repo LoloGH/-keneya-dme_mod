@@ -28,6 +28,47 @@ final class Rbac
     public const ROLE_RECEPTION = 'reception';
 
     /**
+     * Les rôles de l'application hôte qui correspondent à ce rôle du DME.
+     *
+     * Le module a son propre vocabulaire clinique — médecin, infirmier,
+     * laboratoire — et une application hôte a le sien, souvent construit
+     * autour de ses interfaces plutôt que des métiers. Monté dans Keneya
+     * Workflow, « medecin » s'y appelle « doctor ». Sans traduction, une
+     * simple liste de praticiens fait tomber la page : le scope `role()` de
+     * spatie lève une exception dès qu'un rôle n'existe pas en base.
+     *
+     * L'hôte déclare la correspondance dans `config/dme.php` :
+     *
+     *     'roles' => ['medecin' => 'doctor', 'reception' => 'receptionist'],
+     *
+     * Une valeur peut être une chaîne ou une liste. Un rôle non déclaré se
+     * traduit par lui-même, ce qui laisse le module fonctionner seul.
+     *
+     * Les rôles absents de la base sont écartés ici, et non plus loin : une
+     * liste de praticiens vide se lit, une page en 500 non.
+     *
+     * @return list<string>
+     */
+    public static function hostRoles(string $role): array
+    {
+        $declares = (array) config('dme.roles', []);
+
+        $noms = array_values(array_filter(array_map(
+            static fn ($nom) => is_string($nom) ? trim($nom) : '',
+            (array) ($declares[$role] ?? $role),
+        )));
+
+        if ($noms === []) {
+            return [];
+        }
+
+        return \Spatie\Permission\Models\Role::query()
+            ->whereIn('name', $noms)
+            ->pluck('name')
+            ->all();
+    }
+
+    /**
      * Libellés d'affichage des rôles.
      *
      * @return array<string, string>

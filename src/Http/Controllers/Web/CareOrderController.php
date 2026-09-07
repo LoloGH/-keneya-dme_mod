@@ -217,10 +217,9 @@ class CareOrderController extends Controller
             return Dme::userQuery()->whereRaw('1 = 0')->get();
         }
 
-        return Dme::userQuery()
+        return Dme::usersWithRole(Rbac::ROLE_NURSE)
             ->where('is_active', true)
             ->where('service_id', $user->service_id)
-            ->role(Rbac::ROLE_NURSE)
             ->with('weeklySchedules')
             ->orderBy('last_name')
             ->get(['id', 'first_name', 'last_name', 'title', 'name', 'is_on_duty']);

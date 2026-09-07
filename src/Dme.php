@@ -7,6 +7,7 @@ namespace Keneya\Dme;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Keneya\Dme\Models\User;
+use Keneya\Dme\Support\Rbac;
 
 /**
  * Point d'entrée du module pour l'application hôte.
@@ -93,6 +94,23 @@ final class Dme
         $model = self::userModel();
 
         return (new $model)->newQuery();
+    }
+
+    /**
+     * Requête sur les comptes qui portent ce rôle du DME, traduit dans le
+     * vocabulaire de l'application hôte ({@see Rbac::hostRoles()}).
+     *
+     * Aucun rôle correspondant en base ne ramène personne, mais ne lève
+     * jamais : une liste de praticiens est un élément d'écran, elle ne doit
+     * pas décider si la page s'affiche.
+     */
+    public static function usersWithRole(string $role): Builder
+    {
+        $roles = Rbac::hostRoles($role);
+
+        return $roles === []
+            ? self::userQuery()->whereRaw('1 = 0')
+            : self::userQuery()->role($roles);
     }
 
     /**
