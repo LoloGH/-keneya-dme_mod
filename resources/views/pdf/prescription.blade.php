@@ -73,22 +73,49 @@
         <div class="panel">{{ $prescription->instructions }}</div>
     @endif
 
-    <div class="signature">
-        <table width="100%">
-            <tr>
-                <td width="60%" class="small muted">
-                    Ordonnance {{ $prescription->statusLabel() }}
-                    @if ($prescription->validated_at)
-                        le {{ $prescription->validated_at->format('d/m/Y à H:i') }}
-                    @endif
-                </td>
-                <td width="40%">
-                    <div class="signature-line">
-                        Signature et cachet du prescripteur<br>
-                        <span class="muted">{{ $prescription->doctor?->displayName() ?? '' }}</span>
+    {{--
+        Cachet de l'établissement, signature et cachet du prescripteur.
+
+        Les trois images viennent de l'application hôte, qui les administre :
+        le module se contente de les placer ({@see Keneya\Dme\Dme::signaturesUsing}).
+        Là où rien n'est déposé, un cadre vide prend la place, pour que le
+        praticien signe à la main sur le document imprimé.
+    --}}
+    <table class="sign">
+        <tr>
+            <td width="42%">
+                <span class="sign-title">Cachet de l'établissement</span>
+                @if ($signatures['facilityStamp'])
+                    <div class="sign-marks"><img src="{{ $signatures['facilityStamp'] }}" alt=""></div>
+                @else
+                    <div class="sign-frame"></div>
+                @endif
+            </td>
+            <td width="16%" class="small muted">
+                Ordonnance {{ $prescription->statusLabel() }}
+                @if ($prescription->validated_at)
+                    <br>le {{ $prescription->validated_at->format('d/m/Y à H:i') }}
+                @endif
+            </td>
+            <td width="42%" style="text-align: center">
+                <span class="sign-title">Signature et cachet du prescripteur</span>
+                @if ($signatures['doctorSignature'] || $signatures['doctorStamp'])
+                    <div class="sign-marks">
+                        @if ($signatures['doctorSignature'])
+                            <img src="{{ $signatures['doctorSignature'] }}" alt="">
+                        @endif
+                        @if ($signatures['doctorStamp'])
+                            <img src="{{ $signatures['doctorStamp'] }}" alt="">
+                        @endif
                     </div>
-                </td>
-            </tr>
-        </table>
-    </div>
+                @else
+                    <div class="sign-frame"></div>
+                @endif
+                <div class="sign-rule">
+                    <strong>{{ $prescription->doctor?->displayName() ?? '—' }}</strong>
+                    <span class="small muted">{{ $prescription->doctor?->speciality ?: 'Médecin prescripteur' }}</span>
+                </div>
+            </td>
+        </tr>
+    </table>
 @endsection

@@ -96,6 +96,23 @@ class Patient extends Model
         return $this->belongsTo(Dme::userModel(), 'created_by');
     }
 
+    /**
+     * L'identifiant principal de ce patient dans le système qui l'a adressé.
+     *
+     * Un dossier créé depuis une application hôte y porte déjà un numéro, et
+     * c'est celui-là que le patient connaît, que l'accueil appelle et que le
+     * personnel lit sur son ticket. Les documents imprimés le rappellent à
+     * côté du numéro du dossier médical : sans lui, la feuille que le patient
+     * emporte ne se rattache plus à rien de ce qu'il a en main.
+     */
+    public function externalIdentifier(): ?string
+    {
+        $identifiant = $this->identifiers
+            ->firstWhere('is_primary', true) ?? $this->identifiers->first();
+
+        return $identifiant?->value;
+    }
+
     public function identifiers(): HasMany
     {
         return $this->hasMany(PatientIdentifier::class);

@@ -15,6 +15,7 @@
         body { font-family: DejaVu Sans, sans-serif; font-size: 10.5px; color: #1e293b; line-height: 1.5; }
         .header { border-bottom: 2px solid #2563eb; padding-bottom: 8px; margin-bottom: 14px; }
         .header td { vertical-align: top; }
+        .facility-logo { height: 34px; width: auto; margin-bottom: 4px; }
         .facility-name { font-size: 15px; font-weight: bold; color: #1e3a8a; }
         .facility-meta { font-size: 9px; color: #64748b; }
         .doc-type { font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -36,6 +37,18 @@
                   font-size: 8px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 4px; }
         .signature { margin-top: 26px; }
         .signature-line { border-top: 1px solid #94a3b8; width: 190px; padding-top: 3px; font-size: 9px; }
+        /* Cachets et signature. Chaque element manquant laisse son espace
+           vide : un document doit s'imprimer pour un praticien qui n'a rien
+           depose, et pour un etablissement sans cachet. */
+        .sign { width: 100%; margin-top: 22px; }
+        .sign td { vertical-align: top; }
+        .sign-title { font-size: 9px; font-weight: bold; color: #1e3a8a;
+                      text-transform: uppercase; letter-spacing: 0.4px; }
+        .sign-frame { margin-top: 5px; height: 70px; border: 1px dashed #cbd5e1; }
+        .sign-marks { height: 58px; margin-top: 5px; }
+        .sign-marks img { max-height: 54px; max-width: 150px; }
+        .sign-rule { border-top: 1px solid #1e3a8a; padding-top: 4px; }
+        .sign-rule strong { display: block; font-size: 10.5px; }
         .qr { text-align: right; }
         .qr img { width: 72px; height: 72px; }
     </style>
@@ -45,6 +58,11 @@
 <table class="header" width="100%">
     <tr>
         <td width="55%">
+            {{-- Le logo est facultatif : l'hôte le fournit ou non, et l'entête
+                 tient debout sans lui. --}}
+            @if (! empty($facility['logo']))
+                <img class="facility-logo" src="{{ $facility['logo'] }}" alt="">
+            @endif
             <div class="facility-name">{{ $facility['name'] }}</div>
             <div class="facility-meta">
                 {{ $facility['address'] }}<br>
@@ -69,7 +87,7 @@
                 <td width="50%">
                     <span class="strong">{{ $patient->fullName() }}</span><br>
                     <span class="small muted">
-                        Dossier {{ $patient->patient_number }} — {{ $patient->ageLabel() }} — {{ $patient->sexLabel() }}
+                        Dossier {{ $patient->patient_number }}@if ($patient->externalIdentifier()) / {{ $patient->externalIdentifier() }}@endif — {{ $patient->ageLabel() }} — {{ $patient->sexLabel() }}
                     </span>
                 </td>
                 <td width="50%" class="small muted">
@@ -86,9 +104,21 @@
 
 @yield('content')
 
+{{-- Rendu HTML destiné à l'impression : la boîte d'impression s'ouvre d'elle
+     même, comme le faisait l'écran imprimable qu'il remplace. DomPDF ignore
+     les scripts, le PDF n'en est pas affecté. --}}
+@if (! empty($autoPrint))
+    <script>window.addEventListener('load', function () { window.print(); });</script>
+@endif
+
 <div class="footer">
     Document généré par Keneya-DME — {{ $facility['name'] }} — Réf. {{ $reference }}.
-    Données de démonstration fictives.
+    {{-- La mention de démonstration reste en place tant que l'exploitant ne
+         l'a pas levée : une ordonnance réelle ne doit pas la porter, mais un
+         jeu d'essai pris pour un vrai document serait plus grave encore. --}}
+    @if (config('dme.documents.demo_notice', true))
+        Données de démonstration fictives.
+    @endif
 </div>
 
 </body>

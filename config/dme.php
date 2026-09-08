@@ -77,6 +77,14 @@ return [
         'directory' => 'medical-documents',
         'max_size_kb' => 20480,
         'allowed_mimes' => ['pdf', 'jpg', 'jpeg', 'png', 'dcm', 'txt'],
+
+        /*
+        | Mention « données de démonstration » en pied des PDF. Reste vraie
+        | par défaut : une ordonnance réelle ne doit pas la porter, mais un
+        | jeu d'essai pris pour un vrai document serait plus grave. À passer
+        | à false une fois l'établissement en exploitation.
+        */
+        'demo_notice' => env('KENEYA_DME_DEMO_NOTICE', true),
     ],
 
     /*

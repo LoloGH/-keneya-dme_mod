@@ -42,7 +42,8 @@ class Prescription extends Model
     }
 
     protected $fillable = [
-        'prescription_number', 'patient_id', 'consultation_id', 'doctor_id',
+        'prescription_number', 'source_system', 'source_id',
+        'patient_id', 'consultation_id', 'doctor_id',
         'issued_on', 'valid_until', 'status', 'instructions',
         'allergy_warnings', 'allergy_warning_acknowledged',
         'allergy_warning_justification', 'validated_by', 'validated_at',

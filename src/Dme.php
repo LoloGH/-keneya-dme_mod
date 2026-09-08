@@ -58,6 +58,114 @@ final class Dme
     public static function flushState(): void
     {
         self::$accessResolver = null;
+        self::$signatureResolver = null;
+        self::$facilityResolver = null;
+    }
+
+    /**
+     * Résolveur de signature et de cachets fourni par l'hôte.
+     *
+     * @var (Closure(mixed): array<string, ?string>)|null
+     */
+    private static ?Closure $signatureResolver = null;
+
+    /**
+     * Déclare où l'hôte range la signature du prescripteur et les cachets.
+     *
+     * Le module produit l'ordonnance — sa forme, ses lignes, son numéro — mais
+     * il ne détient pas les images qui l'engagent : dans une application hôte,
+     * la signature du médecin et le cachet de l'établissement appartiennent à
+     * l'hôte, qui les administre et les stocke. Plutôt que d'aller les y
+     * chercher, ce qui reviendrait à connaître son schéma, le module demande.
+     *
+     * À appeler depuis un fournisseur de services de l'hôte :
+     *
+     *     Dme::signaturesUsing(fn ($prescription) => [
+     *         'doctorSignature' => '/chemin/absolu/signature.png',
+     *         'doctorStamp'     => '/chemin/absolu/cachet.png',
+     *         'facilityStamp'   => '/chemin/absolu/tampon.png',
+     *     ]);
+     *
+     * Les chemins doivent être absolus et le fichier exister : un chemin mort
+     * ferait échouer le rendu, et une ordonnance qu'on ne peut plus imprimer
+     * serait pire qu'une signature absente. Chaque valeur peut être nulle.
+     *
+     * @param  (Closure(mixed): array<string, ?string>)|null  $callback
+     */
+    public static function signaturesUsing(?Closure $callback): void
+    {
+        self::$signatureResolver = $callback;
+    }
+
+    /**
+     * Signature et cachets applicables à cet enregistrement.
+     *
+     * Sans hôte pour les fournir — le module tournant seul — les trois valeurs
+     * sont nulles et le gabarit se rabat sur sa ligne de signature manuscrite.
+     *
+     * @return array{doctorSignature: ?string, doctorStamp: ?string, facilityStamp: ?string}
+     */
+    public static function signaturesFor(mixed $subject): array
+    {
+        $defaut = ['doctorSignature' => null, 'doctorStamp' => null, 'facilityStamp' => null];
+
+        if (self::$signatureResolver === null) {
+            return $defaut;
+        }
+
+        return array_merge($defaut, array_filter(
+            (array) (self::$signatureResolver)($subject),
+            static fn ($chemin) => is_string($chemin) && $chemin !== '' && is_file($chemin),
+        ));
+    }
+
+    /**
+     * Résolveur des coordonnées de l'établissement fourni par l'hôte.
+     *
+     * @var (Closure(): array<string, ?string>)|null
+     */
+    private static ?Closure $facilityResolver = null;
+
+    /**
+     * Déclare où l'hôte tient les coordonnées de l'établissement.
+     *
+     * Elles figurent en tête de chaque document imprimé. Une application hôte
+     * les administre en général depuis son interface, et non dans un fichier
+     * de configuration : sans ce point d'accroche, un changement d'adresse
+     * saisi par l'administrateur ne se verrait nulle part sur les documents.
+     *
+     * Le résolveur est appelé au moment du rendu, jamais à l'amorçage : il
+     * peut donc lire la base sans peser sur chaque requête.
+     *
+     * Les clés attendues sont celles de `config('dme.facility')` : `name`,
+     * `address`, `phone`, `email`. Celles qui manquent gardent leur valeur de
+     * configuration — un établissement sans adresse renseignée ne doit pas
+     * faire disparaître son nom.
+     *
+     * @param  (Closure(): array<string, ?string>)|null  $callback
+     */
+    public static function facilityUsing(?Closure $callback): void
+    {
+        self::$facilityResolver = $callback;
+    }
+
+    /**
+     * Coordonnées de l'établissement, telles qu'elles doivent s'imprimer.
+     *
+     * @return array<string, ?string>
+     */
+    public static function facility(): array
+    {
+        $configuree = (array) config('dme.facility', []);
+
+        if (self::$facilityResolver === null) {
+            return $configuree;
+        }
+
+        return array_merge($configuree, array_filter(
+            (array) (self::$facilityResolver)(),
+            static fn ($valeur) => is_string($valeur) && trim($valeur) !== '',
+        ));
     }
 
     /**
