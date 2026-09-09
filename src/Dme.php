@@ -60,6 +60,7 @@ final class Dme
         self::$accessResolver = null;
         self::$signatureResolver = null;
         self::$facilityResolver = null;
+        self::$returnLinkResolver = null;
     }
 
     /**
@@ -166,6 +167,65 @@ final class Dme
             (array) (self::$facilityResolver)(),
             static fn ($valeur) => is_string($valeur) && trim($valeur) !== '',
         ));
+    }
+
+    /**
+     * Lien de retour vers l'application hôte, fourni par elle.
+     *
+     * @var (Closure(mixed): ?array{label: string, url: string})|null
+     */
+    private static ?Closure $returnLinkResolver = null;
+
+    /**
+     * Déclare par où l'on retourne à l'application hôte.
+     *
+     * Le module est monté à l'intérieur d'une autre application : le praticien
+     * y entre depuis un écran de l'hôte, et doit pouvoir en ressortir. Sans ce
+     * lien, la seule issue est le bouton « précédent » du navigateur — ou la
+     * déconnexion, ce qui est pire.
+     *
+     * Le module ne peut pas deviner cette adresse : elle dépend du rôle de la
+     * personne connectée, que l'hôte seul connaît. Il demande donc.
+     *
+     *     Dme::returnLinkUsing(fn ($user) => [
+     *         'label' => 'Retour à KEneYa WorkFlow',
+     *         'url'   => $user->homeUrl(),
+     *     ]);
+     *
+     * Rendre `null` retire le lien : le module tournant seul n'a nulle part où
+     * retourner, et n'affiche alors rien.
+     *
+     * @param  (Closure(mixed): ?array{label: string, url: string})|null  $callback
+     */
+    public static function returnLinkUsing(?Closure $callback): void
+    {
+        self::$returnLinkResolver = $callback;
+    }
+
+    /**
+     * Le lien de retour pour cette personne, ou nul.
+     *
+     * Une adresse vide vaut pas de lien : mieux vaut aucune porte qu'une porte
+     * qui ne mène nulle part.
+     *
+     * @return array{label: string, url: string}|null
+     */
+    public static function returnLinkFor(mixed $user): ?array
+    {
+        if (self::$returnLinkResolver === null || $user === null) {
+            return null;
+        }
+
+        $lien = (self::$returnLinkResolver)($user);
+
+        if (! is_array($lien) || blank($lien['url'] ?? null)) {
+            return null;
+        }
+
+        return [
+            'label' => (string) ($lien['label'] ?? 'Retour'),
+            'url' => (string) $lien['url'],
+        ];
     }
 
     /**

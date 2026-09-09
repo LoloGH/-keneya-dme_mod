@@ -34,6 +34,25 @@
     </button>
 </div>
 
+{{-- La porte de sortie (§9).
+
+     Le module est monté à l'intérieur d'une autre application : le praticien y
+     entre depuis un écran de l'hôte, et doit pouvoir en ressortir. Sans ce
+     lien, la seule issue est le bouton « précédent » du navigateur — ou la
+     déconnexion, ce qui est pire.
+
+     En tête de la barre, avant la navigation du module : c'est un retour, pas
+     une destination. Le module tournant seul n'a nulle part où retourner, et
+     n'affiche alors rien. --}}
+@if ($retourHote = \Keneya\Dme\Dme::returnLinkFor(auth()->user()))
+    <div class="border-b border-ink-200 px-3 py-3">
+        <a href="{{ $retourHote['url'] }}" class="k-nav-link">
+            <x-dme::icon name="arrow-left" class="h-5 w-5 shrink-0"/>
+            <span>{{ $retourHote['label'] }}</span>
+        </a>
+    </div>
+@endif
+
 <nav class="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
     @foreach ($navigation as $item)
         {{-- Les noms sont ceux du module ; le préfixe est celui sous lequel
