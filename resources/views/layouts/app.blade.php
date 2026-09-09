@@ -39,8 +39,14 @@
 
         <footer class="k-no-print border-t border-ink-200 px-4 py-4 text-xs text-ink-500 sm:px-6 lg:px-8">
             <div class="flex flex-wrap items-center justify-between gap-2">
-                <span>{{ config('dme.facility.name') }} — Keneya-DME v{{ config('dme.version') }}</span>
-                <span>Données de démonstration fictives. Aucune donnée médicale réelle.</span>
+                <span>{{ \Keneya\Dme\Dme::facility()['name'] }} — Keneya-DME v{{ config('dme.version') }}</span>
+                {{-- La mention de démonstration reste tant que l'exploitant ne
+                     l'a pas levée (`dme.documents.demo_notice`) : un jeu
+                     d'essai pris pour un vrai dossier serait plus grave que
+                     l'inverse. Un établissement en exploitation la retire. --}}
+                @if (config('dme.documents.demo_notice', true))
+                    <span>Données de démonstration fictives. Aucune donnée médicale réelle.</span>
+                @endif
             </div>
         </footer>
     </div>

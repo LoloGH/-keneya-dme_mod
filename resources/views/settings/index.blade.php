@@ -16,6 +16,31 @@
 
         <section class="k-card">
             <div class="k-card-header"><h2 class="k-card-title">Établissement</h2></div>
+
+            {{-- Quand une application hôte administre ces coordonnées, ce sont
+                 les siennes qui font foi partout — interface et documents. Le
+                 formulaire du module serait alors sans effet : mieux vaut ne
+                 pas le proposer que laisser saisir dans le vide. --}}
+            @if (\Keneya\Dme\Dme::facilityIsProvidedByHost())
+                <dl class="k-card-body space-y-2.5 text-sm">
+                    @foreach ([
+                        'Nom' => $facility['name'],
+                        'Adresse' => $facility['address'],
+                        'Téléphone' => $facility['phone'],
+                        'Adresse e-mail' => $facility['email'],
+                    ] as $label => $value)
+                        <div>
+                            <dt class="text-xs text-ink-500">{{ $label }}</dt>
+                            <dd class="text-ink-800">{{ $value ?: '—' }}</dd>
+                        </div>
+                    @endforeach
+                    <p class="border-t border-ink-100 pt-3 text-xs text-ink-500">
+                        Ces coordonnées sont tenues par l'application qui héberge le
+                        dossier médical. Elles s'y modifient, et le changement se
+                        voit ici aussitôt.
+                    </p>
+                </dl>
+            @else
             <form action="{{ route('dme.settings.facility.update') }}" method="POST" class="k-card-body space-y-3">
                 @csrf
                 @method('PUT')
@@ -41,6 +66,7 @@
                     </button>
                 </div>
             </form>
+            @endif
         </section>
 
         <section class="k-card">

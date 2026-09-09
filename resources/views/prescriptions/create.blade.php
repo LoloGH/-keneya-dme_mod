@@ -42,7 +42,7 @@
                 </div>
                 <div>
                     <span class="k-label">Établissement</span>
-                    <p class="rounded-lg bg-ink-50 px-3 py-2 text-sm text-ink-700">{{ config('dme.facility.name') }}</p>
+                    <p class="rounded-lg bg-ink-50 px-3 py-2 text-sm text-ink-700">{{ \Keneya\Dme\Dme::facility()['name'] }}</p>
                 </div>
                 <div>
                     <label for="issued_on" class="k-label">Date <span class="text-red-600" aria-hidden="true">*</span></label>

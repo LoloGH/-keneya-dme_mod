@@ -11,6 +11,7 @@ use Keneya\Dme\Models\Service;
 use Keneya\Dme\Contracts\SimulatesSmsDelivery;
 use Keneya\Dme\Contracts\SmsDispatcherContract;
 use Keneya\Dme\Models\SmsTemplate;
+use Keneya\Dme\Dme;
 use Keneya\Dme\Support\Rbac;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -49,7 +50,10 @@ class SettingsController extends Controller
 
         return view('dme::settings.index', [
             'user' => $user->load(['service', 'roles']),
-            'facility' => config('dme.facility'),
+            // Les coordonnées telles qu'elles s'affichent réellement : quand
+            // une application hôte les administre, ce sont les siennes qui
+            // font foi, et non le fichier de configuration du module.
+            'facility' => Dme::facility(),
             'identifiers' => config('dme.identifiers.prefixes'),
             'documents' => config('dme.documents'),
             'smsGateway' => config('dme.sms.gateway'),

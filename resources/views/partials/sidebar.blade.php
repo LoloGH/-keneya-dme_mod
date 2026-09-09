@@ -81,6 +81,6 @@
 <div class="border-t border-ink-200 p-3">
     <div class="rounded-lg bg-ink-50 px-3 py-2.5">
         <p class="text-xs font-medium text-ink-500">Établissement</p>
-        <p class="mt-0.5 text-sm font-semibold text-ink-800">{{ config('dme.facility.name') }}</p>
+        <p class="mt-0.5 text-sm font-semibold text-ink-800">{{ \Keneya\Dme\Dme::facility()['name'] }}</p>
     </div>
 </div>

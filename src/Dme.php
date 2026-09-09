@@ -151,6 +151,18 @@ final class Dme
     }
 
     /**
+     * L'hôte tient-il lui-même les coordonnées de l'établissement ?
+     *
+     * Ce qui change pour l'interface : le formulaire du module devient
+     * inopérant, puisque la valeur de l'hôte l'emporte au rendu. Mieux vaut ne
+     * pas le proposer que laisser saisir sans effet.
+     */
+    public static function facilityIsProvidedByHost(): bool
+    {
+        return self::$facilityResolver !== null;
+    }
+
+    /**
      * Coordonnées de l'établissement, telles qu'elles doivent s'imprimer.
      *
      * @return array<string, ?string>
