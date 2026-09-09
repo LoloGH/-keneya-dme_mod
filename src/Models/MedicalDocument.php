@@ -122,6 +122,37 @@ class MedicalDocument extends Model
         return round($bytes / 1048576, 1).' Mo';
     }
 
+    /**
+     * Les types dont l'aperçu intégré est sûr.
+     *
+     * Volontairement une liste blanche, et non « tout sauf » : un document
+     * médical arrive par téléversement, et servir un HTML ou un SVG en ligne
+     * reviendrait à exécuter du script de l'utilisateur sur le domaine du
+     * dossier. Le PDF et les images matricielles suffisent à ce que le
+     * praticien a besoin de regarder — un compte rendu, une échographie.
+     *
+     * @var array<int, string>
+     */
+    public const PREVIEWABLE_MIMES = [
+        'application/pdf',
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+    ];
+
+    public function isImage(): bool
+    {
+        return str_starts_with((string) $this->mime_type, 'image/')
+            && in_array($this->mime_type, self::PREVIEWABLE_MIMES, true);
+    }
+
+    /** Ce document se regarde-t-il dans le navigateur, sans téléchargement ? */
+    public function isPreviewable(): bool
+    {
+        return in_array((string) $this->mime_type, self::PREVIEWABLE_MIMES, true);
+    }
+
     public function isPdf(): bool
     {
         return $this->mime_type === 'application/pdf';

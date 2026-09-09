@@ -123,13 +123,27 @@ class DocumentController extends Controller
     }
 
     /**
-     * Aperçu intégré des PDF (§28), sans téléchargement.
+     * Aperçu intégré (§28) : le document se regarde sans être téléchargé.
+     *
+     * PDF **et images** — un compte rendu d'échographie arrive le plus souvent
+     * en photo ou en scan, et obliger le praticien à le télécharger pour le
+     * lire laisse une copie du dossier sur chaque poste qui l'a consulté.
+     *
+     * Ce qui n'est pas dans {@see MedicalDocument::PREVIEWABLE_MIMES} reste
+     * téléchargeable, jamais servi en ligne : un HTML ou un SVG téléversé
+     * exécuterait son script sur le domaine du dossier. La liste est blanche
+     * pour cette raison, et l'en-tête `Content-Security-Policy` interdit au
+     * document de charger quoi que ce soit.
      */
     public function preview(MedicalDocument $document): Response
     {
         $this->authorize('download', $document);
 
-        abort_unless($document->isPdf(), 404, 'Seuls les PDF disposent d’un aperçu intégré.');
+        abort_unless(
+            $document->isPreviewable(),
+            404,
+            'Ce type de document ne dispose pas d’un aperçu intégré.',
+        );
 
         AuditLog::record(
             action: 'viewed',
@@ -138,11 +152,17 @@ class DocumentController extends Controller
             description: 'A ouvert l’aperçu de '.$document->document_number,
         );
 
-        return response($this->storage->read($document), 200, [
-            'Content-Type' => 'application/pdf',
+        return response($this->storage->read($document), 200, array_filter([
+            'Content-Type' => $document->mime_type,
             'Content-Disposition' => 'inline; filename="'.$this->safeFilename($document).'"',
             'X-Content-Type-Options' => 'nosniff',
-        ]);
+            // Le bac à sable est réservé aux images. Un PDF est rendu par le
+            // lecteur intégré du navigateur, qui exécute ses propres scripts :
+            // le lui interdire n'afficherait plus rien.
+            'Content-Security-Policy' => $document->isImage()
+                ? "default-src 'none'; img-src 'self'; sandbox"
+                : null,
+        ], static fn ($valeur) => $valeur !== null));
     }
 
     /**

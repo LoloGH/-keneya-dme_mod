@@ -71,6 +71,45 @@
                 </div>
             </section>
 
+            {{-- Lecture d'ensemble du biologiste : elle n'appartient à aucune
+                 ligne de résultat en particulier, et se lit avant elles. --}}
+            @if ($order->conclusion)
+                <section class="k-card">
+                    <div class="k-card-header"><h2 class="k-card-title">Conclusion</h2></div>
+                    <div class="k-card-body">
+                        <p class="text-sm leading-relaxed whitespace-pre-line text-ink-800">{{ $order->conclusion }}</p>
+                    </div>
+                </section>
+            @endif
+
+            {{-- Comptes rendus et résultats versés au dossier avec cette
+                 demande : un PDF d'automate, une feuille scannée. --}}
+            @if ($documents->isNotEmpty())
+                <section class="k-card">
+                    <div class="k-card-header"><h2 class="k-card-title">Documents rattachés</h2></div>
+                    <ul class="k-card-body space-y-2">
+                        @foreach ($documents as $document)
+                            <li class="flex items-center justify-between gap-2 text-sm">
+                                <a href="{{ route('dme.documents.show', $document) }}" class="text-clinic-700 hover:underline">
+                                    {{ $document->title }}
+                                </a>
+                                <span class="flex items-center gap-3">
+                                    {{-- Ouvrir plutôt que télécharger : un compte rendu se
+                                         regarde, et chaque téléchargement laisse une copie du
+                                         dossier sur le poste qui l'a consulté. --}}
+                                    @if ($document->isPreviewable())
+                                        <a href="{{ route('dme.documents.preview', $document) }}"
+                                           target="_blank" rel="noopener"
+                                           class="text-xs text-clinic-700 hover:underline">Voir</a>
+                                    @endif
+                                    <span class="text-xs text-ink-500">{{ $document->humanSize() }}</span>
+                                </span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </section>
+            @endif
+
             {{-- Saisie des résultats par le laboratoire (§23) --}}
             @can('recordResult', $order)
                 <section class="k-card">

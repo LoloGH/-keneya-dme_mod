@@ -21,20 +21,39 @@
 
     <div class="grid gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2">
-            {{-- Aperçu PDF intégré (§28) : servi par une route contrôlée --}}
-            @if ($document->isPdf())
+    {{-- Aperçu intégré (§28), servi par une route contrôlée.
+
+         PDF **et images** : un compte rendu d'échographie arrive le plus
+         souvent en photo ou en scan, et obliger le praticien à le télécharger
+         pour le lire laisse une copie du dossier sur chaque poste qui l'a
+         consulté. --}}
+            @if ($document->isPreviewable())
                 @can('download', $document)
                     <section class="k-card overflow-hidden">
-                        <div class="k-card-header"><h2 class="k-card-title">Aperçu</h2></div>
-                        <iframe src="{{ route('dme.documents.preview', $document) }}"
-                                title="Aperçu de {{ $document->title }}"
-                                class="h-[70vh] w-full border-0"></iframe>
+                        <div class="k-card-header">
+                            <h2 class="k-card-title">Aperçu</h2>
+                            <a href="{{ route('dme.documents.preview', $document) }}"
+                               target="_blank" rel="noopener" class="text-xs text-clinic-700 hover:underline">
+                                Ouvrir en plein écran
+                            </a>
+                        </div>
+                        @if ($document->isImage())
+                            <div class="flex justify-center bg-ink-50 p-3">
+                                <img src="{{ route('dme.documents.preview', $document) }}"
+                                     alt="Aperçu de {{ $document->title }}"
+                                     class="max-h-[70vh] w-auto max-w-full rounded">
+                            </div>
+                        @else
+                            <iframe src="{{ route('dme.documents.preview', $document) }}"
+                                    title="Aperçu de {{ $document->title }}"
+                                    class="h-[70vh] w-full border-0"></iframe>
+                        @endif
                     </section>
                 @endcan
             @else
                 <div class="k-card">
                     <x-dme::empty-state icon="document" title="Aperçu indisponible"
-                                   message="Seuls les documents PDF disposent d'un aperçu intégré. Téléchargez le fichier pour le consulter.">
+                                   message="Ce type de fichier ne se consulte pas dans le navigateur. Téléchargez-le pour l'ouvrir.">
                         <x-slot:action>
                             @can('download', $document)
                                 <a href="{{ route('dme.documents.download', $document) }}" class="k-btn-primary">

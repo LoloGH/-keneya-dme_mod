@@ -114,7 +114,17 @@
                                 <a href="{{ route('dme.documents.show', $document) }}" class="text-clinic-700 hover:underline">
                                     {{ $document->title }}
                                 </a>
-                                <span class="text-xs text-ink-500">{{ $document->humanSize() }}</span>
+                                <span class="flex items-center gap-3">
+                                    {{-- Ouvrir plutôt que télécharger : un compte rendu se
+                                         regarde, et chaque téléchargement laisse une copie du
+                                         dossier sur le poste qui l'a consulté. --}}
+                                    @if ($document->isPreviewable())
+                                        <a href="{{ route('dme.documents.preview', $document) }}"
+                                           target="_blank" rel="noopener"
+                                           class="text-xs text-clinic-700 hover:underline">Voir</a>
+                                    @endif
+                                    <span class="text-xs text-ink-500">{{ $document->humanSize() }}</span>
+                                </span>
                             </li>
                         @endforeach
                     </ul>

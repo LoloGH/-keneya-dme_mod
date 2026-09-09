@@ -116,7 +116,18 @@ class LaboratoryController extends Controller
             'items.results.validator:id,name,first_name,last_name,title',
         ]);
 
-        return view('dme::laboratory.show', ['order' => $labOrder]);
+        // Les comptes rendus verses au dossier avec cette demande. Meme
+        // rattachement que pour l'imagerie : la source du document designe la
+        // demande, ce qui evite de les chercher par date ou par titre.
+        $documents = $labOrder->patient->documents()
+            ->where('source_type', LabOrder::class)
+            ->where('source_id', $labOrder->id)
+            ->get();
+
+        return view('dme::laboratory.show', [
+            'order' => $labOrder,
+            'documents' => $documents,
+        ]);
     }
 
     /**

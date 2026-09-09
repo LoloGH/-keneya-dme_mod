@@ -35,7 +35,7 @@ class LabOrder extends Model
 
     protected $fillable = [
         'order_number', 'patient_id', 'consultation_id', 'doctor_id',
-        'requested_at', 'priority', 'indication', 'status', 'completed_at',
+        'requested_at', 'priority', 'indication', 'conclusion', 'status', 'completed_at',
     ];
 
     protected function casts(): array
