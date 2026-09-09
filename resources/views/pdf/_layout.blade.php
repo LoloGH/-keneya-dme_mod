@@ -87,7 +87,7 @@
                 <td width="50%">
                     <span class="strong">{{ $patient->fullName() }}</span><br>
                     <span class="small muted">
-                        Dossier {{ $patient->patient_number }}@if ($patient->externalIdentifier()) / {{ $patient->externalIdentifier() }}@endif - {{ $patient->ageLabel() }} - {{ $patient->sexLabel() }}
+                        Dossier médical {{ $patient->patient_number }}@if ($patient->externalIdentifier()) &middot; Patient {{ $patient->externalIdentifier() }}@endif - {{ $patient->ageLabel() }} - {{ $patient->sexLabel() }}
                     </span>
                 </td>
                 <td width="50%" class="small muted">

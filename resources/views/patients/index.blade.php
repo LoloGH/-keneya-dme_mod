@@ -4,7 +4,7 @@
 
 @section('content')
     <x-dme::page-header title="Patients"
-                   subtitle="{{ $patients->total() }} dossier(s), recherche par nom, numéro de dossier, téléphone ou date de naissance.">
+                   subtitle="{{ $patients->total() }} dossier(s), recherche par nom, numéro de dossier médical, téléphone ou date de naissance.">
         <x-slot:actions>
             @can('patients.view')
                 <a href="{{ route('dme.patients.export', request()->query()) }}" class="k-btn-secondary">

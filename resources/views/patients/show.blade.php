@@ -82,7 +82,7 @@
             {{-- Suppression définitive (§40). Réservée à l'administrateur, et
                  seulement sur un dossier déjà archivé : le passage par
                  l'archive laisse le temps de se raviser, et rend le geste
-                 délibéré. Le numéro de dossier doit être retapé, comme dans
+                 délibéré. Le numéro de dossier médical doit être retapé, comme dans
                  l'application hôte : cocher une case ne suffit pas à détruire
                  un dossier médical. --}}
             @can('purge', $patient)
@@ -104,7 +104,7 @@
 
                         <div>
                             <label for="purge-number" class="k-label">
-                                Retapez le numéro de dossier ({{ $patient->patient_number }})
+                                Retapez le numéro de dossier médical ({{ $patient->patient_number }})
                             </label>
                             <input id="purge-number" name="patient_number" type="text" required
                                    autocomplete="off" class="k-input">

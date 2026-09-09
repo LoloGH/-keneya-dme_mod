@@ -76,7 +76,7 @@
             </p>
         @else
             <p class="k-hint">
-                Le numéro de dossier (format <span class="font-mono">PAT-{{ now()->format('Y') }}-000001</span>)
+                Le numéro de dossier médical (format <span class="font-mono">PAT-{{ now()->format('Y') }}-000001</span>)
                 est généré automatiquement à l'enregistrement.
             </p>
         @endif
