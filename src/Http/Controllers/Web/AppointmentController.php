@@ -18,7 +18,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 /**
- * Rendez-vous (§27) — vues jour, semaine et mois.
+ * Rendez-vous (§27) : vues jour, semaine et mois.
  *
  * La création déclenche une confirmation SMS et programme un rappel la
  * veille, via le service de notification (§53). L'échec d'un SMS n'a

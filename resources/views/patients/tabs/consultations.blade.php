@@ -42,8 +42,8 @@
                             <td class="whitespace-nowrap">{{ $consultation->started_at->translatedFormat('d M Y') }}</td>
                             <td class="font-mono text-xs">{{ $consultation->consultation_number }}</td>
                             <td class="max-w-xs truncate">{{ $consultation->reason ?: $consultation->typeLabel() }}</td>
-                            <td>{{ $consultation->doctor?->displayName() ?? '—' }}</td>
-                            <td>{{ $consultation->service?->name ?? '—' }}</td>
+                            <td>{{ $consultation->doctor?->displayName() ?? '-' }}</td>
+                            <td>{{ $consultation->service?->name ?? '-' }}</td>
                             <td class="tabular-nums">{{ $consultation->diagnoses_count }}</td>
                             <td><x-dme::status-badge :status="$consultation->status" :label="$consultation->statusLabel()"/></td>
                             <td class="text-right">

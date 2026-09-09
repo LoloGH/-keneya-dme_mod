@@ -19,7 +19,7 @@ final class PasswordPolicy
 {
     /**
      * Longueur minimale, complexité, et refus des mots de passe présents
-     * dans les fuites connues en production uniquement — l'appel réseau
+     * dans les fuites connues en production uniquement : l'appel réseau
      * associé n'a pas sa place en développement ni dans les tests.
      */
     public static function rule(): Password

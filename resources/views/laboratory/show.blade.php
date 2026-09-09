@@ -55,7 +55,7 @@
                                         <td class="font-medium text-ink-900">{{ $result->parameter }}</td>
                                         <td class="font-semibold tabular-nums">{{ $result->value }}</td>
                                         <td>{{ $result->unit }}</td>
-                                        <td class="text-xs text-ink-500">{{ $result->reference_range ?: '—' }}</td>
+                                        <td class="text-xs text-ink-500">{{ $result->reference_range ?: '-' }}</td>
                                         <td><x-dme::status-badge :status="$result->flag" :label="$result->flagLabel()"/></td>
                                         <td class="text-xs text-ink-500">{{ $result->validator?->displayName() ?? 'En attente' }}</td>
                                     </tr>
@@ -142,7 +142,7 @@
                                     <div>
                                         <label for="range_{{ $index }}" class="k-label">Réf.</label>
                                         <input id="range_{{ $index }}" name="results[{{ $index }}][reference_range]" type="text"
-                                               maxlength="100" class="k-input" placeholder="0.70 – 1.10">
+                                               maxlength="100" class="k-input" placeholder="0.70 - 1.10">
                                     </div>
                                     <div>
                                         <label for="flag_{{ $index }}" class="k-label">Interprétation</label>
@@ -173,7 +173,7 @@
                 <dl class="k-card-body space-y-2.5 text-sm">
                     <div>
                         <dt class="text-xs text-ink-500">Prescripteur</dt>
-                        <dd class="font-medium text-ink-900">{{ $order->doctor?->displayName() ?? '—' }}</dd>
+                        <dd class="font-medium text-ink-900">{{ $order->doctor?->displayName() ?? '-' }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs text-ink-500">Indication</dt>

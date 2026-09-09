@@ -15,7 +15,7 @@ use RuntimeException;
  * Implémentation de secours : le message est journalisé, jamais émis.
  *
  * Elle existe pour que le module reste testable et utilisable seul, sans
- * passerelle ni file d'attente — notamment dans la suite de tests et dans
+ * passerelle ni file d'attente : notamment dans la suite de tests et dans
  * une application hôte de démonstration.
  *
  * Le numéro est tout de même normalisé, afin qu'un numéro inexploitable

@@ -125,7 +125,7 @@ class DocumentController extends Controller
     /**
      * Aperçu intégré (§28) : le document se regarde sans être téléchargé.
      *
-     * PDF **et images** — un compte rendu d'échographie arrive le plus souvent
+     * PDF **et images** : un compte rendu d'échographie arrive le plus souvent
      * en photo ou en scan, et obliger le praticien à le télécharger pour le
      * lire laisse une copie du dossier sur chaque poste qui l'a consulté.
      *
@@ -142,14 +142,14 @@ class DocumentController extends Controller
         abort_unless(
             $document->isPreviewable(),
             404,
-            'Ce type de document ne dispose pas d’un aperçu intégré.',
+            'Ce type de document ne dispose pas d\'un aperçu intégré.',
         );
 
         AuditLog::record(
             action: 'viewed',
             subject: $document,
             patientId: $document->patient_id,
-            description: 'A ouvert l’aperçu de '.$document->document_number,
+            description: 'A ouvert l\'aperçu de '.$document->document_number,
         );
 
         return response($this->storage->read($document), 200, array_filter([

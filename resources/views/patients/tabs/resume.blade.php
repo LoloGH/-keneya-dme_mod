@@ -92,7 +92,7 @@
         {{-- Derniers examens (§15) --}}
         <section class="k-card">
             <div class="k-card-header">
-                <h2 class="k-card-title">Derniers résultats d’examens</h2>
+                <h2 class="k-card-title">Derniers résultats d'examens</h2>
                 <a href="{{ route('dme.patients.show', [$patient, 'tab' => 'laboratoire']) }}"
                    class="text-xs font-medium text-clinic-700 hover:underline">Laboratoire</a>
             </div>

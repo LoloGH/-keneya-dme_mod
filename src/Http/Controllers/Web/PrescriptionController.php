@@ -119,7 +119,7 @@ class PrescriptionController extends Controller
         });
 
         $message = $prescription->hasAllergyWarnings()
-            ? 'Ordonnance enregistrée — une allergie connue a été détectée, vérifiez avant validation.'
+            ? 'Ordonnance enregistrée : une allergie connue a été détectée, vérifiez avant validation.'
             : 'Ordonnance '.$prescription->prescription_number.' enregistrée.';
 
         return redirect()->route('dme.prescriptions.show', $prescription)
@@ -161,7 +161,7 @@ class PrescriptionController extends Controller
             'acknowledge_allergy' => [$warnings === [] ? 'nullable' : 'accepted'],
             'allergy_justification' => ['nullable', 'string', 'max:1000'],
         ], [
-            'acknowledge_allergy.accepted' => 'Vous devez confirmer avoir pris connaissance de l’alerte allergie.',
+            'acknowledge_allergy.accepted' => 'Vous devez confirmer avoir pris connaissance de l\'alerte allergie.',
         ]);
 
         $prescription->update([

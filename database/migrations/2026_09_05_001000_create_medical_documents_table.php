@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Schema;
  * la route contrôlée /documents/{document}/download, qui vérifie la policy.
  *
  * Versionnement : un document remplacé conserve son prédécesseur via
- * `replaces_document_id` — aucun contenu médical n'est écrasé (§40).
+ * `replaces_document_id`, aucun contenu médical n'est écrasé (§40).
  */
 return new class extends Migration
 {
@@ -30,7 +30,7 @@ return new class extends Migration
             ])->default('other');
             $table->text('description')->nullable();
 
-            // Fichier — disque privé uniquement
+            // Fichier, disque privé uniquement
             $table->string('disk')->default('local');
             $table->string('storage_path');
             $table->string('original_name')->nullable();

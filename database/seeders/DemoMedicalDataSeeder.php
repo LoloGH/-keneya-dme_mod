@@ -34,9 +34,9 @@ use Illuminate\Support\Str;
  * résultats sont inventés et ne correspondent à aucune personne.
  *
  * Le jeu de données couvre le parcours complet exigé en §67 :
- * patient → consultation → constantes → diagnostic → ordonnance →
- * laboratoire → résultat → imagerie → hospitalisation → soins →
- * rendez-vous → documents → historique → audit → SMS.
+ * patient -> consultation -> constantes -> diagnostic -> ordonnance ->
+ * laboratoire -> résultat -> imagerie -> hospitalisation -> soins ->
+ * rendez-vous -> documents -> historique -> audit -> SMS.
  */
 class DemoMedicalDataSeeder extends Seeder
 {
@@ -244,11 +244,11 @@ class DemoMedicalDataSeeder extends Seeder
 
         $labExams = [
             ['exam' => 'Hémoglobine glyquée (HbA1c)', 'category' => 'Biochimie', 'parameter' => 'HbA1c',
-             'value' => '6.8', 'unit' => '%', 'range' => '4.0 – 6.0', 'flag' => 'high'],
+             'value' => '6.8', 'unit' => '%', 'range' => '4.0 - 6.0', 'flag' => 'high'],
             ['exam' => 'Glycémie à jeun', 'category' => 'Biochimie', 'parameter' => 'Glycémie',
-             'value' => '1.14', 'unit' => 'g/L', 'range' => '0.70 – 1.10', 'flag' => 'high'],
+             'value' => '1.14', 'unit' => 'g/L', 'range' => '0.70 - 1.10', 'flag' => 'high'],
             ['exam' => 'Créatininémie', 'category' => 'Biochimie', 'parameter' => 'Créatinine',
-             'value' => '9.8', 'unit' => 'mg/L', 'range' => '7.0 – 13.0', 'flag' => 'normal'],
+             'value' => '9.8', 'unit' => 'mg/L', 'range' => '7.0 - 13.0', 'flag' => 'normal'],
             ['exam' => 'Bilan lipidique', 'category' => 'Biochimie', 'parameter' => 'Cholestérol total',
              'value' => '2.05', 'unit' => 'g/L', 'range' => '< 2.00', 'flag' => 'high'],
         ];
@@ -285,7 +285,7 @@ class DemoMedicalDataSeeder extends Seeder
             'requested_at' => Carbon::now()->subDays(20),
             'scheduled_for' => Carbon::now()->subDays(18),
             'priority' => 'routine',
-            'indication' => 'Douleurs de l’hypochondre droit, bilan de stéatose.',
+            'indication' => 'Douleurs de l\'hypochondre droit, bilan de stéatose.',
             'status' => 'reported',
             'accession_number' => 'ACC-'.now()->format('Y').'-'.Str::upper(Str::random(8)),
         ]);
@@ -313,7 +313,7 @@ class DemoMedicalDataSeeder extends Seeder
             'service_id' => $services['MI'] ?? null,
             'scheduled_for' => Carbon::now()->addDays(8)->setTime(9, 30),
             'duration_minutes' => 30,
-            'reason' => 'Consultation de suivi — diabète et hypertension',
+            'reason' => 'Consultation de suivi, diabète et hypertension',
             'status' => 'confirmed',
             'created_by' => $this->doctor->id,
         ]);
@@ -337,7 +337,7 @@ class DemoMedicalDataSeeder extends Seeder
         SmsMessage::create([
             'reference' => 'SMS-'.Str::upper(Str::random(10)),
             'recipient' => '+22370001001',
-            'body' => 'Keneya : Votre résultat d’analyse est disponible. Présentez-vous avec votre pièce d’identité.',
+            'body' => 'Keneya : Votre résultat d\'analyse est disponible. Présentez-vous avec votre pièce d\'identité.',
             'sender' => config('dme.sms.sender'),
             'patient_id' => $patient->id,
             'status' => 'failed',
@@ -367,18 +367,18 @@ class DemoMedicalDataSeeder extends Seeder
             'type' => 'follow_up',
             'status' => 'completed',
             'reason' => $variant === 'first'
-                ? 'Céphalées récurrentes et fatigue à l’effort'
-                : 'Consultation de suivi trimestriel — diabète et hypertension',
+                ? 'Céphalées récurrentes et fatigue à l\'effort'
+                : 'Consultation de suivi trimestriel, diabète et hypertension',
             'history_of_illness' => $variant === 'first'
                 ? "Patient de 42 ans suivi pour hypertension artérielle depuis 5 ans. Décrit depuis trois semaines "
-                    ."des céphalées occipitales matinales et une fatigue à l’effort modéré. Observance thérapeutique "
+                    ."des céphalées occipitales matinales et une fatigue à l'effort modéré. Observance thérapeutique "
                     ."déclarée irrégulière."
                 : "Patient revu à trois mois. Bonne observance rapportée depuis la dernière consultation. "
                     ."Perte pondérale de 2 kg. Plus de céphalées. Autocontrôles tensionnels à domicile "
                     ."globalement satisfaisants.",
-            'treatment_plan' => 'Poursuite de la metformine et de l’amlodipine aux mêmes posologies.',
+            'treatment_plan' => 'Poursuite de la metformine et de l\'amlodipine aux mêmes posologies.',
             'follow_up' => 'Contrôle clinique et biologique dans trois mois.',
-            'recommendations' => 'Réduction de l’apport sodé, marche quotidienne de 30 minutes, arrêt du tabac maintenu.',
+            'recommendations' => 'Réduction de l\'apport sodé, marche quotidienne de 30 minutes, arrêt du tabac maintenu.',
         ]);
 
         foreach ([
@@ -389,7 +389,7 @@ class DemoMedicalDataSeeder extends Seeder
                 ? 'Bruits du cœur réguliers, pas de souffle. TA 158/95 mmHg aux deux bras.'
                 : 'Bruits du cœur réguliers. TA 128/83 mmHg. Pouls périphériques perçus et symétriques.',
             'respiratory' => 'Murmure vésiculaire bilatéral et symétrique. Pas de râle surajouté.',
-            'abdominal' => 'Abdomen souple, dépressible, indolore. Pas d’hépatomégalie perçue.',
+            'abdominal' => 'Abdomen souple, dépressible, indolore. Pas d\'hépatomégalie perçue.',
             'neurological' => 'Pas de déficit sensitivomoteur. Réflexes ostéotendineux présents et symétriques.',
         ] as $system => $content) {
             $consultation->clinicalNotes()->create([
@@ -443,13 +443,13 @@ class DemoMedicalDataSeeder extends Seeder
 
         foreach ([
             ['type' => 'admission', 'hours' => 0, 'title' => 'Admission en médecine interne',
-             'content' => 'TA à l’entrée 195/115 mmHg. Patient conscient, céphalées cotées 7/10.'],
+             'content' => 'TA à l\'entrée 195/115 mmHg. Patient conscient, céphalées cotées 7/10.'],
             ['type' => 'observation', 'hours' => 4, 'title' => 'Surveillance tensionnelle rapprochée',
              'content' => 'TA 178/104 mmHg après première prise. Céphalées en régression.'],
             ['type' => 'exam', 'hours' => 24, 'title' => 'Bilan de retentissement',
-             'content' => 'ECG, fond d’œil et bilan rénal réalisés — sans anomalie significative.'],
+             'content' => 'ECG, fond d\'œil et bilan rénal réalisés : sans anomalie significative.'],
             ['type' => 'treatment', 'hours' => 26, 'title' => 'Adaptation thérapeutique',
-             'content' => 'Introduction de l’amlodipine 5 mg par jour.'],
+             'content' => 'Introduction de l\'amlodipine 5 mg par jour.'],
             ['type' => 'evolution', 'hours' => 48, 'title' => 'Évolution favorable',
              'content' => 'TA 142/88 mmHg. Disparition des céphalées. Patient à nouveau autonome.'],
             ['type' => 'discharge', 'hours' => 74, 'title' => 'Sortie à domicile',
@@ -465,9 +465,9 @@ class DemoMedicalDataSeeder extends Seeder
         }
 
         foreach ([
-            ['type' => 'care', 'hours' => 1, 'title' => 'Pose d’une voie veineuse périphérique',
+            ['type' => 'care', 'hours' => 1, 'title' => 'Pose d\'une voie veineuse périphérique',
              'content' => 'Cathéter 20G au pli du coude droit. Pansement propre et sec.', 'severity' => 'info'],
-            ['type' => 'medication_administration', 'hours' => 2, 'title' => 'Administration d’amlodipine',
+            ['type' => 'medication_administration', 'hours' => 2, 'title' => 'Administration d\'amlodipine',
              'content' => 'Prise vérifiée, bien tolérée.', 'medication' => 'Amlodipine', 'dose' => '5 mg',
              'route' => 'Orale', 'severity' => 'info'],
             ['type' => 'observation', 'hours' => 12, 'title' => 'Constantes de nuit',
@@ -548,7 +548,7 @@ class DemoMedicalDataSeeder extends Seeder
                 'ended_at' => Carbon::now()->subDays($index)->setTime(10, 25),
                 'type' => 'ambulatory',
                 'status' => 'completed',
-                'reason' => $condition ? 'Suivi — '.$condition : 'Consultation générale',
+                'reason' => $condition ? 'Suivi - '.$condition : 'Consultation générale',
                 'history_of_illness' => 'Patient vu en consultation externe. Examen clinique sans particularité notable.',
             ]);
 

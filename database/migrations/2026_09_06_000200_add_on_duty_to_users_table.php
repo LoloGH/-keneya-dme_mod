@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Schema;
  * personnel de garde du service prescripteur ». Il faut donc savoir qui
  * est de garde. Un drapeau porté par l'utilisateur suffit à cette étape :
  * il est déclaratif, horodaté, et journalisé à chaque bascule. Un
- * véritable tableau de service — plages, roulements, remplacements —
+ * véritable tableau de service, plages, roulements, remplacements,
  * relève d'un module de planification qui n'existe pas encore.
  */
 return new class extends Migration

@@ -46,7 +46,7 @@ class PatientPolicy extends DomainPolicy
 
     /**
      * Archiver un dossier : il sort des listes et n'est plus modifiable,
-     * mais reste entièrement consultable — et se restaure.
+     * mais reste entièrement consultable, et se restaure.
      *
      * C'est l'opération courante, celle d'un dossier qui n'a plus lieu de
      * figurer parmi les patients suivis. Elle ne détruit rien.

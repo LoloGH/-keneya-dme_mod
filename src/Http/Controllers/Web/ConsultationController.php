@@ -181,7 +181,7 @@ class ConsultationController extends Controller
         ]);
 
         return redirect()->route('dme.consultations.show', $consultation)
-            ->with('success', 'Consultation terminée. Elle n’est plus modifiable.');
+            ->with('success', 'Consultation terminée. Elle n\'est plus modifiable.');
     }
 
     public function reportPdf(Consultation $consultation, PdfGenerator $pdf): Response

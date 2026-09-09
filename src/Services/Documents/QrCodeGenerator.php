@@ -30,7 +30,7 @@ class QrCodeGenerator
     }
 
     /**
-     * Data URI directement utilisable dans un <img src="…"> du PDF.
+     * Data URI directement utilisable dans un <img src="..."> du PDF.
      */
     public function dataUri(string $content, int $size = 160): string
     {

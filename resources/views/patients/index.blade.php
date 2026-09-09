@@ -4,7 +4,7 @@
 
 @section('content')
     <x-dme::page-header title="Patients"
-                   subtitle="{{ $patients->total() }} dossier(s) — recherche par nom, numéro de dossier, téléphone ou date de naissance.">
+                   subtitle="{{ $patients->total() }} dossier(s), recherche par nom, numéro de dossier, téléphone ou date de naissance.">
         <x-slot:actions>
             @can('patients.view')
                 <a href="{{ route('dme.patients.export', request()->query()) }}" class="k-btn-secondary">
@@ -28,7 +28,7 @@
                 <div class="relative">
                     <x-dme::icon name="search" class="pointer-events-none absolute top-1/2 left-3 h-4.5 w-4.5 -translate-y-1/2 text-ink-400"/>
                     <input id="q" type="search" name="q" value="{{ $filters['q'] ?? '' }}" class="k-input pl-10"
-                           placeholder="Nom, prénom, n° dossier, téléphone, 12/03/1984…">
+                           placeholder="Nom, prénom, n° dossier, téléphone, 12/03/1984...">
                 </div>
             </div>
             <button type="submit" class="k-btn-primary">Rechercher</button>
@@ -85,7 +85,7 @@
                 <label for="period" class="k-label">Créé</label>
                 <select id="period" name="period" class="k-select">
                     <option value="">Sans limite</option>
-                    <option value="today" @selected(($filters['period'] ?? '') === 'today')>Aujourd’hui</option>
+                    <option value="today" @selected(($filters['period'] ?? '') === 'today')>Aujourd'hui</option>
                     <option value="week" @selected(($filters['period'] ?? '') === 'week')>7 derniers jours</option>
                     <option value="month" @selected(($filters['period'] ?? '') === 'month')>30 derniers jours</option>
                 </select>
@@ -139,11 +139,11 @@
                                 <td class="font-mono text-xs">{{ $patient->patient_number }}</td>
                                 <td>{{ $patient->sexLabel() }}</td>
                                 <td class="tabular-nums">{{ $patient->ageLabel() }}</td>
-                                <td class="tabular-nums">{{ $patient->phone ?: '—' }}</td>
+                                <td class="tabular-nums">{{ $patient->phone ?: '-' }}</td>
                                 <td>
                                     {{ $patient->last_consultation_at
                                         ? \Illuminate\Support\Carbon::parse($patient->last_consultation_at)->translatedFormat('d M Y')
-                                        : '—' }}
+                                        : '-' }}
                                 </td>
                                 <td><x-dme::status-badge :status="$patient->status" :label="ucfirst($patient->status)"/></td>
                                 <td class="text-right">

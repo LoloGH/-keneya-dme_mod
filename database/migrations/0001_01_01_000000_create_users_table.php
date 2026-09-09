@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Schema;
  *
  * Le module ne gère plus l'authentification : la session vient de
  * l'application hôte. La table `users` reste néanmoins l'annuaire des
- * praticiens du dossier médical — c'est elle que référencent les
+ * praticiens du dossier médical : c'est elle que référencent les
  * prescripteurs, les exécutants d'un soin, les auteurs d'un compte rendu
  * et les colonnes `created_by` de tout le dossier.
  *
@@ -45,7 +45,7 @@ return new class extends Migration
     public function down(): void
     {
         // La table n'est supprimée que si le module l'a lui-même créée :
-        // le repli inverse — effacer les utilisateurs de l'hôte — serait
+        // le repli inverse, effacer les utilisateurs de l'hôte, serait
         // catastrophique. On ne peut pas le savoir après coup, on
         // s'abstient donc toujours.
     }

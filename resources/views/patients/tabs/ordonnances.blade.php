@@ -39,7 +39,7 @@
                                     <li>
                                         <span class="font-medium">{{ $item->medication_name }}</span>
                                         @if ($item->posology())
-                                            <span class="text-ink-500">— {{ $item->posology() }}</span>
+                                            <span class="text-ink-500">- {{ $item->posology() }}</span>
                                         @endif
                                     </li>
                                 @endforeach

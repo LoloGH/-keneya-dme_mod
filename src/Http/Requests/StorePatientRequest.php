@@ -53,7 +53,7 @@ class StorePatientRequest extends FormRequest
             'status' => ['nullable', Rule::in(['active', 'inactive', 'deceased', 'archived'])],
             'notes' => ['nullable', 'string', 'max:2000'],
 
-            // Contact d'urgence — facultatif à la création (§12)
+            // Contact d'urgence : facultatif à la création (§12)
             'emergency_contact.name' => ['nullable', 'string', 'max:150'],
             'emergency_contact.relationship' => ['nullable', 'string', 'max:100'],
             'emergency_contact.phone' => ['nullable', 'required_with:emergency_contact.name', 'string', 'max:30'],
@@ -78,7 +78,7 @@ class StorePatientRequest extends FormRequest
             'email' => 'adresse e-mail',
             'blood_group' => 'groupe sanguin',
             'attending_doctor_id' => 'médecin traitant',
-            'emergency_contact.phone' => 'téléphone du contact d’urgence',
+            'emergency_contact.phone' => 'téléphone du contact d\'urgence',
         ];
     }
 }

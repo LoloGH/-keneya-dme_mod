@@ -27,7 +27,7 @@ use Spatie\Permission\PermissionRegistrar;
  *     d'administration. Les retirer fermerait l'écran qui permet de les
  *     rendre, sans autre issue qu'une intervention en base.
  *  2. Un administrateur ne peut pas retirer `roles.manage` à son propre
- *     rôle — la même impasse, atteinte par un autre chemin.
+ *     rôle : la même impasse, atteinte par un autre chemin.
  *
  * Toute modification est journalisée permission par permission : savoir
  * qu'une matrice a changé ne suffit pas, il faut savoir quoi.
@@ -38,7 +38,7 @@ class RolePermissionController extends Controller
      * Nouveau rôle, sans permission au départ : l'administrateur les
      * accorde ensuite depuis la matrice, ligne par ligne. Le nom
      * technique (utilisé par hasRole()) est dérivé du libellé et n'est
-     * plus modifiable une fois créé — le renommer reviendrait à changer
+     * plus modifiable une fois créé : le renommer reviendrait à changer
      * silencieusement l'identité d'un rôle déjà attribué.
      */
     public function store(Request $request): RedirectResponse
@@ -160,9 +160,9 @@ class RolePermissionController extends Controller
 
         AuditLog::record(
             action: 'role_permissions_reset',
-            description: 'A rétabli la matrice de rôles et permissions d’origine',
+            description: 'A rétabli la matrice de rôles et permissions d\'origine',
         );
 
-        return back()->with('success', 'Matrice rétablie dans sa configuration d’origine.');
+        return back()->with('success', 'Matrice rétablie dans sa configuration d\'origine.');
     }
 }

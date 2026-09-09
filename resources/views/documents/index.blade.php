@@ -9,7 +9,7 @@
         <div class="min-w-56 flex-1">
             <label for="q" class="sr-only">Rechercher</label>
             <input id="q" type="search" name="q" value="{{ $filters['q'] ?? '' }}" class="k-input"
-                   placeholder="Titre, n° de document ou patient…">
+                   placeholder="Titre, n° de document ou patient...">
         </div>
         <div>
             <label for="type" class="sr-only">Type</label>

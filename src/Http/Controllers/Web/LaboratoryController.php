@@ -159,7 +159,7 @@ class LaboratoryController extends Controller
                 // Contrôle d'appartenance : un résultat ne peut être
                 // rattaché qu'à un examen de CETTE demande (protection IDOR, §57).
                 if (! $itemIds->contains((int) $row['lab_order_item_id'])) {
-                    abort(403, 'Cet examen n’appartient pas à la demande.');
+                    abort(403, 'Cet examen n\'appartient pas à la demande.');
                 }
 
                 if (blank($row['value'] ?? null)) {
@@ -247,7 +247,7 @@ class LaboratoryController extends Controller
         return [
             'Hématologie' => [
                 'Numération formule sanguine', 'Vitesse de sédimentation',
-                'Groupe sanguin — Rhésus', 'Taux de prothrombine',
+                'Groupe sanguin - Rhésus', 'Taux de prothrombine',
             ],
             'Biochimie' => [
                 'Glycémie à jeun', 'Hémoglobine glyquée (HbA1c)', 'Créatininémie',
@@ -258,7 +258,7 @@ class LaboratoryController extends Controller
                 'CRP', 'Sérologie VIH', 'Sérologie hépatite B', 'Sérologie hépatite C',
             ],
             'Parasitologie / Bactériologie' => [
-                'Goutte épaisse — paludisme', 'Test de diagnostic rapide paludisme',
+                'Goutte épaisse, paludisme', 'Test de diagnostic rapide paludisme',
                 'Examen cytobactériologique des urines', 'Coproculture',
             ],
         ];

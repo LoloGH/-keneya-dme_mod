@@ -93,7 +93,7 @@
     }
 
     /* ---------------------------------------------------------------
-     * Boutons — zone tactile d'au moins 40px (§48)
+     * Boutons : zone tactile d'au moins 40px (§48)
      * --------------------------------------------------------------- */
     .k-btn {
         @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 py-2
@@ -134,7 +134,7 @@
     }
 
     /* ---------------------------------------------------------------
-     * Formulaires — labels systématiques et messages d'erreur (§48)
+     * Formulaires : labels systématiques et messages d'erreur (§48)
      * --------------------------------------------------------------- */
     .k-label {
         @apply mb-1 block text-xs font-medium text-ink-600;
@@ -202,7 +202,7 @@
     }
 
     /* ---------------------------------------------------------------
-     * Tableaux — deviennent des cartes sous 768px (§8)
+     * Tableaux : deviennent des cartes sous 768px (§8)
      * --------------------------------------------------------------- */
     .k-table {
         @apply w-full text-left text-sm;
@@ -252,7 +252,7 @@
                bg-clinic-50 text-clinic-700 hover:bg-clinic-50 hover:text-clinic-700;
     }
 
-    /* Onglets du DME — défilables horizontalement sur mobile (§8) */
+    /* Onglets du DME : défilables horizontalement sur mobile (§8) */
     .k-tabs {
         @apply flex gap-1 overflow-x-auto border-b border-ink-200 pb-px;
         scrollbar-width: thin;

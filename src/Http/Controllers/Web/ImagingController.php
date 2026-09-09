@@ -72,7 +72,7 @@ class ImagingController extends Controller
             'priority' => ['required', Rule::in(['routine', 'urgent', 'vital'])],
             'indication' => ['nullable', 'string', 'max:1000'],
         ], [], [
-            'modality' => 'type d’examen',
+            'modality' => 'type d\'examen',
             'body_site' => 'région explorée',
             'requested_at' => 'date de demande',
         ]);
@@ -85,7 +85,7 @@ class ImagingController extends Controller
         ]);
 
         return redirect()->route('dme.imaging.show', $order)
-            ->with('success', 'Demande d’imagerie '.$order->order_number.' créée.');
+            ->with('success', 'Demande d\'imagerie '.$order->order_number.' créée.');
     }
 
     public function show(ImagingOrder $imagingOrder): View

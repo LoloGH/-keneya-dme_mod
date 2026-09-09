@@ -35,7 +35,7 @@ class AuthApiController extends Controller
             AuditLog::record(
                 action: 'login_failed',
                 outcome: 'denied',
-                description: 'Échec d’authentification API pour '.$data['email'],
+                description: 'Échec d\'authentification API pour '.$data['email'],
             );
 
             throw ValidationException::withMessages([
@@ -43,7 +43,7 @@ class AuthApiController extends Controller
             ]);
         }
 
-        AuditLog::record(action: 'login', subject: $user, description: 'S’est authentifié par API');
+        AuditLog::record(action: 'login', subject: $user, description: 'S\'est authentifié par API');
 
         return response()->json([
             'token' => $user->createToken($data['device_name'])->plainTextToken,

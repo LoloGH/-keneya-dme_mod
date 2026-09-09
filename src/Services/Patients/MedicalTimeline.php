@@ -167,7 +167,7 @@ class MedicalTimeline
                 'type' => 'imaging',
                 'label' => 'Imagerie',
                 'date' => $order->requested_at,
-                'title' => $order->modalityLabel().($order->body_site ? ' — '.$order->body_site : ''),
+                'title' => $order->modalityLabel().($order->body_site ? '-'.$order->body_site : ''),
                 'detail' => $order->order_number,
                 'status' => $order->statusLabel(),
                 'url' => route('dme.imaging.show', $order),

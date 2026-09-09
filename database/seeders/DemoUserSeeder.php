@@ -16,7 +16,7 @@ use RuntimeException;
  * Deux garde-fous, volontairement stricts :
  *
  *  1. Le seeder refuse de s'exécuter hors des environnements local et
- *     testing — un déploiement de production ne peut pas créer de comptes
+ *     testing : un déploiement de production ne peut pas créer de comptes
  *     de démonstration par inadvertance.
  *
  *  2. Aucun mot de passe n'est codé en dur. La valeur provient de
@@ -37,9 +37,9 @@ class DemoUserSeeder extends Seeder
 
         if (blank($password)) {
             throw new RuntimeException(
-                'DEMO_USER_PASSWORD n’est pas défini. Renseignez cette variable dans votre .env '
+                'DEMO_USER_PASSWORD n\'est pas défini. Renseignez cette variable dans votre .env '
                 .'avant de créer les comptes de démonstration : aucun mot de passe par défaut '
-                .'n’est fourni par l’application.'
+                .'n\'est fourni par l\'application.'
             );
         }
 

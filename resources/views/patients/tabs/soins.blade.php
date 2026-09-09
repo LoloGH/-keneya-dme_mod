@@ -1,8 +1,8 @@
 {{-- Soins infirmiers (§26).
 
      Deux registres, volontairement distincts :
-       · les soins programmés — ce qui est demandé, par qui, pour qui ;
-       · les transmissions — ce qui a réellement eu lieu.
+       · les soins programmés, ce qui est demandé, par qui, pour qui ;
+       · les transmissions, ce qui a réellement eu lieu.
      Confondre les deux ferait perdre la trace de l'écart entre la
      prescription et son exécution, qui est précisément ce qu'un dossier
      doit pouvoir montrer. --}}
@@ -24,7 +24,7 @@
         <div class="k-card-body">
             @if ($tabData['careOrders']->isEmpty())
                 <x-dme::empty-state icon="calendar" title="Aucun soin programmé"
-                               message="Un soin prescrit apparaît ici jusqu’à sa réalisation. Confié à un soignant, il ne concerne que lui ; laissé ouvert, il revient au personnel de garde du service prescripteur."/>
+                               message="Un soin prescrit apparaît ici jusqu'à sa réalisation. Confié à un soignant, il ne concerne que lui ; laissé ouvert, il revient au personnel de garde du service prescripteur."/>
             @else
                 <ul class="space-y-2.5">
                     @foreach ($openOrders->concat($closedOrders) as $order)
@@ -54,11 +54,11 @@
                                     @endif
                                     <p class="mt-1.5 text-xs text-ink-500">
                                         {{ $order->starts_at->translatedFormat('d M Y · H:i') }}
-                                        @if ($order->ends_at) → {{ $order->ends_at->translatedFormat('d M Y · H:i') }} @endif
+                                        @if ($order->ends_at) -> {{ $order->ends_at->translatedFormat('d M Y · H:i') }} @endif
                                         @if ($order->frequency) · {{ $order->frequency }} @endif
                                     </p>
                                     <p class="mt-0.5 text-xs text-ink-500">
-                                        Prescrit par {{ $order->prescriber?->displayName() ?? '—' }}
+                                        Prescrit par {{ $order->prescriber?->displayName() ?? '-' }}
                                         @if ($order->service) · {{ $order->service->name }} @endif
                                         ·
                                         @if ($order->assignedNurse)
@@ -110,7 +110,7 @@
                                         @endcan
                                         @can('cancel', $order)
                                             <form action="{{ route('dme.care-orders.cancel', $order) }}" method="POST"
-                                                  onsubmit="return (this.outcome.value = prompt('Motif d’annulation ?') || '') !== '';">
+                                                  onsubmit="return (this.outcome.value = prompt('Motif d'annulation ?') || '') !== '';">
                                                 @csrf @method('PATCH')
                                                 <input type="hidden" name="outcome" value="">
                                                 <button type="submit" class="k-btn-ghost k-btn-sm text-red-600">
@@ -141,7 +141,7 @@
                                 <input id="care-title" name="title" required maxlength="200"
                                        value="{{ old('title') }}"
                                        class="k-input @error('title') border-red-500 @enderror"
-                                       placeholder="Pansement, surveillance, injection…">
+                                       placeholder="Pansement, surveillance, injection...">
                                 <x-dme::field-error name="title"/>
                             </div>
 
@@ -172,7 +172,7 @@
                                 <label for="care-frequency" class="k-label">Fréquence</label>
                                 <input id="care-frequency" name="frequency" maxlength="120"
                                        value="{{ old('frequency') }}" class="k-input"
-                                       placeholder="Toutes les 8 h, 2 fois par jour…">
+                                       placeholder="Toutes les 8 h, 2 fois par jour...">
                             </div>
 
                             <div>
@@ -217,7 +217,7 @@
                                     <x-dme::field-error name="assigned_nurse_id"/>
                                     @if ($tabData['assignableNurses']->isEmpty())
                                         <p class="k-hint mt-1">
-                                            Aucun infirmier n’est rattaché à votre service : le soin restera
+                                            Aucun infirmier n'est rattaché à votre service : le soin restera
                                             ouvert à la garde.
                                         </p>
                                     @endif
@@ -227,7 +227,7 @@
 
                         <p class="k-hint">
                             Sans soignant nommé, le soin est visible par le personnel de garde du service
-                            prescripteur — pas au-delà. Le prescripteur et l’administration y ont toujours accès.
+                            prescripteur : pas au-delà. Le prescripteur et l'administration y ont toujours accès.
                         </p>
 
                         <button type="submit" class="k-btn-primary w-full sm:w-auto">

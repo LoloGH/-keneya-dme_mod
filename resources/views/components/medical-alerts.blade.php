@@ -21,7 +21,7 @@
                 <div class="min-w-0">
                     <p class="text-xs font-bold tracking-wide uppercase
                         {{ $allergy->severity === 'severe' ? 'text-red-700' : 'text-amber-700' }}">
-                        Allergie — {{ $allergy->severityLabel() }}
+                        Allergie - {{ $allergy->severityLabel() }}
                     </p>
                     <p class="text-sm font-medium text-ink-900">{{ $allergy->allergen }}</p>
                     @if ($allergy->reaction)

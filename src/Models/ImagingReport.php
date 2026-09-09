@@ -48,6 +48,6 @@ class ImagingReport extends Model
 
     public function auditLabel(): string
     {
-        return 'Compte rendu d’imagerie #'.$this->getKey();
+        return 'Compte rendu d\'imagerie #'.$this->getKey();
     }
 }

@@ -32,7 +32,7 @@ interface DmeUser extends Authenticatable, Authorizable
     public function isActive(): bool;
 
     /**
-     * De garde à l'instant présent — ce qui conditionne la visibilité des
+     * De garde à l'instant présent : ce qui conditionne la visibilité des
      * soins programmés sans destinataire nommé.
      */
     public function isOnDuty(): bool;

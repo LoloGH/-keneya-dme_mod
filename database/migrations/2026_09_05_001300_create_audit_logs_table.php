@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Schema;
  * hôte au lieu de la préfixer : c'est ce partage, et lui seul, qui fait
  * qu'une action posée dans le dossier médical apparaît dans le journal
  * d'audit de l'application hôte plutôt que dans un second registre
- * parallèle. La migration est donc additive — si l'hôte a déjà sa table,
+ * parallèle. La migration est donc additive : si l'hôte a déjà sa table,
  * on n'y ajoute que les colonnes médicales qui lui manquent.
  *
  * Append-only : aucune route ni policy n'autorise la modification ou la
@@ -94,7 +94,7 @@ return new class extends Migration
             }
 
             if (! Schema::hasColumn('activity_log', 'action')) {
-                // viewed, created, updated, downloaded, denied…
+                // viewed, created, updated, downloaded, denied...
                 $table->string('action')->nullable();
                 $table->index('action');
             }

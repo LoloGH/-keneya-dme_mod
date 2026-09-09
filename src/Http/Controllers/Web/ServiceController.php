@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 /**
  * Services / unités fonctionnelles de l'établissement, gérés depuis
- * l'écran Paramètres. Un service n'est jamais supprimé une fois créé —
+ * l'écran Paramètres. Un service n'est jamais supprimé une fois créé :
  * il peut être rattaché à des utilisateurs, consultations et
  * hospitalisations ; le désactiver (is_active) retire son usage sans
  * perdre l'historique qui le référence.

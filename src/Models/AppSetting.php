@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * Réglage clé/valeur modifiable en base. Voir la migration
  * create_app_settings_table pour le rôle de cette table :
  * AppServiceProvider en charge le contenu au démarrage pour surcharger
- * config('dme.*') — les modèles et contrôleurs ne la consultent
+ * config('dme.*') : les modèles et contrôleurs ne la consultent
  * jamais directement, ils continuent de lire config().
  */
 class AppSetting extends Model

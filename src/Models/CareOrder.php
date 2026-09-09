@@ -124,7 +124,7 @@ class CareOrder extends Model
      *
      * Un soin confié à quelqu'un ne concerne que cette personne et le
      * prescripteur. Un soin ouvert revient au personnel de garde du
-     * service prescripteur — pas à tout l'établissement : c'est le service
+     * service prescripteur, pas à tout l'établissement : c'est le service
      * qui répond du patient.
      *
      * Le contrôle reste doublé côté policy : cette portée filtre la liste,
@@ -153,7 +153,7 @@ class CareOrder extends Model
 
     public function auditLabel(): string
     {
-        return 'Soin programmé — '.$this->title;
+        return 'Soin programmé - '.$this->title;
     }
 
     public function auditPatientId(): ?int

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Réglages modifiables depuis l'écran Paramètres : coordonnées de
  * l'établissement, préfixes des identifiants métier. Une simple table
- * clé/valeur suffit — ces réglages sont peu nombreux et lus en bloc au
+ * clé/valeur suffit : ces réglages sont peu nombreux et lus en bloc au
  * démarrage de chaque requête (AppServiceProvider) pour surcharger
  * config('dme.*'), qui reste la valeur par défaut tant qu'aucune
  * ligne ne l'y remplace.

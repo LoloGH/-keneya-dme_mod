@@ -60,7 +60,7 @@ return [
     ],
 
     /*
-    | Pagination par défaut des listes (§58 — performance).
+    | Pagination par défaut des listes (§58 : performance).
     */
     'pagination' => [
         'default' => 15,
@@ -152,8 +152,8 @@ return [
     |
     | Le module partage la table `users` avec son hôte : c'est le même
     | compte, la même session, la même ligne en base. Le modèle qui la
-    | représente doit donc être celui de l'hôte — celui que `Auth::user()`
-    | renvoie — sinon le module manipulerait, pour une même personne, des
+    | représente doit donc être celui de l'hôte, celui que `Auth::user()`
+    | renvoie, sinon le module manipulerait, pour une même personne, des
     | objets d'une autre classe que ceux de la session en cours.
     |
     | Ce modèle doit satisfaire Keneya\Dme\Contracts\DmeUser, ce que le
@@ -172,8 +172,8 @@ return [
     | Correspondance des rôles avec ceux de l'hôte
     |----------------------------------------------------------------------
     |
-    | Le module a son propre vocabulaire clinique — médecin, infirmier,
-    | laboratoire — et une application hôte a le sien, souvent construit
+    | Le module a son propre vocabulaire clinique, médecin, infirmier,
+    | laboratoire, et une application hôte a le sien, souvent construit
     | autour de ses interfaces plutôt que des métiers. Ce tableau traduit
     | l'un dans l'autre partout où le module cherche des praticiens : la
     | liste des médecins d'un rendez-vous, les soignants à qui confier un
@@ -253,7 +253,7 @@ return [
     | aucune :
     |
     |   queued : file d'attente interne du module (persistance, passerelle,
-    |            historique) — comportement autonome historique ;
+    |            historique), comportement autonome historique ;
     |   log    : journalise le message sans jamais l'émettre.
     |
     | Monté dans Keneya Workflow, l'hôte liera sa propre implémentation au
@@ -308,7 +308,7 @@ return [
         'gateways' => [
 
             /*
-            | SMSGate — passerelle de production.
+            | SMSGate : passerelle de production.
             |
             | Deux modes d'exploitation, tous deux couverts par cette
             | configuration :

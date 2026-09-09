@@ -30,14 +30,14 @@ class RefreshSmsStatuses extends Command
     public function handle(SmsService $sms, SmsGatewayManager $gateways): int
     {
         if (! config('dme.sms.status_tracking.enabled')) {
-            $this->comment('Suivi d’acheminement désactivé (SMS_STATUS_TRACKING).');
+            $this->comment('Suivi d\'acheminement désactivé (SMS_STATUS_TRACKING).');
 
             return self::SUCCESS;
         }
 
         if (! $gateways->gateway() instanceof TracksDeliveryStatus) {
             $this->comment(
-                'La passerelle « '.$gateways->defaultName().' » ne suit pas l’acheminement : rien à faire.'
+                'La passerelle « '.$gateways->defaultName().' » ne suit pas l\'acheminement : rien à faire.'
             );
 
             return self::SUCCESS;

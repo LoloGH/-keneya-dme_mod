@@ -29,7 +29,7 @@
                                 · v{{ $document->version }}
                             </p>
                             <p class="text-xs text-ink-400">
-                                {{ $document->uploader?->displayName() ?? 'Généré par l’application' }}
+                                {{ $document->uploader?->displayName() ?? 'Généré par l\'application' }}
                             </p>
                             <div class="mt-2 flex flex-wrap gap-1.5">
                                 @can('download', $document)
@@ -85,7 +85,7 @@
                 </div>
                 <button type="submit" class="k-btn-primary w-full">Importer</button>
                 <p class="k-hint">
-                    Les fichiers sont stockés sur un disque privé. Ils ne sont accessibles qu’aux
+                    Les fichiers sont stockés sur un disque privé. Ils ne sont accessibles qu'aux
                     utilisateurs autorisés, et chaque téléchargement est journalisé.
                 </p>
             </form>

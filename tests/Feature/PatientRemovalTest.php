@@ -177,7 +177,7 @@ class PatientRemovalTest extends TestCase
             ->assertRedirect(route('dme.patients.index'));
 
         // Tout part par la cascade de la base, y compris la liaison vers
-        // l'application hote — c'est elle qui, restee seule, produirait un
+        // l'application hote : c'est elle qui, restee seule, produirait un
         // second dossier au prochain acces depuis WorkFlow.
         $this->assertDatabaseCount('dme_patients', 0);
         $this->assertDatabaseCount('dme_consultations', 0);

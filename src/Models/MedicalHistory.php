@@ -53,7 +53,7 @@ class MedicalHistory extends Model
 
     public function auditLabel(): string
     {
-        return 'Antécédent '.mb_strtolower($this->categoryLabel()).' — '.$this->label;
+        return 'Antécédent '.mb_strtolower($this->categoryLabel()).'-'.$this->label;
     }
 
     public function categoryLabel(): string

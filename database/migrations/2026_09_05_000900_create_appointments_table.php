@@ -25,7 +25,7 @@ return new class extends Migration
                 ->default('scheduled');
             $table->text('notes')->nullable();
 
-            // Rappel SMS — le service SMS reste découplé (§35)
+            // Rappel SMS, le service SMS reste découplé (§35)
             $table->boolean('reminder_enabled')->default(true);
             $table->dateTime('reminder_sent_at')->nullable();
 

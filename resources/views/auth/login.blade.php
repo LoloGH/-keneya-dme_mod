@@ -37,14 +37,14 @@
 @endphp
 
 {{-- Page figée à l'écran : jamais de défilement général (demande client).
-     h-[100dvh] plutôt que h-screen — sur mobile, 100vh dépasse la zone
+     h-[100dvh] plutôt que h-screen : sur mobile, 100vh dépasse la zone
      réellement visible sous la barre d'adresse et rognerait la carte. --}}
 <div class="relative flex h-[100dvh] flex-col overflow-hidden">
 
     {{-- Scène hospitalière, telle qu'elle a été fournie. La carte patient y
          reste incrustée et rien n'est superposé à cette zone ; le bas du
          visuel n'est ni retouché ni flouté. Seul le bandeau de confiance en
-         a été retiré, puisqu'il est reconstruit en HTML plus bas — l'y
+         a été retiré, puisqu'il est reconstruit en HTML plus bas : l'y
          laisser l'afficherait deux fois. En portrait, l'image est rognée
          horizontalement : on recentre alors sur le couloir, faute de quoi le
          praticien se retrouve décapité derrière la carte. --}}
@@ -84,7 +84,7 @@
 
         <div class="flex min-h-0 flex-1 flex-col lg:flex-row lg:items-stretch">
 
-            {{-- ── Panneau gauche — promesse et périmètre ────────────
+            {{-- ── Panneau gauche, promesse et périmètre ────────────
                  Masqué sous 1024 px : la carte de connexion prime, et
                  aucune information n'y est unique à ce panneau. --}}
             <section class="hidden min-h-0 lg:flex lg:w-[50%] lg:flex-col lg:justify-center lg:py-6 lg:pr-8 lg:pl-12
@@ -132,7 +132,7 @@
                          },
                      }">
 
-                    {{-- Sélecteur de langue — discret, aligné à droite --}}
+                    {{-- Sélecteur de langue : discret, aligné à droite --}}
                     <div class="relative -mt-1 flex justify-end" @click.outside="langOpen = false">
                         <button type="button"
                                 class="flex items-center gap-1 rounded-md px-1 py-0.5 text-xs font-medium text-ink-500
@@ -244,7 +244,7 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                                 <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z"/>
                             </svg>
-                            <span x-text="submitting ? 'Connexion en cours…' : 'Se connecter'"></span>
+                            <span x-text="submitting ? 'Connexion en cours...' : 'Se connecter'"></span>
                         </button>
                     </form>
 
@@ -301,7 +301,7 @@
             </div>
         </div>
 
-        {{-- ── Mentions de confiance — discrètes, sans bandeau ────────── --}}
+        {{-- ── Mentions de confiance, discrètes, sans bandeau ────────── --}}
         <footer class="hidden shrink-0 px-12 pb-6 lg:block xl:px-16 2xl:px-24 [@media(max-height:820px)]:pb-3">
             <ul class="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/75">
                 @foreach ($trust as $index => $item)

@@ -4,7 +4,7 @@
 
 @section('content')
     <x-dme::page-header title="Nouvelle admission"
-                   :subtitle="$patient->fullName().' — '.$patient->patient_number"
+                   :subtitle="$patient->fullName().'-'.$patient->patient_number"
                    :breadcrumbs="[
                        'Patients' => route('dme.patients.index'),
                        $patient->fullName() => route('dme.patients.show', $patient),
@@ -54,12 +54,12 @@
                     <input id="bed" name="bed" type="text" maxlength="50" value="{{ old('bed') }}" class="k-input">
                 </div>
                 <div class="sm:col-span-2">
-                    <label for="admission_diagnosis" class="k-label">Diagnostic d’entrée</label>
+                    <label for="admission_diagnosis" class="k-label">Diagnostic d'entrée</label>
                     <input id="admission_diagnosis" name="admission_diagnosis" type="text" maxlength="200"
                            value="{{ old('admission_diagnosis') }}" class="k-input">
                 </div>
                 <div class="sm:col-span-2 lg:col-span-4">
-                    <label for="admission_reason" class="k-label">Motif d’admission <span class="text-red-600" aria-hidden="true">*</span></label>
+                    <label for="admission_reason" class="k-label">Motif d'admission <span class="text-red-600" aria-hidden="true">*</span></label>
                     <textarea id="admission_reason" name="admission_reason" rows="3" required maxlength="1000"
                               class="k-textarea">{{ old('admission_reason') }}</textarea>
                     <x-dme::field-error name="admission_reason"/>
@@ -68,7 +68,7 @@
         </fieldset>
 
         <div class="flex flex-wrap items-center gap-2">
-            <button type="submit" class="k-btn-primary">Enregistrer l’admission</button>
+            <button type="submit" class="k-btn-primary">Enregistrer l'admission</button>
             <a href="{{ route('dme.patients.show', $patient) }}" class="k-btn-ghost">Annuler</a>
         </div>
     </form>

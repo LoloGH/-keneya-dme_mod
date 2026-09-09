@@ -54,7 +54,7 @@ class PatientController extends Controller
                 // Les deux tables se nomment par leur modele plutot qu'en dur :
                 // elles portent un prefixe qui leur evite d'entrer en collision
                 // avec celles de l'application hote, et une chaine ecrite ici
-                // finirait par diverger sans que rien ne le signale — jusqu'a
+                // finirait par diverger sans que rien ne le signale, jusqu'a
                 // ce qu'un « Unknown column » remonte a l'ecran.
                 'last_consultation_at' => DB::table((new Consultation)->getTable())
                     ->selectRaw('MAX(started_at)')
@@ -126,7 +126,7 @@ class PatientController extends Controller
     }
 
     /**
-     * Dossier médical électronique — écran principal du patient (§13-14).
+     * Dossier médical électronique : écran principal du patient (§13-14).
      *
      * Les onglets sont rendus côté serveur : seul le contenu de l'onglet
      * demandé est chargé, ce qui évite de construire l'ensemble du dossier
@@ -176,7 +176,7 @@ class PatientController extends Controller
      * Archive un dossier : il sort des listes et n'est plus modifiable,
      * mais reste entièrement consultable, et se restaure.
      *
-     * Rien n'est détruit — c'est tout l'intérêt. Un dossier qui n'a plus
+     * Rien n'est détruit : c'est tout l'intérêt. Un dossier qui n'a plus
      * lieu de figurer parmi les patients suivis se range ici, et le geste
      * n'engage à rien d'irréversible.
      */
@@ -211,7 +211,7 @@ class PatientController extends Controller
      * emporte donc consultations, ordonnances, examens, hospitalisations,
      * documents et identifiants externes. `forceDelete()` et non `delete()` :
      * le modèle est en suppression douce, et une suppression douce ne
-     * déclenche aucune cascade — le dossier semblerait parti tout en restant
+     * déclenche aucune cascade, le dossier semblerait parti tout en restant
      * entier en base.
      *
      * Deux choses survivent, délibérément : les entrées du journal d'audit,
@@ -258,7 +258,7 @@ class PatientController extends Controller
 
         DB::transaction(function () use ($patient): void {
             // Ni SMS ni notifications ne portent de clé étrangère vers le
-            // patient — seulement un index. La cascade ne les emporte donc
+            // patient, seulement un index. La cascade ne les emporte donc
             // pas, et ils resteraient à désigner un dossier disparu.
             SmsMessage::where('patient_id', $patient->getKey())->delete();
             DB::table('dme_notifications')->where('patient_id', $patient->getKey())->delete();

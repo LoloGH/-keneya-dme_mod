@@ -79,7 +79,7 @@ class SmsPipelineController extends Controller
             return back()->withInput()->withErrors(['recipient' => $exception->getMessage()]);
         }
 
-        return back()->with('success', 'Message placé dans la file d’envoi.');
+        return back()->with('success', 'Message placé dans la file d\'envoi.');
     }
 
     public function retry(SmsMessage $smsMessage, SmsService $sms): RedirectResponse
@@ -92,6 +92,6 @@ class SmsPipelineController extends Controller
             return back()->withErrors(['sms' => $exception->getMessage()]);
         }
 
-        return back()->with('success', 'Message replacé dans la file d’envoi.');
+        return back()->with('success', 'Message replacé dans la file d\'envoi.');
     }
 }

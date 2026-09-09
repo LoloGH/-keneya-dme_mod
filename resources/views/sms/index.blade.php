@@ -4,7 +4,7 @@
 
 @section('content')
     <x-dme::page-header title="Service SMS"
-                   subtitle="Service transversal : il ne dépend d’aucun module médical et pourra être extrait tel quel en phase 2."/>
+                   subtitle="Service transversal : il ne dépend d'aucun module médical et pourra être extrait tel quel en phase 2."/>
 
     {{-- Avertissement explicite lorsque rien n'est réellement émis --}}
     @if ($simulated)
@@ -12,7 +12,7 @@
             <x-dme::icon name="alert" class="mt-0.5 h-5 w-5 shrink-0 text-amber-600"/>
             <div>
                 <p class="text-sm font-semibold text-amber-800">
-                    Passerelle de simulation — aucun SMS n’est réellement envoyé
+                    Passerelle de simulation : aucun SMS n'est réellement envoyé
                 </p>
                 <p class="text-sm text-amber-700">
                     Les messages sont journalisés localement. Pour un envoi réel, définissez
@@ -29,13 +29,13 @@
             <p class="text-xs font-medium text-ink-500">Passerelle active</p>
             <p class="mt-1 text-lg font-semibold text-ink-900">{{ $gateway }}</p>
             <p class="mt-0.5 text-[11px] text-ink-400">
-                {{ $simulated ? 'Simulation locale' : 'Envoi réel vers l’opérateur' }}
+                {{ $simulated ? 'Simulation locale' : 'Envoi réel vers l\'opérateur' }}
             </p>
         </div>
         <div class="k-card p-4">
             <p class="text-xs font-medium text-ink-500">Remis</p>
             <p class="mt-1 text-2xl font-semibold tabular-nums text-keneya-600">{{ $stats['delivered'] }}</p>
-            <p class="mt-0.5 text-[11px] text-ink-400">Confirmé par l’opérateur</p>
+            <p class="mt-0.5 text-[11px] text-ink-400">Confirmé par l'opérateur</p>
         </div>
         <div class="k-card p-4">
             <p class="text-xs font-medium text-ink-500">Envoyés</p>
@@ -45,7 +45,7 @@
         <div class="k-card p-4">
             <p class="text-xs font-medium text-ink-500">En transit</p>
             <p class="mt-1 text-2xl font-semibold tabular-nums text-ink-700">{{ $stats['in_transit'] }}</p>
-            <p class="mt-0.5 text-[11px] text-ink-400">File d’attente et passerelle</p>
+            <p class="mt-0.5 text-[11px] text-ink-400">File d'attente et passerelle</p>
         </div>
         <div class="k-card p-4">
             <p class="text-xs font-medium text-ink-500">En échec</p>
@@ -61,7 +61,7 @@
                     <form method="GET" class="flex flex-wrap gap-2">
                         <label for="q" class="sr-only">Rechercher</label>
                         <input id="q" type="search" name="q" value="{{ $filters['q'] ?? '' }}" class="k-input"
-                               placeholder="Numéro ou référence…">
+                               placeholder="Numéro ou référence...">
                         <label for="status" class="sr-only">Statut</label>
                         <select id="status" name="status" class="k-select">
                             <option value="">Tous</option>
@@ -111,7 +111,7 @@
                                                     {{ $message->patient->patient_number }}
                                                 </a>
                                             @else
-                                                —
+                                                -
                                             @endif
                                         </td>
                                         <td class="tabular-nums">{{ $message->attempts }}</td>
@@ -151,11 +151,11 @@
                             <textarea id="body" name="body" rows="4" required maxlength="480"
                                       class="k-textarea">{{ old('body') }}</textarea>
                             <p class="k-hint">
-                                N’inscrivez jamais de résultat clinique dans un SMS : le réseau n’est pas maîtrisé.
+                                N'inscrivez jamais de résultat clinique dans un SMS : le réseau n'est pas maîtrisé.
                             </p>
                             <x-dme::field-error name="body"/>
                         </div>
-                        <button type="submit" class="k-btn-primary w-full">Placer dans la file d’envoi</button>
+                        <button type="submit" class="k-btn-primary w-full">Placer dans la file d'envoi</button>
                     </form>
                 </section>
             @endcan

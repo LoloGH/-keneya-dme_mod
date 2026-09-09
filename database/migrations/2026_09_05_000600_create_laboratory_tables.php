@@ -40,7 +40,7 @@ return new class extends Migration
             $table->foreignId('lab_order_id')->constrained('dme_lab_orders')->cascadeOnDelete();
             $table->string('exam_name');
             $table->string('exam_code')->nullable();  // LOINC lorsque disponible
-            $table->string('category')->nullable();   // hématologie, biochimie…
+            $table->string('category')->nullable();   // hématologie, biochimie...
             $table->enum('status', ['requested', 'in_progress', 'available', 'validated'])
                 ->default('requested');
             $table->timestamps();

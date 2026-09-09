@@ -9,7 +9,7 @@
         <div class="min-w-56 flex-1">
             <label for="q" class="sr-only">Rechercher</label>
             <input id="q" type="search" name="q" value="{{ $filters['q'] ?? '' }}" class="k-input"
-                   placeholder="N° d’examen ou patient…">
+                   placeholder="N° d'examen ou patient...">
         </div>
         <div>
             <label for="modality" class="sr-only">Modalité</label>
@@ -34,7 +34,7 @@
 
     <div class="k-card">
         @if ($orders->isEmpty())
-            <x-dme::empty-state icon="scan" title="Aucun examen d’imagerie"
+            <x-dme::empty-state icon="scan" title="Aucun examen d'imagerie"
                            message="Les demandes d'imagerie se créent depuis le dossier d'un patient."/>
         @else
             <div class="overflow-x-auto">
@@ -65,10 +65,10 @@
                                 <td>
                                     {{ $order->modalityLabel() }}
                                     @if ($order->body_site)
-                                        <span class="text-ink-500">— {{ $order->body_site }}</span>
+                                        <span class="text-ink-500">- {{ $order->body_site }}</span>
                                     @endif
                                 </td>
-                                <td>{{ $order->doctor?->displayName() ?? '—' }}</td>
+                                <td>{{ $order->doctor?->displayName() ?? '-' }}</td>
                                 <td><x-dme::status-badge :status="$order->status" :label="$order->statusLabel()"/></td>
                                 <td class="text-right">
                                     <a href="{{ route('dme.imaging.show', $order) }}" class="k-btn-ghost k-btn-sm">

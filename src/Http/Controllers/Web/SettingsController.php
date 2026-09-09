@@ -89,7 +89,7 @@ class SettingsController extends Controller
             'password' => ['required', 'confirmed', PasswordPolicy::rule(), 'different:current_password'],
         ], [
             'current_password.current_password' => 'Le mot de passe actuel est incorrect.',
-            'password.different' => 'Le nouveau mot de passe doit différer de l’ancien.',
+            'password.different' => 'Le nouveau mot de passe doit différer de l\'ancien.',
         ], [
             'current_password' => 'mot de passe actuel',
             'password' => 'nouveau mot de passe',
@@ -136,14 +136,14 @@ class SettingsController extends Controller
 
         AuditLog::record(
             action: 'facility_settings_updated',
-            description: 'A modifié les coordonnées de l’établissement',
+            description: 'A modifié les coordonnées de l\'établissement',
         );
 
-        return back()->with('success', 'Coordonnées de l’établissement mises à jour.');
+        return back()->with('success', 'Coordonnées de l\'établissement mises à jour.');
     }
 
     /**
-     * Préfixes des identifiants métier (PAT, CONS, ORD…). Réservé à
+     * Préfixes des identifiants métier (PAT, CONS, ORD...). Réservé à
      * settings.manage.
      *
      * Changer un préfixe n'affecte que les identifiants générés après le
@@ -213,7 +213,7 @@ class SettingsController extends Controller
 
         return back()->with('success', $onDuty
             ? 'Vous êtes de garde. Les soins ouverts de votre service vous sont visibles.'
-            : 'Vous n’êtes plus de garde.');
+            : 'Vous n\'êtes plus de garde.');
     }
 
     /**

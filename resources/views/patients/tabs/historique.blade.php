@@ -35,7 +35,7 @@
 
     <div class="k-card-body">
         @if ($tabData['timeline']->isEmpty())
-            <x-dme::empty-state icon="clipboard" title="Aucun événement dans l’historique"
+            <x-dme::empty-state icon="clipboard" title="Aucun événement dans l'historique"
                            message="Consultations, prescriptions, examens et hospitalisations viendront alimenter cette chronologie."/>
         @else
             <x-dme::timeline :groups="$tabData['timeline']"/>
@@ -47,7 +47,7 @@
                             ['patient' => $patient, 'tab' => 'historique', 'limit' => $tabData['limit'] + 20],
                             $filters ? ['filters' => $filters] : []
                         )) }}"
-                       class="k-btn-secondary">Charger davantage d’événements</a>
+                       class="k-btn-secondary">Charger davantage d'événements</a>
                 </div>
             @endif
         @endif

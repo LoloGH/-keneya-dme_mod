@@ -15,7 +15,7 @@ use InvalidArgumentException;
  * Liaison entre un patient de l'application hôte et le patient du DME.
  *
  * Le module reçoit un patient déjà identifié par l'hôte : un couple
- * (système, valeur) — par exemple `keneya_workflow` / `PAT-2026-000123` —
+ * (système, valeur), par exemple `keneya_workflow` / `PAT-2026-000123`,
  * accompagné d'un jeu d'informations de base. À partir de là :
  *
  *   - si ce couple est déjà connu, le patient DME correspondant est
@@ -34,7 +34,7 @@ use InvalidArgumentException;
 class PatientIdentifierResolver
 {
     /**
-     * Résout — ou crée — le patient DME correspondant à un identifiant
+     * Résout, ou crée, le patient DME correspondant à un identifiant
      * externe.
      *
      * @param  string  $system  Système d'identification, par ex. « keneya_workflow ».
@@ -200,7 +200,7 @@ class PatientIdentifierResolver
         $firstName = trim((string) ($attributes['first_name'] ?? ''));
 
         if ($lastName !== '' || $firstName !== '') {
-            return [$lastName !== '' ? $lastName : '—', $firstName];
+            return [$lastName !== '' ? $lastName : '-', $firstName];
         }
 
         // L'hôte n'a transmis qu'un nom complet : le premier mot est

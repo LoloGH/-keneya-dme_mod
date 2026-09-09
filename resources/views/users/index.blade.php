@@ -17,7 +17,7 @@
         <div class="min-w-56 flex-1">
             <label for="q" class="sr-only">Rechercher</label>
             <input id="q" type="search" name="q" value="{{ $filters['q'] ?? '' }}" class="k-input"
-                   placeholder="Nom, e-mail ou matricule…">
+                   placeholder="Nom, e-mail ou matricule...">
         </div>
         <div>
             <label for="role" class="sr-only">Rôle</label>
@@ -57,14 +57,14 @@
                                     <span class="block font-medium text-ink-900">{{ $user->displayName() }}</span>
                                     <span class="block text-xs text-ink-500">{{ $user->email }}</span>
                                 </td>
-                                <td class="font-mono text-xs">{{ $user->matricule ?: '—' }}</td>
+                                <td class="font-mono text-xs">{{ $user->matricule ?: '-' }}</td>
                                 <td>
                                     @foreach ($user->roles as $role)
                                         <span class="k-badge-info">{{ $roleLabels[$role->name] ?? $role->name }}</span>
                                     @endforeach
                                 </td>
-                                <td>{{ $user->service?->name ?? '—' }}</td>
-                                <td class="text-xs">{{ $user->speciality ?: '—' }}</td>
+                                <td>{{ $user->service?->name ?? '-' }}</td>
+                                <td class="text-xs">{{ $user->speciality ?: '-' }}</td>
                                 <td class="whitespace-nowrap text-xs">
                                     {{ $user->last_login_at?->translatedFormat('d M Y H:i') ?? 'Jamais' }}
                                 </td>

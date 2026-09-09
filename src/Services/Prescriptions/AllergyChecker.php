@@ -158,7 +158,7 @@ class AllergyChecker
         // d'allergie de l'image PHP utilisée.
         $value = Str::lower(Str::ascii(trim($value)));
 
-        // On ne garde que le premier terme significatif (« amoxicilline 500 mg » → « amoxicilline »)
+        // On ne garde que le premier terme significatif (« amoxicilline 500 mg » -> « amoxicilline »)
         $value = preg_replace('/[^a-z0-9 ]+/', ' ', $value) ?? $value;
         $value = trim(preg_replace('/\s+/', ' ', $value) ?? $value);
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Keneya\Dme\Models\Patient;
 
 /**
- * Patients fictifs pour les tests (§55 — aucune donnée réelle).
+ * Patients fictifs pour les tests (§55 : aucune donnée réelle).
  *
  * @extends Factory<\Keneya\Dme\Models\Patient>
  */

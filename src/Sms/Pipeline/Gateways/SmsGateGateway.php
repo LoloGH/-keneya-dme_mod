@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 use Throwable;
 
 /**
- * Passerelle SMSGate — SMS Gateway for Android™ (sms-gate.app).
+ * Passerelle SMSGate : SMS Gateway for Android™ (sms-gate.app).
  *
  * Passerelle de production du projet. Elle expose une API REST identique
  * en mode cloud (api.sms-gate.app) et en mode local (appareil Android
@@ -21,9 +21,9 @@ use Throwable;
  * un établissement sans dépendance à un service tiers payant.
  *
  * Contrat utilisé :
- *   POST   {base}/messages        → transmet un message
- *   GET    {base}/messages/{id}   → état d'acheminement
- *   GET    {base}/health          → disponibilité
+ *   POST   {base}/messages        -> transmet un message
+ *   GET    {base}/messages/{id}   -> état d'acheminement
+ *   GET    {base}/health          -> disponibilité
  *
  * Authentification HTTP Basic (identifiant + mot de passe) ou Bearer
  * lorsqu'un jeton seul est fourni.
@@ -125,7 +125,7 @@ class SmsGateGateway implements SmsGateway, TracksDeliveryStatus
     }
 
     /**
-     * Disponibilité de la passerelle — exploitée par la commande de
+     * Disponibilité de la passerelle : exploitée par la commande de
      * diagnostic, jamais dans un flux médical.
      */
     public function healthy(): bool
@@ -230,11 +230,11 @@ class SmsGateGateway implements SmsGateway, TracksDeliveryStatus
     private function configurationError(): ?string
     {
         if (blank($this->config['base_url'] ?? null)) {
-            return 'SMSGate n’est pas configuré : SMSGATE_BASE_URL est absent.';
+            return 'SMSGate n\'est pas configuré : SMSGATE_BASE_URL est absent.';
         }
 
         if (blank($this->config['username'] ?? null) && blank($this->config['token'] ?? null)) {
-            return 'SMSGate n’est pas configuré : renseignez SMSGATE_USERNAME/SMSGATE_PASSWORD ou SMSGATE_TOKEN.';
+            return 'SMSGate n\'est pas configuré : renseignez SMSGATE_USERNAME/SMSGATE_PASSWORD ou SMSGATE_TOKEN.';
         }
 
         return null;
@@ -255,7 +255,7 @@ class SmsGateGateway implements SmsGateway, TracksDeliveryStatus
 
         return match (true) {
             $status === 401, $status === 403 => 'SMSGate a refusé les identifiants (HTTP '.$status.').',
-            $status === 404 => 'Ressource SMSGate introuvable (HTTP 404) — vérifiez SMSGATE_BASE_URL.',
+            $status === 404 => 'Ressource SMSGate introuvable (HTTP 404) : vérifiez SMSGATE_BASE_URL.',
             $status >= 500 => 'SMSGate est indisponible (HTTP '.$status.') : '.$this->sanitize((string) $message),
             default => 'SMSGate a rejeté la requête (HTTP '.$status.') : '.$this->sanitize((string) $message),
         };

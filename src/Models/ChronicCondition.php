@@ -34,7 +34,7 @@ class ChronicCondition extends Model
 
     public function auditLabel(): string
     {
-        return 'Pathologie chronique — '.$this->label;
+        return 'Pathologie chronique - '.$this->label;
     }
 
     public function statusLabel(): string

@@ -22,7 +22,7 @@ return new class extends Migration
     {
         Schema::create('dme_sms_templates', function (Blueprint $table) {
             $table->id();
-            $table->string('key')->unique(); // appointment_reminder, lab_result_available…
+            $table->string('key')->unique(); // appointment_reminder, lab_result_available...
             $table->string('name');
             $table->text('body');            // supporte les variables {{ patient_name }}
             $table->json('variables')->nullable();
@@ -41,7 +41,7 @@ return new class extends Migration
             $table->foreignId('sms_template_id')->nullable()
                 ->constrained('dme_sms_templates')->nullOnDelete();
 
-            // Contexte métier — volontairement non contraint (découplage)
+            // Contexte métier, volontairement non contraint (découplage)
             $table->foreignId('patient_id')->nullable();
             $table->string('context_type')->nullable();
             $table->unsignedBigInteger('context_id')->nullable();

@@ -11,7 +11,7 @@ use InvalidArgumentException;
 /**
  * Génère les identifiants métier lisibles et stables décrits en §37 :
  *
- *     PAT-2026-000001, CONS-2026-000001, ORD-2026-000001…
+ *     PAT-2026-000001, CONS-2026-000001, ORD-2026-000001...
  *
  * L'incrément se fait sous transaction avec verrou pessimiste sur la
  * ligne de séquence, afin que deux créations concurrentes ne puissent pas

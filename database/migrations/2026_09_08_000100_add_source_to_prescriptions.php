@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Schema;
  *
  * Une application qui monte le module peut avoir ses propres ordonnances, et
  * vouloir les reprendre dans le dossier médical. Sans marque de provenance,
- * rejouer la reprise crée des doublons — en silence, et sur des ordonnances,
+ * rejouer la reprise crée des doublons : en silence, et sur des ordonnances,
  * ce qui est le pire des endroits.
  *
  * Le couple (système, identifiant) est unique : une même ordonnance de l'hôte

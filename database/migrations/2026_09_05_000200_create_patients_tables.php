@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Schema;
  *
  * Point d'attention phase 2 (§62) : `patient_number` est l'identifiant
  * métier stable et `patient_identifiers` accueille les identifiants
- * externes (registre national, Keneya Workflow, INS…). Le raccordement
+ * externes (registre national, Keneya Workflow, INS...). Le raccordement
  * futur au patient unique de Keneya Workflow se fera par cette table
  * d'identifiants, sans modifier les données cliniques.
  */

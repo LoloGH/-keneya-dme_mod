@@ -77,7 +77,7 @@ use Keneya\Dme\Standalone\StartDevSession;
 class DmeServiceProvider extends ServiceProvider
 {
     /**
-     * Correspondance explicite modèle → policy.
+     * Correspondance explicite modèle -> policy.
      *
      * La découverte automatique de Laravel ne s'applique pas à un
      * package : l'énumération est ici la seule source de vérité. Certains
@@ -139,9 +139,9 @@ class DmeServiceProvider extends ServiceProvider
 
     /**
      * Le module ne dépend que de SmsDispatcherContract. Cette liaison est
-     * un repli : une application hôte qui lie elle-même le contrat — ses
+     * un repli : une application hôte qui lie elle-même le contrat, ses
      * fournisseurs de services étant enregistrés après ceux des
-     * packages — remplace purement et simplement ce choix.
+     * packages, remplace purement et simplement ce choix.
      */
     private function registerSmsDispatcher(): void
     {
@@ -393,7 +393,7 @@ class DmeServiceProvider extends ServiceProvider
         if ($standalone->refusedInProduction()) {
             Log::warning(
                 'DME_STANDALONE_DEV est demandé mais ignoré : le mode autonome '
-                .'de développement ne s’active jamais en production.'
+                .'de développement ne s\'active jamais en production.'
             );
         }
 

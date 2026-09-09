@@ -67,13 +67,13 @@
         <div>
             <label for="reason" class="k-label">Motif de consultation</label>
             <textarea id="reason" name="reason" rows="2" maxlength="1000" class="k-textarea"
-                      placeholder="Ce qui amène le patient aujourd’hui.">{{ old('reason', $consultation?->reason) }}</textarea>
+                      placeholder="Ce qui amène le patient aujourd'hui.">{{ old('reason', $consultation?->reason) }}</textarea>
             <x-dme::field-error name="reason"/>
         </div>
         <div>
             <label for="history_of_illness" class="k-label">Histoire de la maladie</label>
             <textarea id="history_of_illness" name="history_of_illness" rows="5" maxlength="10000" class="k-textarea"
-                      placeholder="Début, évolution, traitements déjà reçus, facteurs déclenchants…">{{ old('history_of_illness', $consultation?->history_of_illness) }}</textarea>
+                      placeholder="Début, évolution, traitements déjà reçus, facteurs déclenchants...">{{ old('history_of_illness', $consultation?->history_of_illness) }}</textarea>
         </div>
     </fieldset>
 
@@ -85,8 +85,8 @@
         @if ($lastVitals)
             <p class="k-hint">
                 Dernier relevé le {{ $lastVitals->measured_at->translatedFormat('d M Y à H:i') }} :
-                TA {{ $lastVitals->bloodPressure() ?: '—' }} · poids {{ $lastVitals->weight ?: '—' }} kg.
-                Les nouvelles valeurs créent un relevé supplémentaire ; aucune donnée antérieure n’est écrasée.
+                TA {{ $lastVitals->bloodPressure() ?: '-' }} · poids {{ $lastVitals->weight ?: '-' }} kg.
+                Les nouvelles valeurs créent un relevé supplémentaire ; aucune donnée antérieure n'est écrasée.
             </p>
         @endif
         <div class="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -143,8 +143,8 @@
             <x-dme::icon name="alert" class="h-4.5 w-4.5 text-clinic-600"/> Diagnostics
         </legend>
         <p class="k-hint">
-            Le champ « code » accueille la CIM-10 (ex. I10 pour l’hypertension essentielle).
-            La structure est en place ; le référentiel complet n’est pas embarqué dans cette version.
+            Le champ « code » accueille la CIM-10 (ex. I10 pour l'hypertension essentielle).
+            La structure est en place ; le référentiel complet n'est pas embarqué dans cette version.
         </p>
 
         <template x-for="(row, index) in rows" :key="index">
@@ -199,7 +199,7 @@
                 <label for="treatment_plan" class="k-label">Traitement</label>
                 <textarea id="treatment_plan" name="treatment_plan" rows="4" maxlength="10000" class="k-textarea"
                           placeholder="Molécules, posologies, durée.">{{ old('treatment_plan', $consultation?->treatment_plan) }}</textarea>
-                <p class="k-hint">L’ordonnance formelle se crée ensuite via « Enregistrer et prescrire ».</p>
+                <p class="k-hint">L'ordonnance formelle se crée ensuite via « Enregistrer et prescrire ».</p>
             </div>
             <div>
                 <label for="follow_up" class="k-label">Examens et suivi</label>
@@ -209,7 +209,7 @@
             <div>
                 <label for="recommendations" class="k-label">Recommandations au patient</label>
                 <textarea id="recommendations" name="recommendations" rows="4" maxlength="5000" class="k-textarea"
-                          placeholder="Hygiène de vie, signes d’alerte devant motiver une consultation.">{{ old('recommendations', $consultation?->recommendations) }}</textarea>
+                          placeholder="Hygiène de vie, signes d'alerte devant motiver une consultation.">{{ old('recommendations', $consultation?->recommendations) }}</textarea>
             </div>
         </div>
     </fieldset>

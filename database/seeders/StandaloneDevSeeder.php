@@ -38,7 +38,7 @@ class StandaloneDevSeeder extends Seeder
             throw new RuntimeException(
                 'Le praticien de développement ne peut être créé que sous DME_STANDALONE_DEV=true, '
                 .'hors production. En fonctionnement normal, les utilisateurs viennent de '
-                .'l’application hôte.'
+                .'l\'application hôte.'
             );
         }
 

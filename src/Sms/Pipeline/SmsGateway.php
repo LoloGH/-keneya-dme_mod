@@ -8,7 +8,7 @@ namespace Keneya\Dme\Sms\Pipeline;
  * Contrat d'une passerelle SMS.
  *
  * Ajouter un opérateur revient à implémenter cette interface et à
- * déclarer sa configuration dans config/sms.php — aucun code métier
+ * déclarer sa configuration dans config/sms.php : aucun code métier
  * n'est à modifier. Les contrôleurs n'appellent jamais une passerelle
  * directement : ils passent par SmsService.
  */

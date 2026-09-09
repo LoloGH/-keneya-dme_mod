@@ -21,7 +21,7 @@ use Illuminate\Validation\Rule;
  * Soins programmés : prescription, attribution, réalisation, annulation.
  *
  * Le prescripteur décrit le soin ; il peut le confier nommément, ou le
- * laisser ouvert — auquel cas il revient au personnel de garde de son
+ * laisser ouvert : auquel cas il revient au personnel de garde de son
  * service. Chaque transition est journalisée et signée : un soin
  * programmé engage une responsabilité soignante.
  */
@@ -80,7 +80,7 @@ class CareOrderController extends Controller
             properties: ['assigned' => $order->assigned_nurse_id !== null],
             description: $order->isUnassigned()
                 ? 'A prescrit un soin ouvert à la garde du service'
-                : 'A prescrit un soin et l’a confié à un soignant',
+                : 'A prescrit un soin et l\'a confié à un soignant',
         );
 
         return back()->with('success', $order->isUnassigned()
@@ -130,7 +130,7 @@ class CareOrderController extends Controller
             'status' => ['required', Rule::in(['completed', 'refused'])],
             'outcome' => ['nullable', 'string', 'max:2000', 'required_if:status,refused'],
         ], [
-            'outcome.required_if' => 'Indiquez pourquoi le soin n’a pas été réalisé.',
+            'outcome.required_if' => 'Indiquez pourquoi le soin n\'a pas été réalisé.',
         ], ['outcome' => 'compte rendu']);
 
         $user = $request->user();
@@ -174,7 +174,7 @@ class CareOrderController extends Controller
 
         $data = $request->validate(
             ['outcome' => ['required', 'string', 'max:2000']],
-            ['outcome.required' => 'Indiquez le motif d’annulation.'],
+            ['outcome.required' => 'Indiquez le motif d\'annulation.'],
             ['outcome' => 'motif'],
         );
 
@@ -194,7 +194,7 @@ class CareOrderController extends Controller
      *
      * Restreint au service du prescripteur : confier un soin à un
      * soignant d'un autre service reviendrait à engager une équipe qui
-     * n'a pas la charge du patient. L'administration n'est pas exemptée —
+     * n'a pas la charge du patient. L'administration n'est pas exemptée :
      * la contrainte est métier, pas hiérarchique.
      *
      * @return list<int>

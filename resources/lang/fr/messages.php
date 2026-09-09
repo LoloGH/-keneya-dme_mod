@@ -9,7 +9,7 @@ declare(strict_types=1);
 |
 | Les écrans du DME sont rédigés en français dans les vues : ce fichier ne
 | duplique pas cette prose. Il ne porte que les messages qu'un hôte peut
-| légitimement vouloir reformuler à son image — au premier rang desquels
+| légitimement vouloir reformuler à son image : au premier rang desquels
 | le refus d'accès, qui s'affiche avant même que l'utilisateur soit entré
 | dans le module.
 |

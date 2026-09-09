@@ -56,14 +56,14 @@ class DashboardController extends Controller
             'consultations' => [
                 'label' => 'Consultations',
                 'value' => Consultation::whereDate('started_at', $today)->count(),
-                'hint' => 'Réalisées aujourd’hui',
+                'hint' => 'Réalisées aujourd\'hui',
                 'route' => route('dme.consultations.index'),
             ],
             'appointments' => [
                 'label' => 'Rendez-vous',
                 'value' => Appointment::whereDate('scheduled_for', $today)
                     ->whereIn('status', ['scheduled', 'confirmed'])->count(),
-                'hint' => 'Programmés aujourd’hui',
+                'hint' => 'Programmés aujourd\'hui',
                 'route' => route('dme.appointments.index'),
             ],
             'hospitalized' => [
@@ -83,13 +83,13 @@ class DashboardController extends Controller
                 'label' => 'Résultats disponibles',
                 'value' => LabOrder::whereIn('status', ['available', 'validated'])
                     ->whereDate('completed_at', $today)->count(),
-                'hint' => 'Validés aujourd’hui',
+                'hint' => 'Validés aujourd\'hui',
                 'route' => route('dme.laboratory.index'),
             ],
             'prescriptions' => [
                 'label' => 'Ordonnances du jour',
                 'value' => Prescription::whereDate('issued_on', $today)->count(),
-                'hint' => 'Émises aujourd’hui',
+                'hint' => 'Émises aujourd\'hui',
                 'route' => route('dme.prescriptions.index'),
             ],
         ];

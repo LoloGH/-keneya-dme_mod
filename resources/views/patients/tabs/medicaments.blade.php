@@ -28,11 +28,11 @@
                         @foreach ($tabData['medications'] as $medication)
                             <tr>
                                 <td class="font-medium text-ink-900">{{ $medication->name }}</td>
-                                <td>{{ $medication->dosage ?: '—' }}</td>
-                                <td>{{ $medication->frequency ?: '—' }}</td>
-                                <td>{{ $medication->route ?: '—' }}</td>
-                                <td>{{ $medication->started_on?->translatedFormat('M Y') ?: '—' }}</td>
-                                <td class="text-xs text-ink-500">{{ $medication->prescriber?->displayName() ?? '—' }}</td>
+                                <td>{{ $medication->dosage ?: '-' }}</td>
+                                <td>{{ $medication->frequency ?: '-' }}</td>
+                                <td>{{ $medication->route ?: '-' }}</td>
+                                <td>{{ $medication->started_on?->translatedFormat('M Y') ?: '-' }}</td>
+                                <td class="text-xs text-ink-500">{{ $medication->prescriber?->displayName() ?? '-' }}</td>
                                 <td><x-dme::status-badge :status="$medication->status" :label="$medication->statusLabel()"/></td>
                             </tr>
                         @endforeach

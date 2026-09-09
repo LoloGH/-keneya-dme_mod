@@ -17,8 +17,8 @@ use RuntimeException;
  *
  * Point d'entrée unique de tout envoi. Le flux est toujours le même :
  *
- *   événement métier → SmsService → file d'attente → passerelle
- *   → statut → historique
+ *   événement métier -> SmsService -> file d'attente -> passerelle
+ *   -> statut -> historique
  *
  * Un message est d'abord persisté (statut « pending »), puis mis en file.
  * Ainsi, aucun SMS n'est perdu si la passerelle est indisponible, et

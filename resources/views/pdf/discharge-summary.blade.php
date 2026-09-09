@@ -1,4 +1,4 @@
-@extends('dme::pdf._layout', ['title' => 'Compte rendu d’hospitalisation'])
+@extends('dme::pdf._layout', ['title' => 'Compte rendu d\'hospitalisation'])
 
 @section('content')
     <h2>Séjour</h2>
@@ -11,18 +11,18 @@
                 <span class="muted">Durée :</span> {{ $hospitalization->lengthOfStay() }} jour(s)
             </td>
             <td width="50%" class="small">
-                <span class="muted">Service :</span> {{ $hospitalization->service?->name ?? '—' }}<br>
-                <span class="muted">Médecin :</span> {{ $hospitalization->doctor?->displayName() ?? '—' }}<br>
-                <span class="muted">Chambre :</span> {{ $hospitalization->room ?: '—' }}
+                <span class="muted">Service :</span> {{ $hospitalization->service?->name ?? '-' }}<br>
+                <span class="muted">Médecin :</span> {{ $hospitalization->doctor?->displayName() ?? '-' }}<br>
+                <span class="muted">Chambre :</span> {{ $hospitalization->room ?: '-' }}
                 {{ $hospitalization->bed ? '· '.$hospitalization->bed : '' }}
             </td>
         </tr>
     </table>
 
-    <h2>Motif d’admission</h2>
+    <h2>Motif d'admission</h2>
     <div>{{ $hospitalization->admission_reason }}</div>
     @if ($hospitalization->admission_diagnosis)
-        <div class="small muted">Diagnostic d’entrée : {{ $hospitalization->admission_diagnosis }}</div>
+        <div class="small muted">Diagnostic d'entrée : {{ $hospitalization->admission_diagnosis }}</div>
     @endif
 
     @if ($hospitalization->events->isNotEmpty())

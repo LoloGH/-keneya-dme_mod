@@ -9,12 +9,12 @@ import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse';
 
 /*
- * Keneya-DME — couche d'interactivité.
+ * Keneya-DME : couche d'interactivité.
  *
  * L'application est rendue côté serveur : Alpine ne sert qu'aux
  * comportements d'interface (tiroirs, modales, listes dynamiques,
  * notifications). Aucune règle métier ni décision d'autorisation ne
- * dépend du JavaScript — le backend reste seul juge (§32).
+ * dépend du JavaScript : le backend reste seul juge (§32).
  */
 
 Alpine.plugin(collapse);

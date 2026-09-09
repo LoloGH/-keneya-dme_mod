@@ -9,7 +9,7 @@
         <div class="min-w-56 flex-1">
             <label for="q" class="sr-only">Rechercher</label>
             <input id="q" type="search" name="q" value="{{ $filters['q'] ?? '' }}" class="k-input"
-                   placeholder="N° d’ordonnance ou patient…">
+                   placeholder="N° d'ordonnance ou patient...">
         </div>
         <div>
             <label for="status" class="sr-only">Statut</label>
@@ -61,9 +61,9 @@
                                     </a>
                                 </td>
                                 <td class="max-w-xs truncate">
-                                    {{ $prescription->items->pluck('medication_name')->implode(', ') ?: '—' }}
+                                    {{ $prescription->items->pluck('medication_name')->implode(', ') ?: '-' }}
                                 </td>
-                                <td>{{ $prescription->doctor?->displayName() ?? '—' }}</td>
+                                <td>{{ $prescription->doctor?->displayName() ?? '-' }}</td>
                                 <td><x-dme::status-badge :status="$prescription->status" :label="$prescription->statusLabel()"/></td>
                                 <td class="text-right">
                                     <a href="{{ route('dme.prescriptions.show', $prescription) }}" class="k-btn-ghost k-btn-sm">

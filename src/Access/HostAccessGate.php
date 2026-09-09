@@ -30,7 +30,7 @@ use Keneya\Dme\Standalone\StandaloneMode;
  * rester fermé, plutôt que de s'ouvrir par défaut.
  *
  * Les permissions internes au DME (qui peut créer une ordonnance, voir le
- * laboratoire…) ne sont pas concernées : elles restent portées par
+ * laboratoire...) ne sont pas concernées : elles restent portées par
  * {@see \Keneya\Dme\Support\Rbac} et par les policies.
  */
 final class HostAccessGate

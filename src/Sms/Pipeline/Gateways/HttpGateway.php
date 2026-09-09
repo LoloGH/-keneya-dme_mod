@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 use Throwable;
 
 /**
- * Passerelle HTTP générique — modèle d'intégration d'un opérateur réel.
+ * Passerelle HTTP générique : modèle d'intégration d'un opérateur réel.
  *
  * L'endpoint et le jeton proviennent exclusivement de la configuration :
  * aucun secret n'est présent dans le dépôt (§66). Le service n'est actif

@@ -9,7 +9,7 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>{{ $title ?? 'Document' }} — {{ $reference }}</title>
+    <title>{{ $title ?? 'Document' }} - {{ $reference }}</title>
     <style>
         @page { margin: 22mm 16mm 20mm 16mm; }
         body { font-family: DejaVu Sans, sans-serif; font-size: 10.5px; color: #1e293b; line-height: 1.5; }
@@ -66,7 +66,7 @@
             <div class="facility-name">{{ $facility['name'] }}</div>
             <div class="facility-meta">
                 {{ $facility['address'] }}<br>
-                Tél. {{ $facility['phone'] }} — {{ $facility['email'] }}
+                Tél. {{ $facility['phone'] }} - {{ $facility['email'] }}
             </div>
         </td>
         <td width="30%">
@@ -87,7 +87,7 @@
                 <td width="50%">
                     <span class="strong">{{ $patient->fullName() }}</span><br>
                     <span class="small muted">
-                        Dossier {{ $patient->patient_number }}@if ($patient->externalIdentifier()) / {{ $patient->externalIdentifier() }}@endif — {{ $patient->ageLabel() }} — {{ $patient->sexLabel() }}
+                        Dossier {{ $patient->patient_number }}@if ($patient->externalIdentifier()) / {{ $patient->externalIdentifier() }}@endif - {{ $patient->ageLabel() }} - {{ $patient->sexLabel() }}
                     </span>
                 </td>
                 <td width="50%" class="small muted">
@@ -112,7 +112,7 @@
 @endif
 
 <div class="footer">
-    Document généré par Keneya-DME — {{ $facility['name'] }} — Réf. {{ $reference }}.
+    Document généré par Keneya-DME - {{ $facility['name'] }} - Réf. {{ $reference }}.
     {{-- La mention de démonstration reste en place tant que l'exploitant ne
          l'a pas levée : une ordonnance réelle ne doit pas la porter, mais un
          jeu d'essai pris pour un vrai document serait plus grave encore. --}}

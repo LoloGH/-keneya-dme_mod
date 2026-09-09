@@ -58,8 +58,8 @@ class MedicalDocument extends Model
     public const TYPES = [
         'prescription' => 'Ordonnance',
         'lab_result' => 'Résultat de laboratoire',
-        'imaging_report' => 'Compte rendu d’imagerie',
-        'discharge_summary' => 'Compte rendu d’hospitalisation',
+        'imaging_report' => 'Compte rendu d\'imagerie',
+        'discharge_summary' => 'Compte rendu d\'hospitalisation',
         'certificate' => 'Certificat',
         'medical_letter' => 'Lettre médicale',
         'consultation_report' => 'Compte rendu de consultation',
@@ -79,7 +79,7 @@ class MedicalDocument extends Model
 
     public function auditLabel(): string
     {
-        return 'Document '.$this->document_number.' — '.$this->title;
+        return 'Document '.$this->document_number.'-'.$this->title;
     }
 
     public function patient(): BelongsTo
@@ -129,7 +129,7 @@ class MedicalDocument extends Model
      * médical arrive par téléversement, et servir un HTML ou un SVG en ligne
      * reviendrait à exécuter du script de l'utilisateur sur le domaine du
      * dossier. Le PDF et les images matricielles suffisent à ce que le
-     * praticien a besoin de regarder — un compte rendu, une échographie.
+     * praticien a besoin de regarder : un compte rendu, une échographie.
      *
      * @var array<int, string>
      */

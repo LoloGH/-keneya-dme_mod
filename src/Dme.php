@@ -73,7 +73,7 @@ final class Dme
     /**
      * Déclare où l'hôte range la signature du prescripteur et les cachets.
      *
-     * Le module produit l'ordonnance — sa forme, ses lignes, son numéro — mais
+     * Le module produit l'ordonnance, sa forme, ses lignes, son numéro, mais
      * il ne détient pas les images qui l'engagent : dans une application hôte,
      * la signature du médecin et le cachet de l'établissement appartiennent à
      * l'hôte, qui les administre et les stocke. Plutôt que d'aller les y
@@ -101,7 +101,7 @@ final class Dme
     /**
      * Signature et cachets applicables à cet enregistrement.
      *
-     * Sans hôte pour les fournir — le module tournant seul — les trois valeurs
+     * Sans hôte pour les fournir, le module tournant seul, les trois valeurs
      * sont nulles et le gabarit se rabat sur sa ligne de signature manuscrite.
      *
      * @return array{doctorSignature: ?string, doctorStamp: ?string, facilityStamp: ?string}
@@ -140,7 +140,7 @@ final class Dme
      *
      * Les clés attendues sont celles de `config('dme.facility')` : `name`,
      * `address`, `phone`, `email`. Celles qui manquent gardent leur valeur de
-     * configuration — un établissement sans adresse renseignée ne doit pas
+     * configuration : un établissement sans adresse renseignée ne doit pas
      * faire disparaître son nom.
      *
      * @param  (Closure(): array<string, ?string>)|null  $callback
@@ -193,7 +193,7 @@ final class Dme
      *
      * Le module est monté à l'intérieur d'une autre application : le praticien
      * y entre depuis un écran de l'hôte, et doit pouvoir en ressortir. Sans ce
-     * lien, la seule issue est le bouton « précédent » du navigateur — ou la
+     * lien, la seule issue est le bouton « précédent » du navigateur, ou la
      * déconnexion, ce qui est pire.
      *
      * Le module ne peut pas deviner cette adresse : elle dépend du rôle de la
@@ -244,7 +244,7 @@ final class Dme
      * Classe du modèle utilisateur en vigueur.
      *
      * Le module partage la table `users` avec son application hôte : c'est
-     * donc le modèle de l'hôte — celui que `Auth::user()` renvoie — qui
+     * donc le modèle de l'hôte, celui que `Auth::user()` renvoie, qui
      * doit porter les relations du dossier médical. Sans cela, le module
      * manipulerait des objets d'une autre classe que ceux de la session en
      * cours : deux instances pour la même ligne, des comparaisons

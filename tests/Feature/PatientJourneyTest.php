@@ -24,15 +24,15 @@ use Illuminate\Support\Facades\Storage;
 use Keneya\Dme\Tests\TestCase;
 
 /**
- * Parcours patient complet — critère d'acceptation global (§67).
+ * Parcours patient complet : critère d'acceptation global (§67).
  *
  * Ce test exécute, dans l'ordre et avec les rôles réellement habilités,
  * l'enchaînement exigé par la spécification :
  *
- *   Patient → DME → Consultation → Constantes → Examen clinique →
- *   Diagnostic → Ordonnance → Laboratoire → Résultat → Imagerie →
- *   Hospitalisation → Soins → Rendez-vous → Documents → Historique →
- *   Audit → Notification → SMS
+ *   Patient -> DME -> Consultation -> Constantes -> Examen clinique ->
+ *   Diagnostic -> Ordonnance -> Laboratoire -> Résultat -> Imagerie ->
+ *   Hospitalisation -> Soins -> Rendez-vous -> Documents -> Historique ->
+ *   Audit -> Notification -> SMS
  *
  * Il vaut preuve que les écrans sont réellement interconnectés, et non
  * juxtaposés.
@@ -124,7 +124,7 @@ class PatientJourneyTest extends TestCase
                 'started_at' => now()->format('Y-m-d\TH:i'),
                 'type' => 'follow_up',
                 'service_id' => $service->id,
-                'reason' => 'Céphalées et fatigue à l’effort',
+                'reason' => 'Céphalées et fatigue à l\'effort',
                 'history_of_illness' => 'Céphalées occipitales matinales depuis trois semaines.',
                 'vitals' => [
                     'temperature' => 37.1,
@@ -143,7 +143,7 @@ class PatientJourneyTest extends TestCase
                     ['label' => 'Hypertension artérielle essentielle', 'code' => 'I10',
                      'type' => 'primary', 'status' => 'confirmed'],
                 ],
-                'treatment_plan' => 'Introduction d’un antihypertenseur.',
+                'treatment_plan' => 'Introduction d\'un antihypertenseur.',
                 'action' => 'save',
             ])
             ->assertRedirect();
@@ -180,7 +180,7 @@ class PatientJourneyTest extends TestCase
         $prescription = Prescription::sole();
         $this->assertTrue(
             $prescription->hasAllergyWarnings(),
-            'Le contrôle d’allergie n’a pas détecté l’Amoxicilline face à l’allergie à la pénicilline.'
+            'Le contrôle d\'allergie n\'a pas détecté l\'Amoxicilline face à l\'allergie à la pénicilline.'
         );
         // L'ordonnance existe malgré l'alerte : rien n'est supprimé d'office.
         $this->assertSame(2, $prescription->items()->count());
@@ -195,7 +195,7 @@ class PatientJourneyTest extends TestCase
         $this->actingAs($this->doctor)
             ->post(route('dme.prescriptions.validate', $prescription), [
                 'acknowledge_allergy' => 1,
-                'allergy_justification' => 'Allergie ancienne, réévaluée en consultation d’allergologie.',
+                'allergy_justification' => 'Allergie ancienne, réévaluée en consultation d\'allergologie.',
             ])
             ->assertRedirect();
 
@@ -226,9 +226,9 @@ class PatientJourneyTest extends TestCase
             ->post(route('dme.laboratory.results.store', $labOrder), [
                 'results' => [
                     ['lab_order_item_id' => $items[0]->id, 'parameter' => 'Glycémie',
-                     'value' => '1.42', 'unit' => 'g/L', 'reference_range' => '0.70 – 1.10', 'flag' => 'high'],
+                     'value' => '1.42', 'unit' => 'g/L', 'reference_range' => '0.70 - 1.10', 'flag' => 'high'],
                     ['lab_order_item_id' => $items[1]->id, 'parameter' => 'Créatinine',
-                     'value' => '9.8', 'unit' => 'mg/L', 'reference_range' => '7.0 – 13.0', 'flag' => 'normal'],
+                     'value' => '9.8', 'unit' => 'mg/L', 'reference_range' => '7.0 - 13.0', 'flag' => 'normal'],
                 ],
             ])
             ->assertRedirect();
@@ -256,7 +256,7 @@ class PatientJourneyTest extends TestCase
             ->assertRedirect();
 
         $imaging = ImagingOrder::sole();
-        $this->assertNotNull($imaging->accession_number, 'Aucun numéro d’accession attribué.');
+        $this->assertNotNull($imaging->accession_number, 'Aucun numéro d\'accession attribué.');
 
         $this->actingAs($this->radiologist)
             ->post(route('dme.imaging.report.store', $imaging), [
@@ -293,7 +293,7 @@ class PatientJourneyTest extends TestCase
                 'hospitalization_id' => $stay->id,
                 'type' => 'medication_administration',
                 'occurred_at' => now()->format('Y-m-d\TH:i'),
-                'title' => 'Administration d’amlodipine',
+                'title' => 'Administration d\'amlodipine',
                 'medication_name' => 'Amlodipine',
                 'medication_dose' => '5 mg',
                 'medication_route' => 'Orale',
@@ -317,7 +317,7 @@ class PatientJourneyTest extends TestCase
         $this->assertSame(2, $stay->events()->count());
 
         // ---------------------------------------------------------
-        // 13. Rendez-vous — déclenche notification et SMS (§27, §36, §53)
+        // 13. Rendez-vous : déclenche notification et SMS (§27, §36, §53)
         // ---------------------------------------------------------
         $this->actingAs($this->reception)
             ->post(route('dme.appointments.store', $patient), [
@@ -337,7 +337,7 @@ class PatientJourneyTest extends TestCase
         // ---------------------------------------------------------
         $this->actingAs($this->doctor)
             ->post(route('dme.documents.store', $patient), [
-                'title' => 'Compte rendu d’échographie',
+                'title' => 'Compte rendu d\'échographie',
                 'type' => 'imaging_report',
                 'file' => UploadedFile::fake()->create('echographie.pdf', 40, 'application/pdf'),
             ])
@@ -359,7 +359,7 @@ class PatientJourneyTest extends TestCase
         $types = $timeline->pluck('type')->unique();
 
         foreach (['consultations', 'diagnoses', 'prescriptions', 'laboratory', 'imaging', 'hospitalizations', 'documents'] as $type) {
-            $this->assertTrue($types->contains($type), "Le type « {$type} » est absent de l’historique médical.");
+            $this->assertTrue($types->contains($type), "Le type « {$type} » est absent de l'historique médical.");
         }
 
         // ---------------------------------------------------------
@@ -387,7 +387,7 @@ class PatientJourneyTest extends TestCase
         // Trois SMS ont été déclenchés : ordonnance, résultat, rendez-vous
         // (+ rappel programmé la veille).
         $messages = SmsMessage::where('patient_id', $patient->id)->get();
-        $this->assertGreaterThanOrEqual(3, $messages->count(), 'Les SMS métier n’ont pas été déclenchés.');
+        $this->assertGreaterThanOrEqual(3, $messages->count(), 'Les SMS métier n\'ont pas été déclenchés.');
         $this->assertTrue(
             $messages->every(fn (SmsMessage $m) => str_starts_with($m->recipient, '+223')),
             'Les numéros ne sont pas normalisés au format E.164.'

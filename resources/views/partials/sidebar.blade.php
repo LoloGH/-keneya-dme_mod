@@ -4,7 +4,7 @@
      *
      * Chaque entrée déclare la permission qui la conditionne : le menu ne
      * montre que ce que l'utilisateur peut réellement atteindre. Le
-     * masquage est un confort — la route reste protégée côté serveur.
+     * masquage est un confort : la route reste protégée côté serveur.
      */
     $navigation = [
         ['route' => 'dashboard',            'label' => 'Tableau de bord',  'permission' => null,                  'icon' => 'home'],
@@ -38,7 +38,7 @@
 
      Le module est monté à l'intérieur d'une autre application : le praticien y
      entre depuis un écran de l'hôte, et doit pouvoir en ressortir. Sans ce
-     lien, la seule issue est le bouton « précédent » du navigateur — ou la
+     lien, la seule issue est le bouton « précédent » du navigateur : ou la
      déconnexion, ce qui est pire.
 
      En tête de la barre, avant la navigation du module : c'est un retour, pas
@@ -56,8 +56,8 @@
 <nav class="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
     @foreach ($navigation as $item)
         {{-- Les noms sont ceux du module ; le préfixe est celui sous lequel
-             l'hôte l'a monté. Une entrée dont la route n'existe pas — la
-             console SMS quand l'hôte fournit son propre envoi — disparaît. --}}
+             l'hôte l'a monté. Une entrée dont la route n'existe pas, la
+             console SMS quand l'hôte fournit son propre envoi, disparaît. --}}
         @php $name = 'dme.'.$item['route']; @endphp
         @continue(! Route::has($name))
         @continue($item['permission'] && ! auth()->user()->can($item['permission']))

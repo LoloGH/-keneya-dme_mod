@@ -20,7 +20,7 @@ return new class extends Migration
             $table->morphs('notifiable');
             $table->text('data');
 
-            $table->string('category')->nullable(); // appointment, lab_result, prescription…
+            $table->string('category')->nullable(); // appointment, lab_result, prescription...
             $table->string('level')->default('info'); // info, warning, critical
             $table->unsignedBigInteger('patient_id')->nullable();
             $table->string('action_url')->nullable();

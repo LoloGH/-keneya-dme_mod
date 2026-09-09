@@ -4,7 +4,7 @@
 
 @section('content')
     <x-dme::page-header title="Nouvelle ordonnance"
-                   :subtitle="$patient->fullName().' — '.$patient->patient_number"
+                   :subtitle="$patient->fullName().'-'.$patient->patient_number"
                    :breadcrumbs="[
                        'Patients' => route('dme.patients.index'),
                        $patient->fullName() => route('dme.patients.show', $patient),
@@ -18,7 +18,7 @@
             @if ($patient->criticalAllergies()->isNotEmpty())
                 <div class="mt-4"><x-dme::medical-alerts :patient="$patient"/></div>
                 <p class="mt-2 text-xs text-ink-500">
-                    L’application confronte automatiquement les médicaments saisis aux allergies documentées
+                    L'application confronte automatiquement les médicaments saisis aux allergies documentées
                     et vous avertit avant validation. Elle ne retire jamais une ligne : la décision vous appartient.
                 </p>
             @endif
@@ -51,7 +51,7 @@
                     <x-dme::field-error name="issued_on"/>
                 </div>
                 <div>
-                    <label for="valid_until" class="k-label">Valable jusqu’au</label>
+                    <label for="valid_until" class="k-label">Valable jusqu'au</label>
                     <input id="valid_until" name="valid_until" type="date"
                            value="{{ old('valid_until', now()->addMonths(3)->toDateString()) }}" class="k-input">
                     <x-dme::field-error name="valid_until"/>
@@ -78,7 +78,7 @@
                     <p class="text-xs font-semibold text-clinic-800">Traitements habituels du patient</p>
                     <ul class="mt-1 space-y-0.5 text-xs text-clinic-900">
                         @foreach ($usualMedications as $medication)
-                            <li>{{ $medication->name }} {{ $medication->dosage }} — {{ $medication->frequency }}</li>
+                            <li>{{ $medication->name }} {{ $medication->dosage }} - {{ $medication->frequency }}</li>
                         @endforeach
                     </ul>
                 </div>
@@ -161,11 +161,11 @@
         <fieldset class="k-fieldset mb-4">
             <legend class="k-fieldset-legend">Instructions générales</legend>
             <textarea name="instructions" rows="2" maxlength="2000" class="k-textarea"
-                      placeholder="Conseils applicables à l’ensemble de l’ordonnance.">{{ old('instructions') }}</textarea>
+                      placeholder="Conseils applicables à l'ensemble de l'ordonnance.">{{ old('instructions') }}</textarea>
         </fieldset>
 
         <div class="flex flex-wrap items-center gap-2">
-            <button type="submit" class="k-btn-primary">Enregistrer l’ordonnance</button>
+            <button type="submit" class="k-btn-primary">Enregistrer l'ordonnance</button>
             <a href="{{ route('dme.patients.show', $patient) }}" class="k-btn-ghost">Annuler</a>
         </div>
     </form>

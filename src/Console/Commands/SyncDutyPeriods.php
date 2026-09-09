@@ -22,7 +22,7 @@ class SyncDutyPeriods extends Command
 {
     protected $signature = 'keneya:duty-periods:sync';
 
-    protected $description = 'Prend et termine automatiquement les gardes planifiées à l’avance';
+    protected $description = 'Prend et termine automatiquement les gardes planifiées à l\'avance';
 
     public function handle(): int
     {

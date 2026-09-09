@@ -101,11 +101,11 @@ class ApiTest extends TestCase
     {
         $patient = Patient::factory()->create();
 
-        // Le laboratoire peut lire un patient…
+        // Le laboratoire peut lire un patient...
         Sanctum::actingAs($this->userWithRole(Rbac::ROLE_LAB));
         $this->getJson(route('dme.api.patients.show', $patient))->assertOk();
 
-        // …mais ne peut pas en créer.
+        // ...mais ne peut pas en créer.
         $this->postJson(route('dme.api.patients.store'), [
             'last_name' => 'Test', 'first_name' => 'Interdit', 'sex' => 'male',
         ])->assertForbidden();

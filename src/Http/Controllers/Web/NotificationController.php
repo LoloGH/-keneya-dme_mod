@@ -15,7 +15,7 @@ use Illuminate\View\View;
  *
  * Les notifications sont strictement personnelles : toutes les requêtes
  * sont filtrées sur l'utilisateur connecté, y compris le marquage comme
- * lue — un identifiant deviné ne donne accès à rien (§57, IDOR).
+ * lue, un identifiant deviné ne donne accès à rien (§57, IDOR).
  */
 class NotificationController extends Controller
 {

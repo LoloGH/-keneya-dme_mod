@@ -32,7 +32,7 @@
                                 </td>
                                 <td class="font-mono text-xs">{{ $appointment->appointment_number }}</td>
                                 <td>{{ $appointment->reason ?: 'Consultation' }}</td>
-                                <td>{{ $appointment->doctor?->displayName() ?? '—' }}</td>
+                                <td>{{ $appointment->doctor?->displayName() ?? '-' }}</td>
                                 <td><x-dme::status-badge :status="$appointment->status" :label="$appointment->statusLabel()"/></td>
                             </tr>
                         @endforeach

@@ -4,7 +4,7 @@
 
 @section('content')
     <x-dme::page-header title="Paramètres"
-                   subtitle="Configuration effective de l’application. Les valeurs proviennent des fichiers de configuration et des variables d’environnement ; aucun secret n’est affiché."/>
+                   subtitle="Configuration effective de l'application. Les valeurs proviennent des fichiers de configuration et des variables d'environnement ; aucun secret n'est affiché."/>
 
     @include('dme::settings.partials.account')
 
@@ -18,7 +18,7 @@
             <div class="k-card-header"><h2 class="k-card-title">Établissement</h2></div>
 
             {{-- Quand une application hôte administre ces coordonnées, ce sont
-                 les siennes qui font foi partout — interface et documents. Le
+                 les siennes qui font foi partout : interface et documents. Le
                  formulaire du module serait alors sans effet : mieux vaut ne
                  pas le proposer que laisser saisir dans le vide. --}}
             @if (\Keneya\Dme\Dme::facilityIsProvidedByHost())
@@ -31,7 +31,7 @@
                     ] as $label => $value)
                         <div>
                             <dt class="text-xs text-ink-500">{{ $label }}</dt>
-                            <dd class="text-ink-800">{{ $value ?: '—' }}</dd>
+                            <dd class="text-ink-800">{{ $value ?: '-' }}</dd>
                         </div>
                     @endforeach
                     <p class="border-t border-ink-100 pt-3 text-xs text-ink-500">
@@ -76,7 +76,7 @@
                 @method('PUT')
                 <p class="mb-3 text-sm text-ink-600">
                     Format <span class="font-mono">PRÉFIXE-ANNÉE-SÉQUENCE</span>. Changer un préfixe
-                    n’affecte que les identifiants générés ensuite : ceux déjà attribués restent
+                    n'affecte que les identifiants générés ensuite : ceux déjà attribués restent
                     inchangés, et la séquence du nouveau préfixe repart de un.
                 </p>
                 <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -121,8 +121,8 @@
                     <dd class="text-right font-medium text-ink-900">{{ implode(', ', $documents['allowed_mimes']) }}</dd>
                 </div>
                 <p class="border-t border-ink-100 pt-2.5 text-xs text-ink-500">
-                    Aucun document n’est accessible par une URL de fichier. Tout téléchargement passe par
-                    une route contrôlée, vérifie la permission de l’utilisateur et est inscrit au journal d’audit.
+                    Aucun document n'est accessible par une URL de fichier. Tout téléchargement passe par
+                    une route contrôlée, vérifie la permission de l'utilisateur et est inscrit au journal d'audit.
                 </p>
             </dl>
         </section>
@@ -136,12 +136,12 @@
                 </div>
                 @if ($smsSimulated)
                     <p class="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                        Passerelle de simulation : aucun SMS réel n’est émis.
+                        Passerelle de simulation : aucun SMS réel n'est émis.
                         Définissez <span class="font-mono">SMS_GATEWAY=smsgate</span> pour un envoi réel.
                     </p>
                 @endif
                 <div class="flex justify-between gap-4">
-                    <dt class="text-ink-500">Suivi d’acheminement</dt>
+                    <dt class="text-ink-500">Suivi d'acheminement</dt>
                     <dd class="font-medium text-ink-900">
                         {{ $smsTracking['enabled'] ? 'Activé' : 'Désactivé' }}
                     </dd>
@@ -180,16 +180,16 @@
                 @method('PUT')
 
                 <p class="mb-3 text-sm text-ink-600">
-                    Les permissions sont vérifiées côté serveur par les policies. L’interface masque les
+                    Les permissions sont vérifiées côté serveur par les policies. L'interface masque les
                     actions interdites par confort, mais un accès direct par URL est refusé de la même manière.
                 </p>
 
                 @if ($canEditRoles)
                     <div class="mb-4 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
                         Une permission retirée prend effet immédiatement, y compris pour les sessions déjà
-                        ouvertes. Les permissions d’administration du rôle Administrateur
+                        ouvertes. Les permissions d'administration du rôle Administrateur
                         ({{ implode(', ', $lockedPermissions) }}) sont verrouillées : les retirer fermerait
-                        cet écran sans autre issue qu’une intervention en base.
+                        cet écran sans autre issue qu'une intervention en base.
                     </div>
                 @else
                     <div class="mb-4 rounded-lg border border-ink-200 bg-ink-50 px-3 py-2 text-xs text-ink-600">
@@ -237,7 +237,7 @@
                                                            @checked($granted)
                                                            class="h-4 w-4 rounded border-ink-300 text-clinic-600
                                                                   focus:ring-clinic-500"
-                                                           aria-label="{{ $roleLabel }} — {{ $description }}">
+                                                           aria-label="{{ $roleLabel }} - {{ $description }}">
                                                 @elseif ($locked)
                                                     {{-- Verrouillée : cochée, envoyée, non décochable. --}}
                                                     <input type="hidden"
@@ -249,7 +249,7 @@
                                                     <x-dme::icon name="check" class="mx-auto h-4 w-4 text-keneya-600"/>
                                                     <span class="sr-only">{{ $roleLabel }} : autorisé</span>
                                                 @else
-                                                    <span class="text-ink-300" aria-hidden="true">—</span>
+                                                    <span class="text-ink-300" aria-hidden="true">-</span>
                                                     <span class="sr-only">{{ $roleLabel }} : non autorisé</span>
                                                 @endif
                                             </td>
@@ -273,11 +273,11 @@
             @if ($canEditRoles)
                 <div class="border-t border-ink-100 px-4 py-3">
                     <form action="{{ route('dme.settings.roles.reset') }}" method="POST"
-                          onsubmit="return confirm('Rétablir la matrice d’origine ? Les modifications en cours seront perdues.');">
+                          onsubmit="return confirm('Rétablir la matrice d'origine ? Les modifications en cours seront perdues.');">
                         @csrf
                         <button type="submit" class="k-btn-ghost text-xs">
                             <x-dme::icon name="arrow-left" class="h-3.5 w-3.5"/>
-                            Rétablir la configuration d’origine
+                            Rétablir la configuration d'origine
                         </button>
                     </form>
                 </div>
@@ -308,7 +308,7 @@
         </section>
 
         <section class="k-card lg:col-span-2">
-            <div class="k-card-header"><h2 class="k-card-title">Services de l’établissement</h2></div>
+            <div class="k-card-header"><h2 class="k-card-title">Services de l'établissement</h2></div>
             <div class="k-card-body grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($services as $service)
                     <div class="flex items-center justify-between gap-2 rounded-lg border border-ink-200 px-3 py-2">

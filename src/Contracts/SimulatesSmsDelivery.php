@@ -7,8 +7,8 @@ namespace Keneya\Dme\Contracts;
 /**
  * Complément facultatif à {@see SmsDispatcherContract}.
  *
- * Une implémentation qui n'émet pas réellement de SMS — journalisation,
- * passerelle de développement, bac à sable — le déclare ici, afin que
+ * Une implémentation qui n'émet pas réellement de SMS, journalisation,
+ * passerelle de développement, bac à sable, le déclare ici, afin que
  * l'interface puisse en avertir l'utilisateur plutôt que de le laisser
  * croire qu'un message est parti.
  *

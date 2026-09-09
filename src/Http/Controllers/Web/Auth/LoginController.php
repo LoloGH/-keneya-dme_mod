@@ -63,7 +63,7 @@ class LoginController extends Controller
             AuditLog::record(
                 action: 'login_failed',
                 outcome: 'denied',
-                description: 'Connexion refusée — compte désactivé : '.$credentials['email'],
+                description: 'Connexion refusée, compte désactivé : '.$credentials['email'],
             );
 
             throw ValidationException::withMessages([
@@ -78,14 +78,14 @@ class LoginController extends Controller
             'last_login_ip' => $request->ip(),
         ])->save();
 
-        AuditLog::record(action: 'login', subject: $user, description: 'S’est connecté');
+        AuditLog::record(action: 'login', subject: $user, description: 'S\'est connecté');
 
         return redirect()->intended(route('dme.dashboard'));
     }
 
     public function destroy(Request $request): RedirectResponse
     {
-        AuditLog::record(action: 'logout', subject: $request->user(), description: 'S’est déconnecté');
+        AuditLog::record(action: 'logout', subject: $request->user(), description: 'S\'est déconnecté');
 
         Auth::logout();
         $request->session()->invalidate();

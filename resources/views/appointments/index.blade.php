@@ -32,7 +32,7 @@
                     <x-dme::icon name="chevron-left" class="h-4 w-4"/>
                 </a>
                 <a href="{{ route('dme.appointments.index', array_merge(request()->query(), ['date' => now()->toDateString()])) }}"
-                   class="k-btn-secondary k-btn-sm">Aujourd’hui</a>
+                   class="k-btn-secondary k-btn-sm">Aujourd'hui</a>
                 <a href="{{ route('dme.appointments.index', array_merge(request()->query(), ['date' => $next])) }}"
                    class="k-btn-secondary k-btn-sm" aria-label="Période suivante">
                     <x-dme::icon name="chevron-right" class="h-4 w-4"/>
@@ -83,7 +83,7 @@
                             <h2 class="k-card-title {{ $cursor->isToday() ? 'text-clinic-700' : '' }}">
                                 {{ $cursor->translatedFormat('l d F Y') }}
                                 @if ($cursor->isToday())
-                                    <span class="k-badge-info ml-1">Aujourd’hui</span>
+                                    <span class="k-badge-info ml-1">Aujourd'hui</span>
                                 @endif
                             </h2>
                             <span class="text-xs text-ink-500">{{ $dayAppointments->count() }} rendez-vous</span>
@@ -99,7 +99,7 @@
                                            class="flex flex-wrap items-center gap-3 px-4 py-3 hover:bg-clinic-50/40">
                                             <span class="w-24 shrink-0 font-mono text-sm text-ink-700">
                                                 {{ $appointment->scheduled_for->format('H:i') }}
-                                                <span class="text-ink-400">– {{ $appointment->endsAt()->format('H:i') }}</span>
+                                                <span class="text-ink-400">- {{ $appointment->endsAt()->format('H:i') }}</span>
                                             </span>
                                             <span class="min-w-0 flex-1">
                                                 <span class="block font-medium text-ink-900">

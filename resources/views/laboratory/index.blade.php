@@ -3,13 +3,13 @@
 @section('title', 'Laboratoire')
 
 @section('content')
-    <x-dme::page-header title="Laboratoire" subtitle="{{ $orders->total() }} demande(s) d’analyse."/>
+    <x-dme::page-header title="Laboratoire" subtitle="{{ $orders->total() }} demande(s) d'analyse."/>
 
     <form method="GET" class="k-card mb-4 flex flex-wrap gap-3 p-4">
         <div class="min-w-56 flex-1">
             <label for="q" class="sr-only">Rechercher</label>
             <input id="q" type="search" name="q" value="{{ $filters['q'] ?? '' }}" class="k-input"
-                   placeholder="N° de demande ou patient…">
+                   placeholder="N° de demande ou patient...">
         </div>
         <div>
             <label for="status" class="sr-only">Statut</label>
@@ -34,7 +34,7 @@
 
     <div class="k-card">
         @if ($orders->isEmpty())
-            <x-dme::empty-state icon="flask" title="Aucune demande d’analyse"
+            <x-dme::empty-state icon="flask" title="Aucune demande d'analyse"
                            message="Les demandes se créent depuis le dossier d'un patient ou depuis une consultation."/>
         @else
             <div class="overflow-x-auto">
@@ -64,7 +64,7 @@
                                     </a>
                                 </td>
                                 <td class="max-w-xs truncate">{{ $order->items->pluck('exam_name')->implode(', ') }}</td>
-                                <td>{{ $order->doctor?->displayName() ?? '—' }}</td>
+                                <td>{{ $order->doctor?->displayName() ?? '-' }}</td>
                                 <td><x-dme::status-badge :status="$order->priority" :label="$order->priorityLabel()"/></td>
                                 <td><x-dme::status-badge :status="$order->status" :label="$order->statusLabel()"/></td>
                                 <td class="text-right">

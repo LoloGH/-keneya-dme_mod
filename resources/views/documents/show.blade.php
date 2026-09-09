@@ -73,7 +73,7 @@
                     @foreach ([
                         'Type' => $document->typeLabel(),
                         'Patient' => $document->patient->fullName(),
-                        'Auteur' => $document->uploader?->displayName() ?? 'Généré par l’application',
+                        'Auteur' => $document->uploader?->displayName() ?? 'Généré par l\'application',
                         'Ajouté le' => $document->created_at->translatedFormat('d F Y à H:i'),
                         'Taille' => $document->humanSize(),
                         'Version' => 'v'.$document->version,
@@ -108,9 +108,9 @@
                 <div class="k-card-header"><h2 class="k-card-title">Confidentialité</h2></div>
                 <div class="k-card-body text-sm text-ink-600">
                     <p>
-                        Ce fichier est stocké sur un disque privé. Il n’est jamais accessible par une URL
+                        Ce fichier est stocké sur un disque privé. Il n'est jamais accessible par une URL
                         directe : chaque consultation et chaque téléchargement passent par une vérification
-                        de permission et sont inscrits au journal d’audit du dossier.
+                        de permission et sont inscrits au journal d'audit du dossier.
                     </p>
                 </div>
             </section>

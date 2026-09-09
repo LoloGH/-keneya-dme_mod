@@ -3,10 +3,10 @@
 @section('content')
     @if ($patient->criticalAllergies()->isNotEmpty())
         <div class="alert">
-            <div class="alert-title">Allergies — vigilance</div>
+            <div class="alert-title">Allergies, vigilance</div>
             @foreach ($patient->criticalAllergies() as $allergy)
                 <div class="small">
-                    {{ $allergy->allergen }} — {{ $allergy->severityLabel() }}
+                    {{ $allergy->allergen }} - {{ $allergy->severityLabel() }}
                     @if ($allergy->reaction) ({{ $allergy->reaction }}) @endif
                 </div>
             @endforeach
@@ -21,8 +21,8 @@
                 'Numéro de dossier' => $patient->patient_number,
                 'Date de naissance' => $patient->birth_date?->format('d/m/Y').' ('.$patient->ageLabel().')',
                 'Sexe' => $patient->sexLabel(),
-                'Lieu de naissance' => $patient->birth_place ?: '—',
-                'Nationalité' => $patient->nationality ?: '—',
+                'Lieu de naissance' => $patient->birth_place ?: '-',
+                'Nationalité' => $patient->nationality ?: '-',
                 'Groupe sanguin' => $patient->blood_group ?: 'Inconnu',
                 'Médecin traitant' => $patient->attendingDoctor?->displayName() ?? 'Non attribué',
             ] as $label => $value)
@@ -38,9 +38,9 @@
     <table class="data">
         <tbody>
             @foreach ([
-                'Téléphone' => $patient->phone ?: '—',
-                'Adresse e-mail' => $patient->email ?: '—',
-                'Adresse' => trim(($patient->address ?: '').' '.($patient->city ?: '').' '.($patient->country ?: '')) ?: '—',
+                'Téléphone' => $patient->phone ?: '-',
+                'Adresse e-mail' => $patient->email ?: '-',
+                'Adresse' => trim(($patient->address ?: '').' '.($patient->city ?: '').' '.($patient->country ?: '')) ?: '-',
             ] as $label => $value)
                 <tr>
                     <td width="30%" class="muted">{{ $label }}</td>
@@ -60,8 +60,8 @@
                 @foreach ($patient->chronicConditions as $condition)
                     <tr>
                         <td class="strong">{{ $condition->label }}</td>
-                        <td>{{ $condition->code ?: '—' }}</td>
-                        <td>{{ $condition->diagnosed_on?->format('m/Y') ?: '—' }}</td>
+                        <td>{{ $condition->code ?: '-' }}</td>
+                        <td>{{ $condition->diagnosed_on?->format('m/Y') ?: '-' }}</td>
                         <td>{{ $condition->statusLabel() }}</td>
                     </tr>
                 @endforeach
@@ -79,7 +79,7 @@
                 @foreach ($patient->allergies as $allergy)
                     <tr>
                         <td class="strong">{{ $allergy->allergen }}</td>
-                        <td>{{ $allergy->reaction ?: '—' }}</td>
+                        <td>{{ $allergy->reaction ?: '-' }}</td>
                         <td>{{ $allergy->severityLabel() }}</td>
                         <td>{{ $allergy->status === 'active' ? 'Active' : 'Inactive' }}</td>
                     </tr>
@@ -98,8 +98,8 @@
                 @foreach ($patient->medications as $medication)
                     <tr>
                         <td class="strong">{{ $medication->name }}</td>
-                        <td>{{ $medication->dosage ?: '—' }}</td>
-                        <td>{{ $medication->frequency ?: '—' }}</td>
+                        <td>{{ $medication->dosage ?: '-' }}</td>
+                        <td>{{ $medication->frequency ?: '-' }}</td>
                         <td>{{ $medication->statusLabel() }}</td>
                     </tr>
                 @endforeach

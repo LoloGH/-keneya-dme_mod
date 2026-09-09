@@ -19,8 +19,8 @@ use Orchestra\Testbench\TestCase as BaseTestCase;
  * Socle des tests du module.
  *
  * Les tests s'exécutent dans une application Laravel minimale fournie par
- * Orchestra Testbench : c'est exactement la situation visée — le module
- * monté chez un hôte — et non l'application autonome de la phase 1.
+ * Orchestra Testbench : c'est exactement la situation visée, le module
+ * monté chez un hôte, et non l'application autonome de la phase 1.
  *
  * Par défaut, le mode autonome de développement est **inactif** : le
  * module est testé tel qu'il tournera chez Keneya Workflow. L'autorisation
@@ -75,14 +75,14 @@ abstract class TestCase extends BaseTestCase
      *
      * Un hôte a sa propre page de connexion : le module s'y repose et n'en
      * fournit aucune. La déclarer ici, c'est reproduire la situation
-     * réelle — et vérifier qu'un visiteur non authentifié y est bien
+     * réelle, et vérifier qu'un visiteur non authentifié y est bien
      * renvoyé plutôt que dans le module.
      *
      * @param  \Illuminate\Routing\Router  $router
      */
     protected function defineRoutes($router): void
     {
-        $router->get('/connexion-hote', static fn () => 'Connexion de l’application hôte')
+        $router->get('/connexion-hote', static fn () => 'Connexion de l\'application hôte')
             ->name('login');
     }
 

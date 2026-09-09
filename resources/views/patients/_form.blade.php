@@ -71,13 +71,13 @@
         @if ($patient)
             <p class="k-hint">
                 Numéro de dossier :
-                <span class="font-mono font-medium text-ink-700">{{ $patient->patient_number }}</span>
-                — attribué à la création et jamais modifié.
+                <span class="font-mono font-medium text-ink-700">{{ $patient->patient_number }}</span>,
+                attribué à la création et jamais modifié.
             </p>
         @else
             <p class="k-hint">
                 Le numéro de dossier (format <span class="font-mono">PAT-{{ now()->format('Y') }}-000001</span>)
-                est généré automatiquement à l’enregistrement.
+                est généré automatiquement à l'enregistrement.
             </p>
         @endif
     </fieldset>
@@ -136,7 +136,7 @@
                 @foreach ($patient->emergencyContacts as $contact)
                     <li class="rounded-lg bg-ink-50 px-3 py-2 text-sm">
                         <span class="font-medium text-ink-900">{{ $contact->name }}</span>
-                        <span class="text-ink-500">— {{ $contact->relationship ?: 'Proche' }} · {{ $contact->phone }}</span>
+                        <span class="text-ink-500">- {{ $contact->relationship ?: 'Proche' }} · {{ $contact->phone }}</span>
                     </li>
                 @endforeach
             </ul>
@@ -151,7 +151,7 @@
                 <div>
                     <label for="ec_relationship" class="k-label">Relation</label>
                     <input id="ec_relationship" name="emergency_contact[relationship]" type="text" maxlength="100"
-                           value="{{ old('emergency_contact.relationship') }}" class="k-input" placeholder="Épouse, fils…">
+                           value="{{ old('emergency_contact.relationship') }}" class="k-input" placeholder="Épouse, fils...">
                 </div>
                 <div>
                     <label for="ec_phone" class="k-label">Téléphone</label>
@@ -187,7 +187,7 @@
                     @foreach ($doctors as $doctor)
                         <option value="{{ $doctor->id }}"
                             @selected((string) old('attending_doctor_id', $patient?->attending_doctor_id) === (string) $doctor->id)>
-                            {{ $doctor->displayName() }}{{ $doctor->speciality ? ' — '.$doctor->speciality : '' }}
+                            {{ $doctor->displayName() }}{{ $doctor->speciality ? '-'.$doctor->speciality : '' }}
                         </option>
                     @endforeach
                 </select>
@@ -197,16 +197,16 @@
                 <div>
                     <label for="known_allergies" class="k-label">Allergies connues</label>
                     <input id="known_allergies" name="known_allergies" type="text" maxlength="500"
-                           value="{{ old('known_allergies') }}" class="k-input" placeholder="Pénicilline, arachide…">
+                           value="{{ old('known_allergies') }}" class="k-input" placeholder="Pénicilline, arachide...">
                     <p class="k-hint">
-                        Séparez par des virgules. La gravité se précise ensuite dans l’onglet Allergies —
+                        Séparez par des virgules. La gravité se précise ensuite dans l'onglet Allergies -
                         une allergie sévère devient une alerte permanente du dossier.
                     </p>
                 </div>
                 <div>
                     <label for="chronic_conditions" class="k-label">Maladies chroniques</label>
                     <input id="chronic_conditions" name="chronic_conditions" type="text" maxlength="500"
-                           value="{{ old('chronic_conditions') }}" class="k-input" placeholder="Hypertension, diabète type 2…">
+                           value="{{ old('chronic_conditions') }}" class="k-input" placeholder="Hypertension, diabète type 2...">
                     <p class="k-hint">Séparez par des virgules.</p>
                 </div>
             @endunless

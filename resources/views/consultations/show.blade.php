@@ -103,7 +103,7 @@
                                 @foreach ($consultation->diagnoses as $diagnosis)
                                     <tr>
                                         <td class="font-medium text-ink-900">{{ $diagnosis->label }}</td>
-                                        <td class="font-mono text-xs">{{ $diagnosis->code ?: '—' }}</td>
+                                        <td class="font-mono text-xs">{{ $diagnosis->code ?: '-' }}</td>
                                         <td>
                                             {{ match ($diagnosis->type) {
                                                 'primary' => 'Principal',
@@ -112,7 +112,7 @@
                                             } }}
                                         </td>
                                         <td><x-dme::status-badge :status="$diagnosis->status" :label="$diagnosis->statusLabel()"/></td>
-                                        <td class="text-xs text-ink-500">{{ $diagnosis->doctor?->displayName() ?? '—' }}</td>
+                                        <td class="text-xs text-ink-500">{{ $diagnosis->doctor?->displayName() ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -172,7 +172,7 @@
                                class="mt-1 block font-mono text-xs text-clinic-700 hover:underline">
                                 {{ $prescription->prescription_number }}
                                 <span class="font-sans text-ink-500">
-                                    — {{ $prescription->items->pluck('medication_name')->implode(', ') }}
+                                    - {{ $prescription->items->pluck('medication_name')->implode(', ') }}
                                 </span>
                             </a>
                         @empty
@@ -185,7 +185,7 @@
                             <a href="{{ route('dme.laboratory.show', $order) }}"
                                class="mt-1 block font-mono text-xs text-clinic-700 hover:underline">
                                 {{ $order->order_number }}
-                                <span class="font-sans text-ink-500">— {{ $order->items->count() }} examen(s)</span>
+                                <span class="font-sans text-ink-500">- {{ $order->items->count() }} examen(s)</span>
                             </a>
                         @empty
                             <p class="mt-1 text-ink-500">Aucun</p>
@@ -196,7 +196,7 @@
                         @forelse ($consultation->imagingOrders as $order)
                             <a href="{{ route('dme.imaging.show', $order) }}"
                                class="mt-1 block text-xs text-clinic-700 hover:underline">
-                                {{ $order->modalityLabel() }} — {{ $order->order_number }}
+                                {{ $order->modalityLabel() }} - {{ $order->order_number }}
                             </a>
                         @empty
                             <p class="mt-1 text-ink-500">Aucune</p>
@@ -208,7 +208,7 @@
             <section class="k-card">
                 <div class="k-card-header"><h2 class="k-card-title">Praticien</h2></div>
                 <div class="k-card-body text-sm">
-                    <p class="font-medium text-ink-900">{{ $consultation->doctor?->displayName() ?? '—' }}</p>
+                    <p class="font-medium text-ink-900">{{ $consultation->doctor?->displayName() ?? '-' }}</p>
                     @if ($consultation->doctor?->speciality)
                         <p class="text-ink-500">{{ $consultation->doctor->speciality }}</p>
                     @endif

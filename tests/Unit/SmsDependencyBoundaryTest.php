@@ -19,7 +19,7 @@ use RecursiveIteratorIterator;
  * Ce test garantit que ce jour-là, rien d'autre ne cassera : aucune classe
  * métier du module ne connaît le pipeline, elles ne connaissent que
  * SmsDispatcherContract. C'est une vérification structurelle, exécutée sur
- * les fichiers sources eux-mêmes — donc impossible à contourner par
+ * les fichiers sources eux-mêmes, donc impossible à contourner par
  * inadvertance.
  */
 class SmsDependencyBoundaryTest extends TestCase

@@ -6,7 +6,7 @@
         <tr>
             <td width="50%" class="small">
                 <span class="muted">Demandée le :</span> {{ $order->requested_at->format('d/m/Y à H:i') }}<br>
-                <span class="muted">Prescripteur :</span> {{ $order->doctor?->displayName() ?? '—' }}<br>
+                <span class="muted">Prescripteur :</span> {{ $order->doctor?->displayName() ?? '-' }}<br>
                 <span class="muted">Urgence :</span> {{ $order->priorityLabel() }}
             </td>
             <td width="50%" class="small">
@@ -42,7 +42,7 @@
                         <td class="strong">{{ $result->parameter }}</td>
                         <td class="strong">{{ $result->value }}</td>
                         <td>{{ $result->unit }}</td>
-                        <td class="small muted">{{ $result->reference_range ?: '—' }}</td>
+                        <td class="small muted">{{ $result->reference_range ?: '-' }}</td>
                         <td>{{ $result->flagLabel() }}</td>
                     </tr>
                 @empty
@@ -56,11 +56,11 @@
     </table>
 
     <p class="small muted">
-        Les valeurs de référence sont celles en vigueur au moment de l’analyse. Toute interprétation
+        Les valeurs de référence sont celles en vigueur au moment de l'analyse. Toute interprétation
         doit tenir compte du contexte clinique du patient.
     </p>
 
     <div class="signature">
-        <div class="signature-line">Biologiste — validation technique et biologique</div>
+        <div class="signature-line">Biologiste : validation technique et biologique</div>
     </div>
 @endsection

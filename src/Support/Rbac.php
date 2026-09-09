@@ -13,7 +13,7 @@ namespace Keneya\Dme\Support;
  * partout, ce qui évite les divergences entre le backend et l'interface.
  *
  * Phase 2 (§60) : cette classe est le point d'ancrage prévu pour se
- * raccorder au RBAC central de Keneya Workflow — la correspondance se
+ * raccorder au RBAC central de Keneya Workflow, la correspondance se
  * fera rôle à rôle, sans toucher aux vérifications disséminées dans le code.
  */
 final class Rbac
@@ -30,8 +30,8 @@ final class Rbac
     /**
      * Les rôles de l'application hôte qui correspondent à ce rôle du DME.
      *
-     * Le module a son propre vocabulaire clinique — médecin, infirmier,
-     * laboratoire — et une application hôte a le sien, souvent construit
+     * Le module a son propre vocabulaire clinique, médecin, infirmier,
+     * laboratoire, et une application hôte a le sien, souvent construit
      * autour de ses interfaces plutôt que des métiers. Monté dans Keneya
      * Workflow, « medecin » s'y appelle « doctor ». Sans traduction, une
      * simple liste de praticiens fait tomber la page : le scope `role()` de
@@ -131,13 +131,13 @@ final class Rbac
             ],
             'Laboratoire' => [
                 'laboratory.view' => 'Consulter le laboratoire',
-                'laboratory.orders.create' => 'Créer une demande d’analyse',
+                'laboratory.orders.create' => 'Créer une demande d\'analyse',
                 'laboratory.results.create' => 'Saisir un résultat',
                 'laboratory.results.validate' => 'Valider un résultat',
             ],
             'Imagerie' => [
-                'imaging.view' => 'Consulter l’imagerie',
-                'imaging.create' => 'Créer une demande d’imagerie',
+                'imaging.view' => 'Consulter l\'imagerie',
+                'imaging.create' => 'Créer une demande d\'imagerie',
                 'imaging.reports.create' => 'Rédiger un compte rendu',
             ],
             'Hospitalisation' => [
@@ -155,11 +155,11 @@ final class Rbac
                 'documents.download' => 'Télécharger un document',
             ],
             'Administration' => [
-                'audit.view' => 'Consulter le journal d’audit',
+                'audit.view' => 'Consulter le journal d\'audit',
                 'users.manage' => 'Gérer les utilisateurs',
                 'settings.manage' => 'Gérer les paramètres',
                 'roles.manage' => 'Modifier les rôles et permissions',
-                'sms.view' => 'Consulter l’historique SMS',
+                'sms.view' => 'Consulter l\'historique SMS',
                 'sms.send' => 'Envoyer un SMS',
             ],
         ];
@@ -278,7 +278,7 @@ final class Rbac
 
     /**
      * Libellés de TOUS les rôles, y compris ceux créés depuis l'écran
-     * Paramètres — contrairement à roleLabels(), qui ne connaît que les
+     * Paramètres : contrairement à roleLabels(), qui ne connaît que les
      * sept rôles d'origine.
      *
      * Mémorisé en mémoire pour la durée de la requête : cette méthode est

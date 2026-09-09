@@ -1,14 +1,14 @@
 @extends('dme::layouts.app')
 
-@section('title', 'Nouvelle demande d’imagerie')
+@section('title', 'Nouvelle demande d\'imagerie')
 
 @section('content')
-    <x-dme::page-header title="Nouvelle demande d’imagerie"
-                   :subtitle="$patient->fullName().' — '.$patient->patient_number"
+    <x-dme::page-header title="Nouvelle demande d'imagerie"
+                   :subtitle="$patient->fullName().'-'.$patient->patient_number"
                    :breadcrumbs="[
                        'Patients' => route('dme.patients.index'),
                        $patient->fullName() => route('dme.patients.show', $patient),
-                       'Demande d’imagerie' => null,
+                       'Demande d'imagerie' => null,
                    ]"/>
 
     <form action="{{ route('dme.imaging.store', $patient) }}" method="POST" novalidate>
@@ -23,7 +23,7 @@
             </legend>
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div>
-                    <label for="modality" class="k-label">Type d’examen <span class="text-red-600" aria-hidden="true">*</span></label>
+                    <label for="modality" class="k-label">Type d'examen <span class="text-red-600" aria-hidden="true">*</span></label>
                     <select id="modality" name="modality" required class="k-select">
                         @foreach (\Keneya\Dme\Models\ImagingOrder::MODALITIES as $value => $label)
                             <option value="{{ $value }}" @selected(old('modality') === $value)>{{ $label }}</option>
@@ -34,7 +34,7 @@
                 <div>
                     <label for="body_site" class="k-label">Région explorée</label>
                     <input id="body_site" name="body_site" type="text" maxlength="150" class="k-input"
-                           value="{{ old('body_site') }}" placeholder="Abdomen complet, thorax, genou droit…">
+                           value="{{ old('body_site') }}" placeholder="Abdomen complet, thorax, genou droit...">
                 </div>
                 <div>
                     <label for="priority" class="k-label">Urgence <span class="text-red-600" aria-hidden="true">*</span></label>
@@ -62,8 +62,8 @@
                 </div>
             </div>
             <p class="k-hint">
-                Un numéro d’accession est attribué automatiquement. Il servira de clé de rapprochement
-                lors d’une future intégration DICOM/PACS ; cette version ne stocke que les métadonnées
+                Un numéro d'accession est attribué automatiquement. Il servira de clé de rapprochement
+                lors d'une future intégration DICOM/PACS ; cette version ne stocke que les métadonnées
                 et les documents associés.
             </p>
         </fieldset>

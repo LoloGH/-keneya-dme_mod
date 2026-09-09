@@ -10,7 +10,7 @@
     </div>
 
     @if ($tabData['labOrders']->isEmpty())
-        <x-dme::empty-state icon="flask" title="Aucune demande d’analyse"
+        <x-dme::empty-state icon="flask" title="Aucune demande d'analyse"
                        message="Les demandes d'examens biologiques et leurs résultats apparaîtront ici."/>
     @else
         <ul class="divide-y divide-ink-100">
@@ -29,7 +29,7 @@
                         </div>
                         <span class="text-xs text-ink-500">
                             {{ $order->requested_at->translatedFormat('d M Y') }}
-                            · {{ $order->doctor?->displayName() ?? '—' }}
+                            · {{ $order->doctor?->displayName() ?? '-' }}
                         </span>
                     </div>
 
@@ -54,7 +54,7 @@
                                             <td class="font-medium text-ink-900">{{ $result->parameter }}</td>
                                             <td class="font-semibold tabular-nums">{{ $result->value }}</td>
                                             <td>{{ $result->unit }}</td>
-                                            <td class="text-xs text-ink-500">{{ $result->reference_range ?: '—' }}</td>
+                                            <td class="text-xs text-ink-500">{{ $result->reference_range ?: '-' }}</td>
                                             <td><x-dme::status-badge :status="$result->flag" :label="$result->flagLabel()"/></td>
                                         </tr>
                                     @empty

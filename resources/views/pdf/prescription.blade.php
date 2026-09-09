@@ -4,7 +4,7 @@
     {{-- Alerte allergie reportée sur le document imprimé (§22) --}}
     @if ($prescription->hasAllergyWarnings())
         <div class="alert">
-            <div class="alert-title">Allergies documentées — vigilance</div>
+            <div class="alert-title">Allergies documentées, vigilance</div>
             @foreach ($prescription->allergy_warnings as $warning)
                 <div class="small">
                     {{ $warning['medication'] }} ↔ {{ $warning['allergen'] }} ({{ $warning['severity_label'] }})
@@ -15,7 +15,7 @@
         <div class="alert">
             <div class="alert-title">Allergies connues du patient</div>
             @foreach ($patient->criticalAllergies() as $allergy)
-                <div class="small">{{ $allergy->allergen }} — {{ $allergy->severityLabel() }}</div>
+                <div class="small">{{ $allergy->allergen }} - {{ $allergy->severityLabel() }}</div>
             @endforeach
         </div>
     @endif
@@ -24,13 +24,13 @@
     <table width="100%">
         <tr>
             <td width="60%">
-                <span class="strong">{{ $prescription->doctor?->displayName() ?? '—' }}</span><br>
+                <span class="strong">{{ $prescription->doctor?->displayName() ?? '-' }}</span><br>
                 <span class="small muted">{{ $prescription->doctor?->speciality }}</span>
             </td>
             <td width="40%" class="small muted">
                 Date de prescription : {{ $prescription->issued_on->format('d/m/Y') }}<br>
                 @if ($prescription->valid_until)
-                    Valable jusqu’au {{ $prescription->valid_until->format('d/m/Y') }}
+                    Valable jusqu'au {{ $prescription->valid_until->format('d/m/Y') }}
                 @endif
             </td>
         </tr>
@@ -58,11 +58,11 @@
                         @if ($item->form)<br><span class="small muted">{{ $item->form }}</span>@endif
                         @if ($item->instructions)<br><span class="small muted">{{ $item->instructions }}</span>@endif
                     </td>
-                    <td>{{ $item->dosage ?: '—' }}</td>
-                    <td>{{ $item->frequency ?: '—' }}</td>
-                    <td>{{ $item->duration ?: '—' }}</td>
-                    <td>{{ $item->quantity ?: '—' }}</td>
-                    <td>{{ $item->route ?: '—' }}</td>
+                    <td>{{ $item->dosage ?: '-' }}</td>
+                    <td>{{ $item->frequency ?: '-' }}</td>
+                    <td>{{ $item->duration ?: '-' }}</td>
+                    <td>{{ $item->quantity ?: '-' }}</td>
+                    <td>{{ $item->route ?: '-' }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -112,7 +112,7 @@
                     <div class="sign-frame"></div>
                 @endif
                 <div class="sign-rule">
-                    <strong>{{ $prescription->doctor?->displayName() ?? '—' }}</strong>
+                    <strong>{{ $prescription->doctor?->displayName() ?? '-' }}</strong>
                     <span class="small muted">{{ $prescription->doctor?->speciality ?: 'Médecin prescripteur' }}</span>
                 </div>
             </td>

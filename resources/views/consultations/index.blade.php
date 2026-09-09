@@ -9,7 +9,7 @@
         <div class="min-w-56 flex-1">
             <label for="q" class="sr-only">Rechercher</label>
             <input id="q" type="search" name="q" value="{{ $filters['q'] ?? '' }}" class="k-input"
-                   placeholder="N° de consultation ou patient…">
+                   placeholder="N° de consultation ou patient...">
         </div>
         <div>
             <label for="status" class="sr-only">Statut</label>
@@ -58,8 +58,8 @@
                                     </span>
                                 </td>
                                 <td class="max-w-xs truncate">{{ $consultation->reason ?: $consultation->typeLabel() }}</td>
-                                <td>{{ $consultation->doctor?->displayName() ?? '—' }}</td>
-                                <td>{{ $consultation->service?->name ?? '—' }}</td>
+                                <td>{{ $consultation->doctor?->displayName() ?? '-' }}</td>
+                                <td>{{ $consultation->service?->name ?? '-' }}</td>
                                 <td><x-dme::status-badge :status="$consultation->status" :label="$consultation->statusLabel()"/></td>
                                 <td class="text-right">
                                     <a href="{{ route('dme.consultations.show', $consultation) }}" class="k-btn-ghost k-btn-sm">

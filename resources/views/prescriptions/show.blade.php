@@ -33,14 +33,14 @@
             <x-dme::icon name="alert" class="mt-0.5 h-5 w-5 shrink-0 text-red-600"/>
             <div>
                 <p class="text-sm font-semibold text-red-800">
-                    Contrôle d’allergie — {{ count($prescription->allergy_warnings) }} correspondance(s)
+                    Contrôle d'allergie - {{ count($prescription->allergy_warnings) }} correspondance(s)
                 </p>
                 <ul class="mt-1 space-y-0.5 text-sm text-red-700">
                     @foreach ($prescription->allergy_warnings as $warning)
                         <li>
                             <span class="font-medium">{{ $warning['medication'] }}</span>
                             ↔ allergie à <span class="font-medium">{{ $warning['allergen'] }}</span>
-                            ({{ $warning['severity_label'] }}) — {{ $warning['reason'] }}
+                            ({{ $warning['severity_label'] }}) - {{ $warning['reason'] }}
                         </li>
                     @endforeach
                 </ul>
@@ -89,7 +89,7 @@
                                     ] as $label => $value)
                                         <div>
                                             <dt class="text-xs text-ink-400">{{ $label }}</dt>
-                                            <dd class="text-ink-800">{{ $value ?: '—' }}</dd>
+                                            <dd class="text-ink-800">{{ $value ?: '-' }}</dd>
                                         </div>
                                     @endforeach
                                 </dl>
@@ -112,7 +112,7 @@
             {{-- Validation (§22) : confirmation explicite en cas d'alerte --}}
             @can('validate', $prescription)
                 <section class="k-card">
-                    <div class="k-card-header"><h2 class="k-card-title">Validation de l’ordonnance</h2></div>
+                    <div class="k-card-header"><h2 class="k-card-title">Validation de l'ordonnance</h2></div>
                     <form action="{{ route('dme.prescriptions.validate', $prescription) }}" method="POST" class="k-card-body space-y-3">
                         @csrf
                         @if ($prescription->hasAllergyWarnings())
@@ -120,7 +120,7 @@
                                 <input type="checkbox" name="acknowledge_allergy" value="1" required
                                        class="mt-0.5 h-4 w-4 rounded border-red-400 text-red-600">
                                 <span class="text-red-800">
-                                    Je confirme avoir pris connaissance de l’alerte allergie ci-dessus et
+                                    Je confirme avoir pris connaissance de l'alerte allergie ci-dessus et
                                     maintenir cette prescription en connaissance de cause.
                                 </span>
                             </label>
@@ -129,15 +129,15 @@
                                 <label for="allergy_justification" class="k-label">Justification clinique (recommandée)</label>
                                 <textarea id="allergy_justification" name="allergy_justification" rows="2" maxlength="1000"
                                           class="k-textarea"
-                                          placeholder="Absence d’alternative, allergie invalidée cliniquement, désensibilisation…"></textarea>
+                                          placeholder="Absence d'alternative, allergie invalidée cliniquement, désensibilisation..."></textarea>
                             </div>
                         @else
                             <p class="text-sm text-ink-600">
-                                Aucune correspondance n’a été trouvée entre les médicaments prescrits et les
+                                Aucune correspondance n'a été trouvée entre les médicaments prescrits et les
                                 allergies documentées du patient.
                             </p>
                         @endif
-                        <button type="submit" class="k-btn-primary">Valider l’ordonnance</button>
+                        <button type="submit" class="k-btn-primary">Valider l'ordonnance</button>
                     </form>
                 </section>
             @endcan
@@ -156,7 +156,7 @@
                 <dl class="k-card-body space-y-2.5 text-sm">
                     <div>
                         <dt class="text-xs text-ink-500">Prescripteur</dt>
-                        <dd class="font-medium text-ink-900">{{ $prescription->doctor?->displayName() ?? '—' }}</dd>
+                        <dd class="font-medium text-ink-900">{{ $prescription->doctor?->displayName() ?? '-' }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs text-ink-500">Validité</dt>

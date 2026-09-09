@@ -20,7 +20,7 @@ class ServiceSeeder extends Seeder
             ['code' => 'GYN', 'name' => 'Gynécologie-obstétrique', 'type' => 'clinical'],
             ['code' => 'CHIR', 'name' => 'Chirurgie générale', 'type' => 'clinical'],
             ['code' => 'URG', 'name' => 'Urgences', 'type' => 'clinical'],
-            ['code' => 'LAB', 'name' => 'Laboratoire d’analyses', 'type' => 'medico_technical'],
+            ['code' => 'LAB', 'name' => 'Laboratoire d\'analyses', 'type' => 'medico_technical'],
             ['code' => 'IMG', 'name' => 'Imagerie médicale', 'type' => 'medico_technical'],
             ['code' => 'PHAR', 'name' => 'Pharmacie', 'type' => 'medico_technical'],
             ['code' => 'ADM', 'name' => 'Accueil et admissions', 'type' => 'administrative'],

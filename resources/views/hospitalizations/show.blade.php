@@ -58,7 +58,7 @@
                                     @if ($event->content)
                                         <p class="mt-0.5 text-sm text-ink-600">{{ $event->content }}</p>
                                     @endif
-                                    <p class="mt-1 text-xs text-ink-400">{{ $event->recorder?->displayName() ?? '—' }}</p>
+                                    <p class="mt-1 text-xs text-ink-400">{{ $event->recorder?->displayName() ?? '-' }}</p>
                                 </div>
                             </li>
                         @endforeach
@@ -95,7 +95,7 @@
                             <textarea id="event_content" name="content" rows="3" maxlength="5000" class="k-textarea"></textarea>
                         </div>
                         <div class="sm:col-span-2">
-                            <button type="submit" class="k-btn-primary">Ajouter l’événement</button>
+                            <button type="submit" class="k-btn-primary">Ajouter l'événement</button>
                         </div>
                     </form>
                 </section>
@@ -121,7 +121,7 @@
                             @if ($note->content)
                                 <p class="text-sm text-ink-600">{{ $note->content }}</p>
                             @endif
-                            <p class="text-xs text-ink-400">{{ $note->nurse?->displayName() ?? '—' }}</p>
+                            <p class="text-xs text-ink-400">{{ $note->nurse?->displayName() ?? '-' }}</p>
                         </div>
                     @empty
                         <p class="text-sm text-ink-500">Aucun soin enregistré pour ce séjour.</p>
@@ -168,7 +168,7 @@
                                       maxlength="10000" class="k-textarea"></textarea>
                         </div>
                         <div class="sm:col-span-2">
-                            <label for="discharge_summary" class="k-label">Compte rendu d’hospitalisation</label>
+                            <label for="discharge_summary" class="k-label">Compte rendu d'hospitalisation</label>
                             <textarea id="discharge_summary" name="discharge_summary" rows="5" maxlength="20000"
                                       class="k-textarea"></textarea>
                         </div>
@@ -207,11 +207,11 @@
                 <dl class="k-card-body space-y-2.5 text-sm">
                     <div>
                         <dt class="text-xs text-ink-500">Service</dt>
-                        <dd class="font-medium text-ink-900">{{ $hospitalization->service?->name ?? '—' }}</dd>
+                        <dd class="font-medium text-ink-900">{{ $hospitalization->service?->name ?? '-' }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs text-ink-500">Médecin responsable</dt>
-                        <dd class="text-ink-800">{{ $hospitalization->doctor?->displayName() ?? '—' }}</dd>
+                        <dd class="text-ink-800">{{ $hospitalization->doctor?->displayName() ?? '-' }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs text-ink-500">Localisation</dt>
@@ -221,7 +221,7 @@
                         </dd>
                     </div>
                     <div>
-                        <dt class="text-xs text-ink-500">Motif d’admission</dt>
+                        <dt class="text-xs text-ink-500">Motif d'admission</dt>
                         <dd class="text-ink-800">{{ $hospitalization->admission_reason }}</dd>
                     </div>
                 </dl>
@@ -234,7 +234,7 @@
                         <div class="flex items-center justify-between gap-2 border-b border-ink-100 py-2 text-sm first:pt-0 last:border-0 last:pb-0">
                             <span class="text-xs text-ink-500">{{ $vital->measured_at->translatedFormat('d M · H:i') }}</span>
                             <span class="tabular-nums text-ink-800">
-                                {{ $vital->bloodPressure() ?: '—' }} mmHg
+                                {{ $vital->bloodPressure() ?: '-' }} mmHg
                                 @if ($vital->heart_rate) · {{ $vital->heart_rate }} bpm @endif
                             </span>
                         </div>

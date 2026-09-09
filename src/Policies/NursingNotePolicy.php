@@ -7,7 +7,7 @@ namespace Keneya\Dme\Policies;
 use Keneya\Dme\Contracts\DmeUser;
 use Illuminate\Database\Eloquent\Model;
 
-/** Soins infirmiers (§26) — transmissions non réinscriptibles. */
+/** Soins infirmiers (§26) : transmissions non réinscriptibles. */
 class NursingNotePolicy extends DomainPolicy
 {
     protected string $viewPermission = 'nursing.view';

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Schema;
  * à la création du compte ou depuis sa fiche.
  *
  * Un jour sans créneau (starts_at et ends_at nuls) est un jour de repos.
- * Cet horaire est déclaratif — il ne bascule jamais seul la garde
+ * Cet horaire est déclaratif, il ne bascule jamais seul la garde
  * (is_on_duty) : il sert de référence pour savoir quand un soignant
  * travaille normalement.
  */

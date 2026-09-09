@@ -98,8 +98,8 @@
                 <span>
                     Compte actif
                     <span class="block text-xs text-ink-500">
-                        Un compte désactivé ne peut plus se connecter, mais conserve l’intégralité de son
-                        historique et de ses signatures d’actes. Les comptes ne sont jamais supprimés.
+                        Un compte désactivé ne peut plus se connecter, mais conserve l'intégralité de son
+                        historique et de ses signatures d'actes. Les comptes ne sont jamais supprimés.
                     </span>
                 </span>
             </label>
@@ -163,16 +163,16 @@
                         <td class="py-1.5 pr-2">
                             <input type="checkbox" name="schedule[{{ $weekday }}][is_off]" value="1"
                                    @checked($isOff) class="h-4 w-4 rounded border-ink-300 text-clinic-600"
-                                   aria-label="{{ $label }} — repos">
+                                   aria-label="{{ $label }} : repos">
                         </td>
                         <td class="py-1.5 pr-2">
-                            <input type="time" name="schedule[{{ $weekday }}][starts_at]" aria-label="{{ $label }} — début"
+                            <input type="time" name="schedule[{{ $weekday }}][starts_at]" aria-label="{{ $label }} : début"
                                    value="{{ old("schedule.$weekday.starts_at", $existing && ! $existing->isRestDay() ? substr($existing->starts_at, 0, 5) : null) }}"
                                    class="k-input">
                             <x-dme::field-error name="schedule.{{ $weekday }}.starts_at"/>
                         </td>
                         <td class="py-1.5 pr-2">
-                            <input type="time" name="schedule[{{ $weekday }}][ends_at]" aria-label="{{ $label }} — fin"
+                            <input type="time" name="schedule[{{ $weekday }}][ends_at]" aria-label="{{ $label }} : fin"
                                    value="{{ old("schedule.$weekday.ends_at", $existing && ! $existing->isRestDay() ? substr($existing->ends_at, 0, 5) : null) }}"
                                    class="k-input">
                             <x-dme::field-error name="schedule.{{ $weekday }}.ends_at"/>
@@ -191,11 +191,11 @@
               'notes' => $period->notes,
           ])->all())) }})">
     <legend class="k-fieldset-legend">
-        <x-dme::icon name="calendar" class="h-4.5 w-4.5 text-clinic-600"/> Gardes planifiées à l’avance
+        <x-dme::icon name="calendar" class="h-4.5 w-4.5 text-clinic-600"/> Gardes planifiées à l'avance
     </legend>
     <p class="k-hint mb-3">
         Ces périodes prennent et terminent automatiquement la garde aux heures indiquées, en plus du bouton de
-        prise de garde manuelle. Seules les gardes qui n’ont pas encore commencé peuvent être modifiées ici.
+        prise de garde manuelle. Seules les gardes qui n'ont pas encore commencé peuvent être modifiées ici.
     </p>
 
     @if ($activeDutyPeriods->isNotEmpty())
@@ -206,7 +206,7 @@
                     <li>
                         Du {{ $period->starts_at->translatedFormat('d M à H:i') }}
                         au {{ $period->ends_at->translatedFormat('d M à H:i') }}
-                        @if ($period->notes) — {{ $period->notes }} @endif
+                        @if ($period->notes) - {{ $period->notes }} @endif
                     </li>
                 @endforeach
             </ul>
@@ -239,7 +239,7 @@
                     <label class="k-label" :for="'duty_notes_' + index">Note</label>
                     <input :id="'duty_notes_' + index" :name="`duty_periods[${index}][notes]`"
                            x-model="period.notes" type="text" maxlength="500" class="k-input"
-                           placeholder="Remplacement, astreinte…">
+                           placeholder="Remplacement, astreinte...">
                 </div>
             </div>
         </div>

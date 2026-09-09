@@ -262,7 +262,7 @@ class SecurityTest extends TestCase
         $this->assertContains(
             \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
             $middleware,
-            'Le middleware CSRF n’est pas appliqué aux routes web.',
+            'Le middleware CSRF n\'est pas appliqué aux routes web.',
         );
     }
 

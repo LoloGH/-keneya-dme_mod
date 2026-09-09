@@ -2,7 +2,7 @@
 <section class="k-card">
     <div class="k-card-header">
         <div>
-            <h2 class="k-card-title">Journal d’accès au dossier</h2>
+            <h2 class="k-card-title">Journal d'accès au dossier</h2>
             <p class="text-xs text-ink-500">
                 Registre en écriture seule : aucune entrée ne peut être modifiée ni supprimée.
             </p>
@@ -15,7 +15,7 @@
     </div>
 
     @if ($tabData['auditLogs']->isEmpty())
-        <x-dme::empty-state icon="clipboard" title="Aucune trace d’accès"
+        <x-dme::empty-state icon="clipboard" title="Aucune trace d'accès"
                        message="Les consultations et modifications de ce dossier seront journalisées ici."/>
     @else
         <div class="overflow-x-auto">
@@ -40,11 +40,11 @@
                             </td>
                             <td class="font-medium text-ink-900">{{ $log->causer?->displayName() ?? 'Système' }}</td>
                             <td class="text-xs">
-                                {{ \Keneya\Dme\Support\Rbac::allRoleLabels()[$log->causer_role] ?? ($log->causer_role ?: '—') }}
+                                {{ \Keneya\Dme\Support\Rbac::allRoleLabels()[$log->causer_role] ?? ($log->causer_role ?: '-') }}
                             </td>
                             <td>{{ $log->actionLabel() }}</td>
                             <td class="max-w-xs truncate text-xs text-ink-500">{{ $log->description }}</td>
-                            <td class="font-mono text-xs">{{ $log->ip_address ?: '—' }}</td>
+                            <td class="font-mono text-xs">{{ $log->ip_address ?: '-' }}</td>
                             <td>
                                 <x-dme::status-badge :status="$log->outcome"
                                     :label="$log->outcome === 'allowed' ? 'Autorisé' : ($log->outcome === 'denied' ? 'Refusé' : 'Échec')"/>

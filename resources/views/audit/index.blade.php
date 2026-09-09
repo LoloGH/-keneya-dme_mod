@@ -1,9 +1,9 @@
 @extends('dme::layouts.app')
 
-@section('title', 'Journal d’audit')
+@section('title', 'Journal d\'audit')
 
 @section('content')
-    <x-dme::page-header title="Journal d’audit"
+    <x-dme::page-header title="Journal d'audit"
                    subtitle="Registre en écriture seule : aucune entrée ne peut être modifiée ni supprimée, y compris par un administrateur."/>
 
     <form method="GET" class="k-card mb-4 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-6">
@@ -54,7 +54,7 @@
 
     <div class="k-card">
         @if ($logs->isEmpty())
-            <x-dme::empty-state icon="clipboard" title="Aucune entrée d’audit"
+            <x-dme::empty-state icon="clipboard" title="Aucune entrée d'audit"
                            message="Ajustez les filtres, ou attendez que des actions soient réalisées dans l'application."/>
         @else
             <div class="overflow-x-auto">
@@ -80,7 +80,7 @@
                                 </td>
                                 <td class="font-medium text-ink-900">{{ $log->causer?->displayName() ?? 'Système' }}</td>
                                 <td class="text-xs">
-                                    {{ \Keneya\Dme\Support\Rbac::allRoleLabels()[$log->causer_role] ?? ($log->causer_role ?: '—') }}
+                                    {{ \Keneya\Dme\Support\Rbac::allRoleLabels()[$log->causer_role] ?? ($log->causer_role ?: '-') }}
                                 </td>
                                 <td>{{ $log->actionLabel() }}</td>
                                 <td class="font-mono text-xs">
@@ -89,11 +89,11 @@
                                             {{ $log->patient->patient_number }}
                                         </a>
                                     @else
-                                        —
+                                        -
                                     @endif
                                 </td>
                                 <td class="max-w-sm truncate text-xs text-ink-500">{{ $log->description }}</td>
-                                <td class="font-mono text-xs">{{ $log->ip_address ?: '—' }}</td>
+                                <td class="font-mono text-xs">{{ $log->ip_address ?: '-' }}</td>
                                 <td>
                                     <x-dme::status-badge :status="$log->outcome"
                                         :label="$log->outcome === 'allowed' ? 'Autorisé' : ($log->outcome === 'denied' ? 'Refusé' : 'Échec')"/>

@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
- * API REST — patients (§43).
+ * API REST : patients (§43).
  *
  * Les autorisations passent par les mêmes policies que l'interface web :
  * l'API n'est pas une porte dérobée, un jeton n'accorde jamais plus que

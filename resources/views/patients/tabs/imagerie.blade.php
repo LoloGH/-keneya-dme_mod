@@ -1,7 +1,7 @@
 {{-- Imagerie (§24) --}}
 <section class="k-card">
     <div class="k-card-header">
-        <h2 class="k-card-title">Examens d’imagerie</h2>
+        <h2 class="k-card-title">Examens d'imagerie</h2>
         @can('imaging.create')
             <a href="{{ route('dme.imaging.create', $patient) }}" class="k-btn-primary k-btn-sm">
                 <x-dme::icon name="plus" class="h-3.5 w-3.5"/> Nouvelle demande
@@ -10,7 +10,7 @@
     </div>
 
     @if ($tabData['imagingOrders']->isEmpty())
-        <x-dme::empty-state icon="scan" title="Aucun examen d’imagerie"
+        <x-dme::empty-state icon="scan" title="Aucun examen d'imagerie"
                        message="Les demandes d'imagerie et leurs comptes rendus apparaîtront ici."/>
     @else
         <ul class="divide-y divide-ink-100">
@@ -21,14 +21,14 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <a href="{{ route('dme.imaging.show', $order) }}"
                                    class="text-sm font-medium text-clinic-700 hover:underline">
-                                    {{ $order->modalityLabel() }}{{ $order->body_site ? ' — '.$order->body_site : '' }}
+                                    {{ $order->modalityLabel() }}{{ $order->body_site ? '-'.$order->body_site : '' }}
                                 </a>
                                 <x-dme::status-badge :status="$order->status" :label="$order->statusLabel()"/>
                             </div>
                             <p class="mt-0.5 text-xs text-ink-500">
                                 <span class="font-mono">{{ $order->order_number }}</span>
                                 · {{ $order->requested_at->translatedFormat('d M Y') }}
-                                · {{ $order->doctor?->displayName() ?? '—' }}
+                                · {{ $order->doctor?->displayName() ?? '-' }}
                             </p>
                             @if ($order->indication)
                                 <p class="mt-1 text-sm text-ink-600"><span class="text-ink-400">Indication :</span> {{ $order->indication }}</p>

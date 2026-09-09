@@ -19,12 +19,12 @@
                                     @endif
                                 </p>
                                 <span class="text-xs text-ink-500">
-                                    {{ $history->year ?: $history->occurred_on?->format('Y') ?: '—' }}
+                                    {{ $history->year ?: $history->occurred_on?->format('Y') ?: '-' }}
                                 </span>
                             </div>
                             <p class="mt-0.5 text-xs text-ink-600">
-                                @if ($history->relative) <span class="font-medium">{{ $history->relative }}</span> — @endif
-                                @if ($history->facility) {{ $history->facility }} — @endif
+                                @if ($history->relative) <span class="font-medium">{{ $history->relative }}</span> - @endif
+                                @if ($history->facility) {{ $history->facility }} - @endif
                                 {{ $history->comment ?: $history->complications ?: '' }}
                             </p>
                         </div>
@@ -53,7 +53,7 @@
                 <div>
                     <label for="label" class="k-label">Intitulé <span class="text-red-600" aria-hidden="true">*</span></label>
                     <input id="label" name="label" type="text" required maxlength="200" class="k-input"
-                           placeholder="Pathologie, intervention, facteur…">
+                           placeholder="Pathologie, intervention, facteur...">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -80,7 +80,7 @@
                 <div x-show="category === 'family'" x-cloak>
                     <label for="relative" class="k-label">Parent concerné</label>
                     <input id="relative" name="relative" type="text" maxlength="100" class="k-input"
-                           placeholder="Père, mère, fratrie…">
+                           placeholder="Père, mère, fratrie...">
                 </div>
 
                 <div>

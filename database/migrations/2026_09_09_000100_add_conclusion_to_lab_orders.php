@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Schema;
  *
  * Les résultats sont saisis paramètre par paramètre, et c'est bien ainsi : une
  * valeur chiffrée avec son unité et ses bornes se compare, se trace, s'exporte.
- * Mais le laboratoire rend aussi une lecture d'ensemble — « hémogramme
- * compatible avec une anémie ferriprive » — qui n'appartient à aucune ligne en
+ * Mais le laboratoire rend aussi une lecture d'ensemble, « hémogramme
+ * compatible avec une anémie ferriprive », qui n'appartient à aucune ligne en
  * particulier et n'avait jusqu'ici nulle part où se poser.
  *
  * L'imagerie avait déjà la sienne (`dme_imaging_reports.conclusion`) ; le

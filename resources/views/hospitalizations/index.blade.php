@@ -9,7 +9,7 @@
         <div class="min-w-56 flex-1">
             <label for="q" class="sr-only">Rechercher</label>
             <input id="q" type="search" name="q" value="{{ $filters['q'] ?? '' }}" class="k-input"
-                   placeholder="N° de séjour ou patient…">
+                   placeholder="N° de séjour ou patient...">
         </div>
         <div>
             <label for="status" class="sr-only">Statut</label>
@@ -67,10 +67,10 @@
                                 </td>
                                 <td class="whitespace-nowrap">{{ $stay->admitted_at->translatedFormat('d M Y') }}</td>
                                 <td class="whitespace-nowrap">
-                                    {{ $stay->discharged_at?->translatedFormat('d M Y') ?? '—' }}
+                                    {{ $stay->discharged_at?->translatedFormat('d M Y') ?? '-' }}
                                 </td>
-                                <td>{{ $stay->service?->name ?? '—' }}</td>
-                                <td>{{ $stay->room ? $stay->room.' · '.$stay->bed : '—' }}</td>
+                                <td>{{ $stay->service?->name ?? '-' }}</td>
+                                <td>{{ $stay->room ? $stay->room.' · '.$stay->bed : '-' }}</td>
                                 <td><x-dme::status-badge :status="$stay->status" :label="$stay->statusLabel()"/></td>
                                 <td class="text-right">
                                     <a href="{{ route('dme.hospitalizations.show', $stay) }}" class="k-btn-ghost k-btn-sm">

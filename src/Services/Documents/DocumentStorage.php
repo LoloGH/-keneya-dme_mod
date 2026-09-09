@@ -20,7 +20,7 @@ use RuntimeException;
  *   - les fichiers vont sur un disque privé, jamais dans public/ ;
  *   - le nom de fichier est régénéré (aucune donnée patient dans le
  *     chemin, aucun risque de traversée de répertoire) ;
- *   - le chemin physique n'est jamais exposé — c'est la route contrôlée
+ *   - le chemin physique n'est jamais exposé, c'est la route contrôlée
  *     documents.download qui sert le fichier après vérification de la
  *     policy ;
  *   - un document remplacé n'est pas écrasé : une nouvelle version est

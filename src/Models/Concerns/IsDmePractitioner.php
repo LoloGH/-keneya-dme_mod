@@ -20,7 +20,7 @@ use Keneya\Dme\Models\UserWeeklySchedule;
  *
  * Le module partage la table `users` avec son application hôte : c'est le
  * même compte, la même session, la même ligne en base. Il ne peut donc pas
- * imposer son propre modèle utilisateur — mais il a besoin, de ce modèle
+ * imposer son propre modèle utilisateur, mais il a besoin, de ce modèle
  * quel qu'il soit, d'un petit nombre de relations et de réponses : à quel
  * service la personne est rattachée, son horaire, ses gardes, son nom
  * d'affichage, et si son compte est encore actif.
@@ -31,7 +31,7 @@ use Keneya\Dme\Models\UserWeeklySchedule;
  * le même comportement, sans duplication.
  *
  * Les colonnes correspondantes (`service_id`, `is_active`, `is_on_duty`,
- * `first_name`, `title`…) sont ajoutées à la table `users` par les
+ * `first_name`, `title`...) sont ajoutées à la table `users` par les
  * migrations du module, qu'elle appartienne au module ou à l'hôte.
  */
 trait IsDmePractitioner
@@ -55,7 +55,7 @@ trait IsDmePractitioner
      * Le compte est-il, d'après son horaire hebdomadaire type, censé être
      * en poste à l'instant présent ? Purement indicatif : contrairement à
      * is_on_duty, cet horaire ne conditionne aucun accès ni aucune
-     * visibilité — il aide seulement à repérer qui devrait être présent.
+     * visibilité, il aide seulement à repérer qui devrait être présent.
      */
     public function isScheduledNow(): bool
     {
@@ -72,7 +72,7 @@ trait IsDmePractitioner
 
     /**
      * De garde : un compte désactivé ne l'est jamais, quel que soit le
-     * drapeau — il n'a plus accès à l'application.
+     * drapeau, il n'a plus accès à l'application.
      */
     public function isOnDuty(): bool
     {
@@ -142,8 +142,8 @@ trait IsDmePractitioner
      * Un compte désactivé conserve son historique mais ne peut plus agir.
      *
      * La colonne `is_active` est posée par les migrations du module. Une
-     * base où elle manque encore — module installé, migrations pas encore
-     * jouées — ne doit pas verrouiller tout le monde : l'absence de valeur
+     * base où elle manque encore, module installé, migrations pas encore
+     * jouées, ne doit pas verrouiller tout le monde : l'absence de valeur
      * vaut compte actif.
      */
     public function isActive(): bool

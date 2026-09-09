@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Queue;
 use Keneya\Dme\Tests\TestCase;
 
 /**
- * Passerelle SMSGate — passerelle de production du projet.
+ * Passerelle SMSGate : passerelle de production du projet.
  *
  * Les échanges HTTP sont simulés : la suite valide le contrat REST
  * (endpoint, authentification, charge utile), la correspondance des
@@ -118,7 +118,7 @@ class SmsGateGatewayTest extends TestCase
     }
 
     // -----------------------------------------------------------------
-    // Correspondance des états — le cœur de l'exigence
+    // Correspondance des états, le cœur de l'exigence
     // -----------------------------------------------------------------
 
     /**

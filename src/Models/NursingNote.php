@@ -60,6 +60,6 @@ class NursingNote extends Model
 
     public function auditLabel(): string
     {
-        return 'Soin — '.$this->title;
+        return 'Soin - '.$this->title;
     }
 }

@@ -27,16 +27,16 @@
                         @foreach ($tabData['allergies'] as $allergy)
                             <tr class="{{ $allergy->isCritical() ? 'bg-red-50/60' : '' }}">
                                 <td class="font-medium text-ink-900">{{ $allergy->allergen }}</td>
-                                <td>{{ $allergy->reaction ?: '—' }}</td>
+                                <td>{{ $allergy->reaction ?: '-' }}</td>
                                 <td><x-dme::status-badge :status="$allergy->severity" :label="$allergy->severityLabel()"/></td>
-                                <td>{{ $allergy->observed_on?->translatedFormat('d M Y') ?: '—' }}</td>
+                                <td>{{ $allergy->observed_on?->translatedFormat('d M Y') ?: '-' }}</td>
                                 <td>
                                     <x-dme::status-badge :status="$allergy->status"
                                         :label="match ($allergy->status) {
                                             'active' => 'Active', 'resolved' => 'Résolue', default => 'Invalidée',
                                         }"/>
                                 </td>
-                                <td class="text-xs text-ink-500">{{ $allergy->recorder?->displayName() ?? '—' }}</td>
+                                <td class="text-xs text-ink-500">{{ $allergy->recorder?->displayName() ?? '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -53,7 +53,7 @@
                 <div>
                     <label for="allergen" class="k-label">Allergène <span class="text-red-600" aria-hidden="true">*</span></label>
                     <input id="allergen" name="allergen" type="text" required maxlength="150" class="k-input"
-                           placeholder="Pénicilline, iode, arachide…">
+                           placeholder="Pénicilline, iode, arachide...">
                 </div>
                 <div>
                     <label for="allergen_type" class="k-label">Type</label>
@@ -67,7 +67,7 @@
                 <div>
                     <label for="reaction" class="k-label">Réaction observée</label>
                     <input id="reaction" name="reaction" type="text" maxlength="255" class="k-input"
-                           placeholder="Urticaire, œdème de Quincke…">
+                           placeholder="Urticaire, œdème de Quincke...">
                 </div>
                 <div>
                     <label for="severity" class="k-label">Gravité <span class="text-red-600" aria-hidden="true">*</span></label>
@@ -91,7 +91,7 @@
                         <option value="refuted">Invalidée</option>
                     </select>
                 </div>
-                <button type="submit" class="k-btn-primary w-full">Enregistrer l’allergie</button>
+                <button type="submit" class="k-btn-primary w-full">Enregistrer l'allergie</button>
             </form>
         </section>
     @endcan

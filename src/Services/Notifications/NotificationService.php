@@ -28,7 +28,7 @@ use Illuminate\Support\Str;
  * décide des destinataires internes (notification) et externes (SMS
  * patient).
  *
- * Le texte du message reste une affaire du DME — il provient des modèles
+ * Le texte du message reste une affaire du DME : il provient des modèles
  * de texte de l'établissement. L'envoi, lui, ne l'est pas : il passe par
  * SmsDispatcherContract, sans que cette classe sache jamais qui l'assure.
  * C'est ce qui permettra à Keneya Workflow de fournir sa propre
@@ -120,7 +120,7 @@ class NotificationService
     }
 
     /**
-     * Rappel de rendez-vous — programmé la veille à la même heure.
+     * Rappel de rendez-vous : programmé la veille à la même heure.
      */
     public function appointmentReminder(Appointment $appointment): void
     {
@@ -182,7 +182,7 @@ class NotificationService
             permission: 'prescriptions.dispense',
             category: 'prescription',
             title: 'Ordonnance à délivrer',
-            message: $prescription->prescription_number.' — '.$patient->fullName(),
+            message: $prescription->prescription_number.'-'.$patient->fullName(),
             patient: $patient,
             actionUrl: route('dme.prescriptions.show', $prescription),
         );
@@ -208,7 +208,7 @@ class NotificationService
             user: $order->doctor,
             category: 'alert',
             title: 'Résultat critique',
-            message: $parameter.' = '.($value ?? '—').' pour '.$order->patient->fullName().'.',
+            message: $parameter.' = '.($value ?? '-').' pour '.$order->patient->fullName().'.',
             patient: $order->patient,
             actionUrl: route('dme.laboratory.show', $order),
             level: 'critical',

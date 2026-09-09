@@ -15,7 +15,7 @@ use Keneya\Dme\Tests\TestCase;
  * logiciel où l'on navigue toute la journée entre patients, laboratoire et
  * ordonnances, savoir où l'on se trouve n'est pas décoratif. Ce test le
  * vérifie parce qu'un préfixe de route mal calculé avait rendu toutes les
- * entrées actives en même temps — la barre ne disait donc plus rien.
+ * entrées actives en même temps : la barre ne disait donc plus rien.
  */
 class NavigationTest extends TestCase
 {

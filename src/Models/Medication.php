@@ -59,7 +59,7 @@ class Medication extends Model
 
     public function auditLabel(): string
     {
-        return 'Traitement habituel — '.$this->name;
+        return 'Traitement habituel - '.$this->name;
     }
 
     public function statusLabel(): string

@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * Contrôle d'allergie : les correspondances détectées sont enregistrées
  * dans `allergy_warnings` au moment de la validation. L'application
- * avertit et trace, mais ne retire jamais une ligne de prescription —
+ * avertit et trace, mais ne retire jamais une ligne de prescription :
  * la décision appartient au prescripteur.
  */
 class Prescription extends Model

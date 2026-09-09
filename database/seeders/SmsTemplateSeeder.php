@@ -24,7 +24,7 @@ class SmsTemplateSeeder extends Seeder
                 'name' => 'Rendez-vous programmé',
                 'body' => 'Keneya : Bonjour {{ patient_name }}, votre rendez-vous médical est prévu le {{ date }} à {{ time }}.',
                 'variables' => ['patient_name', 'date', 'time', 'doctor'],
-                'description' => 'Confirmation envoyée à la création d’un rendez-vous.',
+                'description' => 'Confirmation envoyée à la création d\'un rendez-vous.',
             ],
             [
                 'key' => 'appointment_reminder',
@@ -36,16 +36,16 @@ class SmsTemplateSeeder extends Seeder
             [
                 'key' => 'lab_result_available',
                 'name' => 'Résultat disponible',
-                'body' => 'Keneya : Votre résultat d’analyse est disponible. Présentez-vous avec votre pièce d’identité.',
+                'body' => 'Keneya : Votre résultat d\'analyse est disponible. Présentez-vous avec votre pièce d\'identité.',
                 'variables' => ['patient_name', 'reference'],
-                'description' => 'Aucun résultat clinique n’est transmis par SMS.',
+                'description' => 'Aucun résultat clinique n\'est transmis par SMS.',
             ],
             [
                 'key' => 'prescription_ready',
                 'name' => 'Ordonnance enregistrée',
                 'body' => 'Keneya : Votre ordonnance a été enregistrée. Référence : {{ reference }}.',
                 'variables' => ['patient_name', 'reference'],
-                'description' => 'Envoyé à la validation d’une ordonnance.',
+                'description' => 'Envoyé à la validation d\'une ordonnance.',
             ],
         ];
 

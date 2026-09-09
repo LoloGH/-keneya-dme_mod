@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Schema;
  * Soins programmés : la prescription de soin, distincte du soin réalisé.
  *
  * `nursing_notes` consigne ce qui a été fait ; cette table porte ce qui
- * est demandé — par qui, pour quand, à quelle fréquence, et à qui c'est
+ * est demandé : par qui, pour quand, à quelle fréquence, et à qui c'est
  * confié. Un soin sans destinataire nommé revient au personnel de garde
  * du service prescripteur, d'où la conservation de `service_id` sur la
  * ligne : le service du prescripteur peut changer, la portée du soin, non.

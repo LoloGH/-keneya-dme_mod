@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 /**
- * Patient — racine du dossier médical électronique.
+ * Patient : racine du dossier médical électronique.
  *
  * Correspondance FHIR visée : Patient (§44).
  *
@@ -79,7 +79,7 @@ class Patient extends Model
 
     public function auditLabel(): string
     {
-        return $this->patient_number.' — '.$this->fullName();
+        return $this->patient_number.'-'.$this->fullName();
     }
 
     // -----------------------------------------------------------------
@@ -265,7 +265,7 @@ class Patient extends Model
     }
 
     /**
-     * Allergies sévères actives — affichées en alerte permanente du DME (§13).
+     * Allergies sévères actives : affichées en alerte permanente du DME (§13).
      *
      * @return Collection<int, Allergy>
      */
@@ -279,7 +279,7 @@ class Patient extends Model
     }
 
     /**
-     * Pathologies chroniques actives — également affichées en alerte (§13).
+     * Pathologies chroniques actives : également affichées en alerte (§13).
      *
      * @return Collection<int, ChronicCondition>
      */

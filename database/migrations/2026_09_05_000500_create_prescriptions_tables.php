@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Schema;
  *
  * `allergy_warnings` conserve la trace du contrôle d'allergie effectué au
  * moment de la validation (§22) : l'application avertit mais ne supprime
- * jamais une ligne — la décision reste au prescripteur.
+ * jamais une ligne, la décision reste au prescripteur.
  */
 return new class extends Migration
 {
@@ -55,8 +55,8 @@ return new class extends Migration
 
             $table->string('medication_name');
             $table->string('dosage')->nullable();       // 500 mg
-            $table->string('form')->nullable();         // comprimé, sirop, injectable…
-            $table->string('route')->nullable();        // orale, IV, IM…
+            $table->string('form')->nullable();         // comprimé, sirop, injectable...
+            $table->string('route')->nullable();        // orale, IV, IM...
             $table->string('frequency')->nullable();    // 2 fois par jour
             $table->string('duration')->nullable();     // 7 jours
             $table->string('quantity')->nullable();     // 14 comprimés

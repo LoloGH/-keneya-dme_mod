@@ -15,7 +15,7 @@ namespace Keneya\Dme\Sms\Pipeline;
  * de « réellement envoyé ». C'est une exigence de sécurité de l'exploitant :
  * l'application ne doit jamais annoncer un SMS comme envoyé tant que le
  * fournisseur ne l'a pas confirmé. SMSGate, par exemple, répond d'abord
- * « Pending » — le message n'a alors même pas atteint le téléphone.
+ * « Pending » : le message n'a alors même pas atteint le téléphone.
  */
 final readonly class SmsResult
 {

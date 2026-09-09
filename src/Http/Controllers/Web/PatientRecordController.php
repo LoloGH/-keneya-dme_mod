@@ -17,7 +17,7 @@ use Illuminate\Validation\Rule;
 
 /**
  * Saisie des éléments du dossier depuis les onglets du DME
- * (antécédents, allergies, pathologies, traitements, constantes) — §16-20.
+ * (antécédents, allergies, pathologies, traitements, constantes) : §16-20.
  *
  * Chaque action vérifie la policy correspondante avant écriture : les
  * permissions ne sont jamais présumées à partir de l'affichage.
@@ -64,7 +64,7 @@ class PatientRecordController extends Controller
         // Une allergie sévère devient immédiatement une alerte permanente
         // du dossier (§17) et sera confrontée à toute nouvelle ordonnance.
         $message = $allergy->isCritical()
-            ? 'Allergie enregistrée — elle apparaît désormais en alerte du dossier.'
+            ? 'Allergie enregistrée : elle apparaît désormais en alerte du dossier.'
             : 'Allergie enregistrée.';
 
         return back()->with('success', $message);
@@ -159,6 +159,6 @@ class PatientRecordController extends Controller
 
         $patient->emergencyContacts()->create($data);
 
-        return back()->with('success', 'Contact d’urgence ajouté.');
+        return back()->with('success', 'Contact d\'urgence ajouté.');
     }
 }

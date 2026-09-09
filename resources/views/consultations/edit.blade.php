@@ -4,7 +4,7 @@
 
 @section('content')
     <x-dme::page-header title="Modifier la consultation"
-                   :subtitle="$consultation->consultation_number.' — '.$patient->fullName()"
+                   :subtitle="$consultation->consultation_number.'-'.$patient->fullName()"
                    :breadcrumbs="[
                        'Consultations' => route('dme.consultations.index'),
                        $consultation->consultation_number => route('dme.consultations.show', $consultation),

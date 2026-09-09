@@ -71,8 +71,8 @@ class HospitalizationController extends Controller
             'room' => ['nullable', 'string', 'max:50'],
             'bed' => ['nullable', 'string', 'max:50'],
         ], [], [
-            'admitted_at' => 'date d’admission',
-            'admission_reason' => 'motif d’admission',
+            'admitted_at' => 'date d\'admission',
+            'admission_reason' => 'motif d\'admission',
         ]);
 
         $hospitalization = DB::transaction(function () use ($request, $patient, $data): Hospitalization {
@@ -128,7 +128,7 @@ class HospitalizationController extends Controller
             'occurred_at' => ['required', 'date'],
             'title' => ['required', 'string', 'max:200'],
             'content' => ['nullable', 'string', 'max:5000'],
-        ], [], ['type' => 'type d’événement', 'title' => 'intitulé']);
+        ], [], ['type' => 'type d\'événement', 'title' => 'intitulé']);
 
         $hospitalization->events()->create($data + ['recorded_by' => $request->user()->id]);
 
@@ -150,7 +150,7 @@ class HospitalizationController extends Controller
             'discharge_summary' => ['nullable', 'string', 'max:20000'],
             'discharge_type' => ['required', Rule::in(['home', 'transfer', 'against_advice', 'deceased'])],
         ], [
-            'discharged_at.after' => 'La date de sortie doit être postérieure à l’admission.',
+            'discharged_at.after' => 'La date de sortie doit être postérieure à l\'admission.',
         ], [
             'discharged_at' => 'date de sortie',
             'discharge_diagnosis' => 'diagnostic de sortie',
@@ -163,7 +163,7 @@ class HospitalizationController extends Controller
             $hospitalization->events()->create([
                 'type' => 'discharge',
                 'occurred_at' => $data['discharged_at'],
-                'title' => 'Sortie — '.$data['discharge_diagnosis'],
+                'title' => 'Sortie - '.$data['discharge_diagnosis'],
                 'content' => $data['discharge_recommendations'] ?? null,
                 'recorded_by' => $request->user()->id,
             ]);

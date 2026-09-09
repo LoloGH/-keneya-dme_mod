@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Schema;
  * Consultations, constantes vitales, examen clinique et diagnostics.
  *
  * Correspondances FHIR visées (§44) :
- *   consultations → Encounter
- *   vital_signs   → Observation
- *   diagnoses     → Condition
+ *   consultations -> Encounter
+ *   vital_signs   -> Observation
+ *   diagnoses     -> Condition
  *
  * Historisation (§40) : les constantes ne sont jamais écrasées. Chaque
  * relevé crée une ligne datée et signée par son auteur, ce qui permet les
- * courbes d'évolution (poids, tension, glycémie…).
+ * courbes d'évolution (poids, tension, glycémie...).
  */
 return new class extends Migration
 {
@@ -78,7 +78,7 @@ return new class extends Migration
             $table->index('consultation_id');
         });
 
-        // §19 — examen clinique par appareil
+        // §19, examen clinique par appareil
         Schema::create('dme_clinical_notes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('consultation_id')->constrained('dme_consultations')->cascadeOnDelete();

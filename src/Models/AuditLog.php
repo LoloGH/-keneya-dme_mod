@@ -119,8 +119,8 @@ class AuditLog extends Model
             'deleted' => 'A supprimé',
             'downloaded' => 'A téléchargé',
             'printed' => 'A imprimé',
-            'login' => 'S’est connecté',
-            'logout' => 'S’est déconnecté',
+            'login' => 'S\'est connecté',
+            'logout' => 'S\'est déconnecté',
             'denied' => 'Accès refusé',
             default => (string) $this->action,
         };

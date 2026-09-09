@@ -53,7 +53,7 @@ class SmsContextTest extends TestCase
     {
         // Une implémentation hôte peut passer ce qu'elle veut : le module
         // ne doit jamais échouer sur un contexte qu'il ne comprend pas.
-        $context = SmsContext::parse('un texte libre venu d’ailleurs');
+        $context = SmsContext::parse('un texte libre venu d\'ailleurs');
 
         $this->assertNull($context->patientId);
         $this->assertNull($context->subjectType);

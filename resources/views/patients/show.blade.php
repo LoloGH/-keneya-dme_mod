@@ -83,7 +83,7 @@
                  seulement sur un dossier déjà archivé : le passage par
                  l'archive laisse le temps de se raviser, et rend le geste
                  délibéré. Le numéro de dossier doit être retapé, comme dans
-                 l'application hôte — cocher une case ne suffit pas à détruire
+                 l'application hôte : cocher une case ne suffit pas à détruire
                  un dossier médical. --}}
             @can('purge', $patient)
                 <details class="mt-4 rounded-lg border border-red-300 bg-red-50 p-3">
@@ -92,8 +92,8 @@
                     </summary>
 
                     <p class="mt-2 text-sm text-red-800">
-                        Le dossier et tout son contenu clinique — consultations, ordonnances,
-                        examens, hospitalisations, documents — seront détruits. Cette action est
+                        Le dossier et tout son contenu clinique, consultations, ordonnances,
+                        examens, hospitalisations, documents, seront détruits. Cette action est
                         irréversible. Seule la trace au journal d'audit subsistera.
                     </p>
 

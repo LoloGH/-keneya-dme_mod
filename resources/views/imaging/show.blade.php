@@ -3,7 +3,7 @@
 @section('title', 'Imagerie '.$order->order_number)
 
 @section('content')
-    <x-dme::page-header :title="$order->modalityLabel().($order->body_site ? ' — '.$order->body_site : '')"
+    <x-dme::page-header :title="$order->modalityLabel().($order->body_site ? '-'.$order->body_site : '')"
                    :subtitle="$order->order_number.' · demandé le '.$order->requested_at->translatedFormat('d F Y')"
                    :breadcrumbs="[
                        'Imagerie' => route('dme.imaging.index'),
@@ -143,7 +143,7 @@
                 <dl class="k-card-body space-y-2.5 text-sm">
                     <div>
                         <dt class="text-xs text-ink-500">Prescripteur</dt>
-                        <dd class="font-medium text-ink-900">{{ $order->doctor?->displayName() ?? '—' }}</dd>
+                        <dd class="font-medium text-ink-900">{{ $order->doctor?->displayName() ?? '-' }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs text-ink-500">Indication</dt>
@@ -156,8 +156,8 @@
                         </div>
                     @endif
                     <div>
-                        <dt class="text-xs text-ink-500">N° d’accession</dt>
-                        <dd class="font-mono text-xs text-ink-700">{{ $order->accession_number ?: '—' }}</dd>
+                        <dt class="text-xs text-ink-500">N° d'accession</dt>
+                        <dd class="font-mono text-xs text-ink-700">{{ $order->accession_number ?: '-' }}</dd>
                         <dd class="mt-0.5 text-[11px] text-ink-400">
                             Réservé à une future intégration DICOM/PACS.
                         </dd>

@@ -10,8 +10,8 @@
                 <span class="muted">Service :</span> {{ $consultation->service?->name ?? 'Non précisé' }}
             </td>
             <td width="50%" class="small">
-                <span class="muted">Médecin :</span> {{ $consultation->doctor?->displayName() ?? '—' }}<br>
-                <span class="muted">Spécialité :</span> {{ $consultation->doctor?->speciality ?? '—' }}<br>
+                <span class="muted">Médecin :</span> {{ $consultation->doctor?->displayName() ?? '-' }}<br>
+                <span class="muted">Spécialité :</span> {{ $consultation->doctor?->speciality ?? '-' }}<br>
                 <span class="muted">Statut :</span> {{ $consultation->statusLabel() }}
             </td>
         </tr>
@@ -39,14 +39,14 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ $vital->bloodPressure() ?: '—' }} mmHg</td>
-                    <td>{{ $vital->heart_rate ?: '—' }} bpm</td>
-                    <td>{{ $vital->temperature ?: '—' }} °C</td>
-                    <td>{{ $vital->oxygen_saturation ?: '—' }} %</td>
-                    <td>{{ $vital->weight ?: '—' }} kg</td>
-                    <td>{{ $vital->height ?: '—' }} cm</td>
-                    <td>{{ $vital->bmi ?: '—' }}</td>
-                    <td>{{ $vital->glycemia ?: '—' }} g/L</td>
+                    <td>{{ $vital->bloodPressure() ?: '-' }} mmHg</td>
+                    <td>{{ $vital->heart_rate ?: '-' }} bpm</td>
+                    <td>{{ $vital->temperature ?: '-' }} °C</td>
+                    <td>{{ $vital->oxygen_saturation ?: '-' }} %</td>
+                    <td>{{ $vital->weight ?: '-' }} kg</td>
+                    <td>{{ $vital->height ?: '-' }} cm</td>
+                    <td>{{ $vital->bmi ?: '-' }}</td>
+                    <td>{{ $vital->glycemia ?: '-' }} g/L</td>
                 </tr>
             </tbody>
         </table>
@@ -76,7 +76,7 @@
                 @foreach ($consultation->diagnoses as $diagnosis)
                     <tr>
                         <td class="strong">{{ $diagnosis->label }}</td>
-                        <td>{{ $diagnosis->code ?: '—' }}</td>
+                        <td>{{ $diagnosis->code ?: '-' }}</td>
                         <td>{{ match ($diagnosis->type) {
                             'primary' => 'Principal', 'secondary' => 'Associé', default => 'Différentiel',
                         } }}</td>

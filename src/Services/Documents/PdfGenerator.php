@@ -19,7 +19,7 @@ use Keneya\Dme\Models\Prescription;
  *
  * Chaque document porte l'établissement, le patient, la date, l'auteur,
  * sa référence métier et un QR code de vérification. Le PDF produit peut
- * être renvoyé au navigateur ou archivé dans le dossier du patient — dans
+ * être renvoyé au navigateur ou archivé dans le dossier du patient : dans
  * ce dernier cas il devient un MedicalDocument soumis aux mêmes règles
  * d'accès que les documents importés (§42).
  */
@@ -44,7 +44,7 @@ class PdfGenerator
      * Une application hote peut vouloir l'imprimer depuis le navigateur
      * plutot que de la telecharger. Elle doit alors sortir de la meme
      * composition, sinon l'etablissement diffuse deux documents differents
-     * sous le meme numero — c'est la raison d'etre de cette methode, et non
+     * sous le meme numero : c'est la raison d'etre de cette methode, et non
      * un second gabarit.
      */
     public function prescriptionView(Prescription $prescription): View
@@ -177,7 +177,7 @@ class PdfGenerator
      *
      * DomPDF lit le disque, un navigateur ne le peut pas : la signature, les
      * cachets et le logo arrivent en chemins absolus, ce qui convient au PDF
-     * mais donnerait des images cassees à l'écran. Ils sont donc encodés — et
+     * mais donnerait des images cassees à l'écran. Ils sont donc encodés, et
      * seulement pour ce rendu-là, pour ne pas alourdir chaque PDF de leur
      * transcription en base64.
      *

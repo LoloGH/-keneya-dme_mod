@@ -27,9 +27,9 @@
                         <p class="mt-1 text-sm text-ink-800">
                             {{ $stay->admitted_at->translatedFormat('d M Y') }}
                             @if ($stay->discharged_at)
-                                → {{ $stay->discharged_at->translatedFormat('d M Y') }}
+                                -> {{ $stay->discharged_at->translatedFormat('d M Y') }}
                             @else
-                                → en cours
+                                -> en cours
                             @endif
                             <span class="text-ink-400">· {{ $stay->lengthOfStay() }} jour(s)</span>
                         </p>

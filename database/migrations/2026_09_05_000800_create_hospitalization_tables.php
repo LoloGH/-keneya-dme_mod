@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Schema;
  * Correspondance FHIR visée : Encounter (classe « inpatient ») (§44).
  *
  * `hospitalization_events` matérialise la timeline du séjour demandée
- * en §25 (admission → observations → soins → examens → traitement →
- * évolution → sortie) sans dupliquer les données cliniques : chaque
+ * en §25 (admission -> observations -> soins -> examens -> traitement ->
+ * évolution -> sortie) sans dupliquer les données cliniques : chaque
  * événement peut référencer l'enregistrement d'origine.
  */
 return new class extends Migration
@@ -70,7 +70,7 @@ return new class extends Migration
             $table->index(['hospitalization_id', 'occurred_at']);
         });
 
-        // §26 — soins infirmiers
+        // §26, soins infirmiers
         Schema::create('dme_nursing_notes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();

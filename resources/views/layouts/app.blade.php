@@ -16,7 +16,7 @@
 <body class="h-full">
 <div class="min-h-full lg:flex" x-data="{ sidebarOpen: false }">
 
-    {{-- Navigation latérale (§9) — tiroir coulissant sous 1024px (§8) --}}
+    {{-- Navigation latérale (§9), tiroir coulissant sous 1024px (§8) --}}
     <div x-show="sidebarOpen" x-cloak
          class="fixed inset-0 z-30 bg-ink-900/50 lg:hidden"
          @click="sidebarOpen = false" aria-hidden="true"></div>
@@ -39,7 +39,7 @@
 
         <footer class="k-no-print border-t border-ink-200 px-4 py-4 text-xs text-ink-500 sm:px-6 lg:px-8">
             <div class="flex flex-wrap items-center justify-between gap-2">
-                <span>{{ \Keneya\Dme\Dme::facility()['name'] }} — Keneya-DME v{{ config('dme.version') }}</span>
+                <span>{{ \Keneya\Dme\Dme::facility()['name'] }} - Keneya-DME v{{ config('dme.version') }}</span>
                 {{-- La mention de démonstration reste tant que l'exploitant ne
                      l'a pas levée (`dme.documents.demo_notice`) : un jeu
                      d'essai pris pour un vrai dossier serait plus grave que

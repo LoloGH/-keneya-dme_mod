@@ -4,7 +4,7 @@
     /**
      * Badge d'état unifié (§49).
      *
-     * La correspondance état → couleur est centralisée ici afin qu'un
+     * La correspondance état -> couleur est centralisée ici afin qu'un
      * même statut soit toujours rendu de la même façon dans toute
      * l'application : « validé » ne peut pas être vert ici et gris ailleurs.
      */

@@ -23,7 +23,7 @@ final class PhoneNumber
 
         $countryCode ??= (string) config('dme.sms.default_country_code', '+223');
 
-        // Préfixe international « 00 » → « + »
+        // Préfixe international « 00 » -> « + »
         if (str_starts_with($number, '00')) {
             $number = '+'.mb_substr($number, 2);
         }

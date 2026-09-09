@@ -30,7 +30,7 @@ class CheckSmsGateway extends Command
 
         if ($gateways->isSimulated($name)) {
             $this->warn(
-                'Cette passerelle est une simulation : aucun SMS réel n’est émis. '
+                'Cette passerelle est une simulation : aucun SMS réel n\'est émis. '
                 .'Définissez SMS_GATEWAY=smsgate pour un envoi réel.'
             );
 

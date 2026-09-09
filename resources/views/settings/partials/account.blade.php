@@ -1,5 +1,5 @@
 {{-- Mon compte : informations et mot de passe. Partagé par les deux
-     variantes de l'écran Paramètres — l'administrateur a lui aussi un
+     variantes de l'écran Paramètres : l'administrateur a lui aussi un
      compte à gérer. --}}
 <div class="grid gap-4 lg:grid-cols-2">
 
@@ -13,11 +13,11 @@
                 @foreach ([
                     'Nom' => $user->displayName(),
                     'Adresse e-mail' => $user->email,
-                    'Matricule' => $user->matricule ?: '—',
-                    'Téléphone' => $user->phone ?: '—',
-                    'Service' => $user->service?->name ?: '—',
-                    'Spécialité' => $user->speciality ?: '—',
-                    'Rôle' => $roleLabels[$user->getRoleNames()->first()] ?? '—',
+                    'Matricule' => $user->matricule ?: '-',
+                    'Téléphone' => $user->phone ?: '-',
+                    'Service' => $user->service?->name ?: '-',
+                    'Spécialité' => $user->speciality ?: '-',
+                    'Rôle' => $roleLabels[$user->getRoleNames()->first()] ?? '-',
                 ] as $label => $value)
                     <div class="flex items-start justify-between gap-4 py-2">
                         <dt class="text-ink-500">{{ $label }}</dt>
@@ -27,13 +27,13 @@
                 <div class="flex items-start justify-between gap-4 py-2">
                     <dt class="text-ink-500">Dernière connexion</dt>
                     <dd class="text-right font-medium text-ink-900">
-                        {{ $user->last_login_at?->translatedFormat('d M Y · H:i') ?? '—' }}
+                        {{ $user->last_login_at?->translatedFormat('d M Y · H:i') ?? '-' }}
                     </dd>
                 </div>
             </dl>
 
             <p class="k-hint mt-3">
-                Ces informations sont tenues par l’administration. Signalez-lui toute erreur —
+                Ces informations sont tenues par l'administration. Signalez-lui toute erreur -
                 elles signent vos actes dans les dossiers patients.
             </p>
         </div>
@@ -68,8 +68,8 @@
                 </div>
 
                 <p class="k-hint">
-                    Les autres sessions ouvertes avec l’ancien mot de passe restent actives jusqu’à leur
-                    expiration ; prévenez l’administration si vous soupçonnez un accès non autorisé.
+                    Les autres sessions ouvertes avec l'ancien mot de passe restent actives jusqu'à leur
+                    expiration ; prévenez l'administration si vous soupçonnez un accès non autorisé.
                 </p>
 
                 <button type="submit" class="k-btn-primary w-full">
@@ -85,7 +85,7 @@
                     <div class="flex items-center justify-between gap-4">
                         <div>
                             <p class="text-sm font-medium text-ink-900">
-                                {{ $user->is_on_duty ? 'Vous êtes de garde' : 'Vous n’êtes pas de garde' }}
+                                {{ $user->is_on_duty ? 'Vous êtes de garde' : 'Vous n\'êtes pas de garde' }}
                             </p>
                             <p class="mt-0.5 text-xs text-ink-500">
                                 @if ($user->is_on_duty && $user->on_duty_since)
@@ -103,7 +103,7 @@
                         Un soin programmé sans soignant nommé est visible par le personnel de garde du
                         service prescripteur. Votre service : <strong>{{ $user->service?->name ?? 'non renseigné' }}</strong>.
                         @if ($user->service_id === null)
-                            Sans service d’affectation, aucun soin ouvert ne peut vous être présenté.
+                            Sans service d'affectation, aucun soin ouvert ne peut vous être présenté.
                         @endif
                     </p>
 

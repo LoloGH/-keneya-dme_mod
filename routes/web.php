@@ -47,7 +47,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 /*
-| Authentification locale — développement uniquement.
+| Authentification locale : développement uniquement.
 |
 | En fonctionnement normal, le module s'appuie sur la session déjà
 | authentifiée par l'application hôte : il n'expose ni page de connexion,
@@ -96,7 +96,7 @@ Route::middleware('auth')->group(function (): void {
     // Archiver range un dossier sans rien detruire, et se defait. Supprimer
     // detruit le dossier et tout son contenu clinique : verbe HTTP distinct,
     // permission distincte, et un dossier deja archive pour seul point de
-    // depart — on ne detruit pas un dossier actif d'un seul clic.
+    // depart, on ne detruit pas un dossier actif d'un seul clic.
     Route::patch('/patients/{patient}/archiver', [PatientController::class, 'archive'])
         ->name('patients.archive');
     Route::patch('/patients/{patient}/restaurer', [PatientController::class, 'restore'])

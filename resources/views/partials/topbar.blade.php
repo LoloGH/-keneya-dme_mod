@@ -25,7 +25,7 @@
             <input id="recherche-globale" type="search" name="q" x-model="term"
                    value="{{ request('q') }}"
                    @input="submitDebounced($event)"
-                   placeholder="Rechercher un patient, une ordonnance, un examen…"
+                   placeholder="Rechercher un patient, une ordonnance, un examen..."
                    class="k-input pl-10" autocomplete="off">
         </div>
     </form>

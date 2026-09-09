@@ -8,7 +8,7 @@ use Keneya\Dme\Contracts\DmeUser;
 use Keneya\Dme\Models\AuditLog;
 
 /**
- * Journal d'audit (§30) — append-only.
+ * Journal d'audit (§30) : append-only.
  *
  * Aucune permission de modification ni de suppression n'existe : pour un
  * utilisateur standard comme pour un administrateur, le journal est en

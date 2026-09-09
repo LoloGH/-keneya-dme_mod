@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 /**
- * API REST — sous-ressources du dossier patient (§43).
+ * API REST : sous-ressources du dossier patient (§43).
  */
 class PatientRecordApiController extends Controller
 {

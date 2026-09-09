@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\Schema;
  * Antécédents, allergies, pathologies chroniques et traitements habituels.
  *
  * Correspondances FHIR visées (§44) :
- *   allergies           → AllergyIntolerance
- *   chronic_conditions  → Condition
- *   medications         → MedicationStatement
+ *   allergies           -> AllergyIntolerance
+ *   chronic_conditions  -> Condition
+ *   medications         -> MedicationStatement
  */
 return new class extends Migration
 {
     public function up(): void
     {
-        // §16 — antécédents personnels, chirurgicaux, familiaux,
+        // §16, antécédents personnels, chirurgicaux, familiaux,
         // gynéco-obstétriques et facteurs de risque, dans une table unique
         // discriminée par `category` afin de garder l'historique homogène.
         Schema::create('dme_medical_histories', function (Blueprint $table) {
@@ -27,7 +27,7 @@ return new class extends Migration
             ]);
             $table->string('label');
             $table->string('code')->nullable();          // CIM-10 lorsque disponible
-            $table->string('code_system')->nullable();   // icd10, snomed…
+            $table->string('code_system')->nullable();   // icd10, snomed...
             $table->string('year')->nullable();
             $table->date('occurred_on')->nullable();
             $table->string('facility')->nullable();      // antécédents chirurgicaux
@@ -73,14 +73,14 @@ return new class extends Migration
             $table->index(['patient_id', 'status']);
         });
 
-        // §18 — traitements habituels (hors ordonnance ponctuelle)
+        // §18, traitements habituels (hors ordonnance ponctuelle)
         Schema::create('dme_medications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->constrained('dme_patients')->cascadeOnDelete();
             $table->string('name');
             $table->string('dosage')->nullable();
             $table->string('frequency')->nullable();
-            $table->string('route')->nullable();   // orale, IV, IM, cutanée…
+            $table->string('route')->nullable();   // orale, IV, IM, cutanée...
             $table->date('started_on')->nullable();
             $table->date('ended_on')->nullable();
             $table->foreignId('prescriber_id')->nullable()->constrained('users')->nullOnDelete();

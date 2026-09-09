@@ -6,7 +6,7 @@
     <p class="text-xs font-medium text-ink-500">{{ $label }}</p>
     <p class="mt-0.5 flex items-baseline gap-1">
         <span class="text-lg font-semibold {{ $abnormal ? 'text-amber-800' : 'text-ink-900' }}">
-            {{ $value ?? '—' }}
+            {{ $value ?? '-' }}
         </span>
         @if ($unit && $value !== null)
             <span class="text-xs text-ink-500">{{ $unit }}</span>

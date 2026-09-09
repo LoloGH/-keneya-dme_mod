@@ -84,10 +84,10 @@ class HostAccessTest extends TestCase
 
     public function test_le_resolveur_de_l_hote_prime_sur_la_configuration(): void
     {
-        // L'hôte accorde par capacité…
+        // L'hôte accorde par capacité...
         $this->grantHostAccess(true);
 
-        // … mais son résolveur, s'il en déclare un, fait autorité.
+        // ... mais son résolveur, s'il en déclare un, fait autorité.
         Dme::authorizeAccessUsing(static fn () => false);
 
         $this->actingAs($this->userWithRole(Rbac::ROLE_DOCTOR))

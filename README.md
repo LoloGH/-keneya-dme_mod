@@ -1,18 +1,18 @@
-# Keneya-DME — module
+# Keneya-DME : module
 
 **Module Laravel de Dossier Médical Électronique, destiné à être monté dans une
 application hôte** (Keneya Workflow). C'est la **phase 2** du développement en
 trois temps commencé avec `keneya-dme_app` :
 
 ```text
-keneya-dme_app          →   keneya-dme_mod          →   keneya_workflow
+keneya-dme_app          ->   keneya-dme_mod          ->   keneya_workflow
 (application autonome)      (module Laravel)            (plateforme Keneya)
         phase 1                  phase 2                    phase 3
 ```
 
-Le module apporte l'intégralité du dossier médical de la phase 1 — patients,
+Le module apporte l'intégralité du dossier médical de la phase 1, patients,
 consultations, prescriptions, laboratoire, imagerie, hospitalisation, soins
-infirmiers, soins programmés, rendez-vous, documents, notifications, audit — mais
+infirmiers, soins programmés, rendez-vous, documents, notifications, audit, mais
 il ne se comporte plus comme une application : il **s'installe chez un hôte**,
 et lui délègue trois choses qui ne sont pas de son ressort.
 
@@ -45,8 +45,8 @@ et lui délègue trois choses qui ne sont pas de son ressort.
 | **Envoi de SMS** | Pipeline interne appelé directement | Le code métier ne connaît que `SmsDispatcherContract`. |
 | **Identité du patient** | Créé dans le DME | Reçu déjà identifié, rapproché par `patient_identifiers`. |
 
-Ce qui **reste** au module : ses permissions internes (`Keneya\Dme\Support\Rbac` —
-qui peut créer une ordonnance, valider un résultat, voir le laboratoire…), son
+Ce qui **reste** au module : ses permissions internes (`Keneya\Dme\Support\Rbac`,
+qui peut créer une ordonnance, valider un résultat, voir le laboratoire...), son
 annuaire de praticiens, ses écrans, ses données cliniques et son journal d'audit.
 
 ---
@@ -80,7 +80,7 @@ php artisan db:seed --class="Keneya\Dme\Database\Seeders\DmeSeeder"
 Le fournisseur de services est découvert automatiquement. Il enregistre :
 
 - les routes web sous `/dme` et les routes API sous `/dme/api`, toutes nommées
-  `dme.*` — aucune collision possible avec celles de l'hôte ;
+  `dme.*`, aucune collision possible avec celles de l'hôte ;
 - les migrations du module, **additives et prudentes** : si l'hôte possède déjà
   une table `users`, `roles` ou `personal_access_tokens`, le module l'enrichit
   au lieu de la recréer ;
@@ -132,7 +132,7 @@ $patient = app(PatientIdentifierResolver::class)->resolve(
     attributes: [
         'last_name'  => $patientDeLHote->nom,
         'first_name' => $patientDeLHote->prenom,
-        'sex'        => $patientDeLHote->genre,   // M/F/homme/femme/male/female…
+        'sex'        => $patientDeLHote->genre,   // M/F/homme/femme/male/female...
         'age'        => $patientDeLHote->age,     // ou 'birth_date'
         'phone'      => $patientDeLHote->telephone,
     ],
@@ -174,8 +174,8 @@ Deux implémentations de repli sont fournies, le temps que le module vive seul :
 | `queued` (défaut) | `Sms\Pipeline\QueuedSmsDispatcher` | File d'attente interne : persistance, passerelle, historique, réessais. |
 | `log` | `Sms\LogSmsDispatcher` | Journalise, n'émet rien. |
 
-Tout le pipeline interne — file, passerelles SMSGate/log/array, écran
-d'historique, commandes de suivi — vit sous `src/Sms/Pipeline` et **pourra être
+Tout le pipeline interne, file, passerelles SMSGate/log/array, écran
+d'historique, commandes de suivi, vit sous `src/Sms/Pipeline` et **pourra être
 supprimé d'un bloc** le jour où l'hôte fournira son implémentation. L'écran SMS
 et les tâches planifiées associées disparaissent alors d'eux-mêmes. Un test
 structurel ([`tests/Unit/SmsDependencyBoundaryTest.php`](tests/Unit/SmsDependencyBoundaryTest.php))
@@ -193,9 +193,9 @@ L'intergiciel `dme.access` s'applique à **toutes** les routes web du module,
 avant toute vérification de permission interne. Il accepte trois formes
 d'autorisation, examinées dans cet ordre :
 
-1. le résolveur déclaré par l'hôte — `Dme::authorizeAccessUsing(...)` ;
-2. une capacité (Gate ou permission) — `dme.access.ability`, par défaut `dme.access` ;
-3. un attribut booléen porté par l'utilisateur — `dme.access.attribute`, par
+1. le résolveur déclaré par l'hôte - `Dme::authorizeAccessUsing(...)` ;
+2. une capacité (Gate ou permission) - `dme.access.ability`, par défaut `dme.access` ;
+3. un attribut booléen porté par l'utilisateur - `dme.access.attribute`, par
    défaut `can_access_dme`.
 
 **En l'absence de toute forme d'accord, l'accès est refusé.** Un administrateur
@@ -259,10 +259,10 @@ est celui de `DME_STANDALONE_USER_PASSWORD` dans `testbench.yaml`.
 > `composer dump-autoload`.** Ces commandes déclenchent
 > `testbench package:purge-skeleton`, qui remet l'application hôte à neuf : sa
 > base SQLite et ses assets publiés disparaissent avec elle. Le symptôme est
-> sans ambiguïté — `SQLSTATE[HY000]: no such table: users`, sur la connexion
+> sans ambiguïté - `SQLSTATE[HY000]: no such table: users`, sur la connexion
 > `testing` en mémoire. `composer build` reconstruit le tout.
 
-La suite de tests s'exécute dans cette même application hôte — donc dans la
+La suite de tests s'exécute dans cette même application hôte, donc dans la
 situation réelle du module, et non dans l'application autonome de la phase 1 :
 
 ```bash

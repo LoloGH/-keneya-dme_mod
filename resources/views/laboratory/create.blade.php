@@ -1,14 +1,14 @@
 @extends('dme::layouts.app')
 
-@section('title', 'Nouvelle demande d’analyse')
+@section('title', 'Nouvelle demande d\'analyse')
 
 @section('content')
-    <x-dme::page-header title="Nouvelle demande d’analyse"
-                   :subtitle="$patient->fullName().' — '.$patient->patient_number"
+    <x-dme::page-header title="Nouvelle demande d'analyse"
+                   :subtitle="$patient->fullName().'-'.$patient->patient_number"
                    :breadcrumbs="[
                        'Patients' => route('dme.patients.index'),
                        $patient->fullName() => route('dme.patients.show', $patient),
-                       'Demande d’analyse' => null,
+                       'Demande d'analyse' => null,
                    ]"/>
 
     <form action="{{ route('dme.laboratory.store', $patient) }}" method="POST" novalidate>
@@ -43,7 +43,7 @@
                 <div class="sm:col-span-3">
                     <label for="indication" class="k-label">Indication clinique</label>
                     <textarea id="indication" name="indication" rows="2" maxlength="1000" class="k-textarea"
-                              placeholder="Contexte justifiant la demande — il oriente l’interprétation du biologiste.">{{ old('indication') }}</textarea>
+                              placeholder="Contexte justifiant la demande, il oriente l'interprétation du biologiste.">{{ old('indication') }}</textarea>
                 </div>
             </div>
         </fieldset>

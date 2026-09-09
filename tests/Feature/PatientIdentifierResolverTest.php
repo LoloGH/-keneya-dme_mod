@@ -45,7 +45,7 @@ class PatientIdentifierResolverTest extends TestCase
         ]);
 
         $resolved = $this->resolver()->resolve(self::SYSTEM, 'WF-000123', [
-            'last_name' => 'Nom transmis par l’hôte',
+            'last_name' => 'Nom transmis par l\'hôte',
         ]);
 
         $this->assertTrue($resolved->is($patient));

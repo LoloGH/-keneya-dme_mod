@@ -37,7 +37,7 @@ return new class extends Migration
             $table->enum('status', ['requested', 'scheduled', 'performed', 'reported', 'cancelled'])
                 ->default('requested');
 
-            // Points d'accroche DICOM / PACS — non exploités en phase 1.
+            // Points d'accroche DICOM / PACS : non exploités en phase 1.
             $table->string('accession_number')->nullable()->unique();
             $table->string('study_instance_uid')->nullable();
 
