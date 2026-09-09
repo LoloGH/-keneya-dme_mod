@@ -88,7 +88,7 @@ class GlobalSearch
                 ->where('order_number', 'like', $like)
                 ->limit(self::PER_CATEGORY)->get()
                 ->map(fn (ImagingOrder $order) => [
-                    'title' => $order->order_number.'-'.$order->modalityLabel(),
+                    'title' => $order->order_number.' - '.$order->modalityLabel(),
                     'subtitle' => $order->patient->fullName(),
                     'url' => route('dme.imaging.show', $order),
                 ]));

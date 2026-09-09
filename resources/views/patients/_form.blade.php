@@ -187,7 +187,7 @@
                     @foreach ($doctors as $doctor)
                         <option value="{{ $doctor->id }}"
                             @selected((string) old('attending_doctor_id', $patient?->attending_doctor_id) === (string) $doctor->id)>
-                            {{ $doctor->displayName() }}{{ $doctor->speciality ? '-'.$doctor->speciality : '' }}
+                            {{ $doctor->displayName() }}{{ $doctor->speciality ? ' - '.$doctor->speciality : '' }}
                         </option>
                     @endforeach
                 </select>

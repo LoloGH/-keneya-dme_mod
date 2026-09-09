@@ -4,11 +4,11 @@
 
 @section('content')
     <x-dme::page-header title="Nouvelle demande d'imagerie"
-                   :subtitle="$patient->fullName().'-'.$patient->patient_number"
+                   :subtitle="$patient->fullName().' - '.$patient->patient_number"
                    :breadcrumbs="[
                        'Patients' => route('dme.patients.index'),
                        $patient->fullName() => route('dme.patients.show', $patient),
-                       'Demande d'imagerie' => null,
+                       'Demande d\'imagerie' => null,
                    ]"/>
 
     <form action="{{ route('dme.imaging.store', $patient) }}" method="POST" novalidate>

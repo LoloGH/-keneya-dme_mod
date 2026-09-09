@@ -4,11 +4,11 @@
 
 @section('content')
     <x-dme::page-header title="Nouvelle demande d'analyse"
-                   :subtitle="$patient->fullName().'-'.$patient->patient_number"
+                   :subtitle="$patient->fullName().' - '.$patient->patient_number"
                    :breadcrumbs="[
                        'Patients' => route('dme.patients.index'),
                        $patient->fullName() => route('dme.patients.show', $patient),
-                       'Demande d'analyse' => null,
+                       'Demande d\'analyse' => null,
                    ]"/>
 
     <form action="{{ route('dme.laboratory.store', $patient) }}" method="POST" novalidate>

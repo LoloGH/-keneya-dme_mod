@@ -79,7 +79,7 @@ class Patient extends Model
 
     public function auditLabel(): string
     {
-        return $this->patient_number.'-'.$this->fullName();
+        return $this->patient_number.' - '.$this->fullName();
     }
 
     // -----------------------------------------------------------------

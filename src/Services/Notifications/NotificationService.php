@@ -182,7 +182,7 @@ class NotificationService
             permission: 'prescriptions.dispense',
             category: 'prescription',
             title: 'Ordonnance à délivrer',
-            message: $prescription->prescription_number.'-'.$patient->fullName(),
+            message: $prescription->prescription_number.' - '.$patient->fullName(),
             patient: $patient,
             actionUrl: route('dme.prescriptions.show', $prescription),
         );

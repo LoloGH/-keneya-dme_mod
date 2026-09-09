@@ -48,6 +48,56 @@
     --color-ink-700: #334155;
     --color-ink-800: #1e293b;
     --color-ink-900: #0f172a;
+
+    /*
+     * Surface des cartes, des panneaux et des champs. Distincte du blanc pur :
+     * `text-white` doit rester blanc sur un bouton colore, quel que soit le
+     * theme, alors que la surface, elle, bascule.
+     */
+    --color-surface: #ffffff;
+}
+
+/*
+ * Thème sombre
+ * ---------------------------------------------------------------------
+ * Une seule bascule : toutes les surfaces et tous les textes du module
+ * passent par l'échelle « ink » et par `--color-surface`. Les redéfinir
+ * suffit, sans toucher à une seule classe des deux cent dix-huit gabarits.
+ *
+ * L'échelle s'inverse : `ink-900`, qui portait le texte, devient presque
+ * blanc ; `ink-200`, qui posait les filets, devient sombre. Les teintes
+ * d'action montent d'un cran, un bleu juste sur du blanc manquant de
+ * contraste sur une ardoise.
+ *
+ * `data-theme` est posé sur `<html>` par le bouton de la barre, et relu avant
+ * le premier rendu.
+ */
+[data-theme='sombre'] {
+    --color-surface: #141d2f;
+
+    --color-ink-50: #1a2439;
+    --color-ink-100: #0b1220;
+    --color-ink-200: #2a3752;
+    --color-ink-300: #3a4a68;
+    --color-ink-400: #778aa6;
+    --color-ink-500: #94a5bd;
+    --color-ink-600: #b0bfd4;
+    --color-ink-700: #ccd7e6;
+    --color-ink-800: #e3eaf4;
+    --color-ink-900: #f3f7fc;
+
+    --color-clinic-50: #16243c;
+    --color-clinic-100: #1e3356;
+    --color-clinic-600: #3b82f6;
+    --color-clinic-700: #60a5fa;
+    --color-clinic-800: #93c5fd;
+
+    --color-keneya-50: #10291f;
+    --color-keneya-100: #14332a;
+    --color-keneya-600: #10b981;
+    --color-keneya-700: #34d399;
+
+    color-scheme: dark;
 }
 
 @layer base {
@@ -77,7 +127,7 @@
      * Surfaces
      * --------------------------------------------------------------- */
     .k-card {
-        @apply rounded-xl border border-ink-200 bg-white shadow-sm;
+        @apply rounded-xl border border-ink-200 bg-surface shadow-sm;
     }
 
     .k-card-header {
@@ -112,7 +162,7 @@
         @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 py-2
                text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2
                disabled:cursor-not-allowed disabled:opacity-50
-               border border-ink-300 bg-white text-ink-700 hover:bg-ink-50;
+               border border-ink-300 bg-surface text-ink-700 hover:bg-ink-50;
     }
 
     .k-btn-ghost {
@@ -143,7 +193,7 @@
     .k-input,
     .k-select,
     .k-textarea {
-        @apply block w-full rounded-lg border border-ink-300 bg-white px-3 py-2 text-sm text-ink-900
+        @apply block w-full rounded-lg border border-ink-300 bg-surface px-3 py-2 text-sm text-ink-900
                shadow-sm transition placeholder:text-ink-400
                focus:border-clinic-500 focus:ring-2 focus:ring-clinic-200 focus:outline-none
                disabled:bg-ink-100;
@@ -162,7 +212,7 @@
     }
 
     .k-fieldset {
-        @apply space-y-4 rounded-xl border border-ink-200 bg-white p-4 sm:p-5;
+        @apply space-y-4 rounded-xl border border-ink-200 bg-surface p-4 sm:p-5;
     }
 
     .k-fieldset-legend {

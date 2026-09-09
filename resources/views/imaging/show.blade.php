@@ -3,7 +3,7 @@
 @section('title', 'Imagerie '.$order->order_number)
 
 @section('content')
-    <x-dme::page-header :title="$order->modalityLabel().($order->body_site ? '-'.$order->body_site : '')"
+    <x-dme::page-header :title="$order->modalityLabel().($order->body_site ? ' - '.$order->body_site : '')"
                    :subtitle="$order->order_number.' · demandé le '.$order->requested_at->translatedFormat('d F Y')"
                    :breadcrumbs="[
                        'Imagerie' => route('dme.imaging.index'),

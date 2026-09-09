@@ -79,7 +79,7 @@ class MedicalDocument extends Model
 
     public function auditLabel(): string
     {
-        return 'Document '.$this->document_number.'-'.$this->title;
+        return 'Document '.$this->document_number.' - '.$this->title;
     }
 
     public function patient(): BelongsTo

@@ -21,7 +21,7 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <a href="{{ route('dme.imaging.show', $order) }}"
                                    class="text-sm font-medium text-clinic-700 hover:underline">
-                                    {{ $order->modalityLabel() }}{{ $order->body_site ? '-'.$order->body_site : '' }}
+                                    {{ $order->modalityLabel() }}{{ $order->body_site ? ' - '.$order->body_site : '' }}
                                 </a>
                                 <x-dme::status-badge :status="$order->status" :label="$order->statusLabel()"/>
                             </div>

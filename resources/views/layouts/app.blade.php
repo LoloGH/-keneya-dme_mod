@@ -10,6 +10,31 @@
     <link rel="icon" href="{{ \Keneya\Dme\Dme::asset('assets/logo_kdme.png') }}">
     {{-- Feuilles de style et scripts du module, publiés dans le
          répertoire public de l'hôte (vendor:publish --tag=dme-assets). --}}
+    {{-- Le thème, relu avant le premier rendu.
+
+         Une page peinte en clair puis basculée en sombre donne un éclair blanc
+         à chaque navigation. Ce script est donc volontairement en ligne et
+         bloquant, avant la feuille de style.
+
+         La clé est celle de l'application hôte : un praticien qui règle son
+         poste dans WorkFlow retrouve le même thème en entrant dans le dossier
+         médical, sans avoir à le régler deux fois. --}}
+    <script>
+        (function () {
+            try {
+                var choix = localStorage.getItem('keneya.theme');
+                if (! choix) {
+                    choix = window.matchMedia('(prefers-color-scheme: dark)').matches
+                        ? 'sombre'
+                        : 'clair';
+                }
+                document.documentElement.dataset.theme = choix;
+            } catch (e) {
+                // Stockage refusé : la page reste dans le thème clair.
+            }
+        })();
+    </script>
+
     <link rel="stylesheet" href="{{ \Keneya\Dme\Dme::asset('build/app.css') }}">
     <script src="{{ \Keneya\Dme\Dme::asset('build/app.js') }}" defer></script>
 </head>
@@ -21,7 +46,7 @@
          class="fixed inset-0 z-30 bg-ink-900/50 lg:hidden"
          @click="sidebarOpen = false" aria-hidden="true"></div>
 
-    <aside class="fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-ink-200 bg-white
+    <aside class="fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-ink-200 bg-surface
                   transition-transform lg:static lg:translate-x-0"
            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
            x-cloak
