@@ -98,6 +98,37 @@ class PatientIdentifierResolver
     }
 
     /**
+     * Met à jour un dossier avec les champs que l'hôte possède.
+     *
+     * L'hôte corrige une identité chez lui (un nom mal orthographié, un numéro
+     * qui a changé) et doit pouvoir la répercuter ici. Il ne peut pas le faire
+     * en écrivant directement : le module normalise le sexe, découpe le nom et
+     * garde des contraintes que l'hôte ignore. Écrire « Homme » dans `sex`
+     * casserait la contrainte de colonne.
+     *
+     * D'où ce point d'entrée : l'hôte fournit ses valeurs telles qu'il les
+     * tient, le module les traduit comme il le fait déjà à la création.
+     *
+     * Seuls les champs transmis bougent, et seulement ceux que l'hôte possède.
+     * Rien de clinique : ni groupe sanguin, ni antécédent, ni médecin
+     * traitant. Le sens reste unique.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    public function sync(Patient $patient, array $attributes): Patient
+    {
+        $traduits = $this->patientAttributes($attributes);
+
+        // La date de naissance ne se réécrit pas depuis un âge approché : une
+        // estimation ne doit pas écraser une date d'état civil déjà saisie.
+        unset($traduits['birth_date'], $traduits['birth_date_estimated'], $traduits['status']);
+
+        $patient->update($traduits);
+
+        return $patient->fresh();
+    }
+
+    /**
      * Retrouve le patient DME d'un identifiant externe, sans rien créer.
      */
     public function find(string $system, string $value): ?Patient
