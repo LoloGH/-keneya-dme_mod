@@ -27,6 +27,7 @@ et lui délègue trois choses qui ne sont pas de son ressort.
 - [Installation dans une application hôte](#installation-dans-une-application-hôte)
 - [Câblage minimal côté hôte](#câblage-minimal-côté-hôte)
 - [Liaison des patients](#liaison-des-patients)
+- [Suppression d'un dossier](#suppression-dun-dossier)
 - [Envoi de SMS](#envoi-de-sms)
 - [Contrôle d'accès](#contrôle-daccès)
 - [Mode autonome de développement](#mode-autonome-de-développement)
@@ -151,6 +152,50 @@ Trois garanties, couvertes par les tests :
 
 Un âge sans date de naissance produit une date **explicitement marquée comme
 estimée** : une approximation ne doit jamais passer pour de l'état civil.
+
+---
+
+## Suppression d'un dossier
+
+Supprimer définitivement un dossier médical passe par
+`Keneya\Dme\Services\Patients\PurgePatient`, et **jamais par une séquence
+écrite ailleurs** :
+
+```php
+use Keneya\Dme\Services\Patients\PurgePatient;
+
+app(PurgePatient::class)->purge(
+    patient: $dossier,
+    reason: 'Doublon avec PAT-2026-000042.',
+    origin: 'suppression du dossier WorkFlow HFD-00001 par Awa Diarra', // facultatif
+);
+```
+
+Deux appelants existent, et c'est la raison d'être de la classe : l'écran
+« Supprimer définitivement » du module, et l'application hôte quand elle
+supprime le dossier patient dont ce dossier médical dépend. Recopiée des deux
+côtés, la séquence aurait divergé — et l'écart se serait vu sous la seule forme
+qui compte, des données de santé restées en base après qu'un administrateur a
+lu « dossier supprimé ».
+
+L'ordre des étapes n'est pas négociable :
+
+1. **journaliser d'abord** (`AuditLog::record(action: 'purged', ...)`). Après,
+   il ne reste plus rien à désigner ; le journal ne porte aucune clé étrangère
+   vers le patient et lui survit ;
+2. **relever les chemins** des documents pendant qu'ils sont encore lisibles ;
+3. **effacer en transaction** ce que la cascade de la base n'emporte pas —
+   `dme_sms_messages` et `dme_notifications` ne portent qu'un index, pas de clé
+   étrangère — puis le dossier par `forceDelete()`. Un `delete()` le ferait
+   seulement disparaître des écrans, tout le contenu clinique restant en base ;
+4. **effacer les fichiers ensuite seulement.** Le disque ne sait pas revenir en
+   arrière : supprimés à l'intérieur de la transaction, ils seraient détruits
+   même quand celle-ci échoue plus loin.
+
+Le service ne décide de rien d'autre. Ni permission, ni confirmation, ni
+passage préalable par l'archive : ces garde-fous appartiennent à l'écran qui
+appelle, et ils ne sont pas les mêmes des deux côtés. Il refuse en revanche un
+motif vide, l'écran n'étant plus son seul appelant.
 
 ---
 

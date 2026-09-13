@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace Keneya\Dme\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Keneya\Dme\Models\Consultation;
+use Keneya\Dme\Models\MedicalDocument;
 use Keneya\Dme\Models\Patient;
 use Keneya\Dme\Models\PatientIdentifier;
 use Keneya\Dme\Models\Prescription;
+use Keneya\Dme\Models\SmsMessage;
 use Keneya\Dme\Support\Rbac;
 use Keneya\Dme\Tests\TestCase;
 
@@ -209,5 +214,151 @@ class PatientRemovalTest extends TestCase
 
         $this->assertStringContainsString($numero, $trace->description);
         $this->assertStringContainsString('Dossier cree par erreur.', $trace->description);
+    }
+
+    // ------------------------------------------------ Contenu hors cascade
+
+    /**
+     * Le contenu que la cascade de la base n'emporte pas.
+     *
+     * Trois choses portent un `patient_id` sans cle etrangere : les SMS, les
+     * notifications et le journal d'audit. Le journal doit survivre, les deux
+     * autres doivent partir — ils ne le faisaient pas avant que la sequence
+     * soit ecrite, et restaient a designer un dossier disparu.
+     */
+    public function test_la_suppression_emporte_les_sms_et_les_notifications(): void
+    {
+        $patient = $this->dossierComplet();
+        $patient->update(['status' => 'archived']);
+
+        SmsMessage::create([
+            'reference' => 'SMS-TEST-0001',
+            'recipient' => '+22376000000',
+            'body' => 'Votre resultat est disponible.',
+            'patient_id' => $patient->getKey(),
+            'status' => 'sent',
+        ]);
+
+        DB::table('dme_notifications')->insert([
+            'id' => (string) Str::uuid(),
+            'type' => 'lab_result',
+            'notifiable_type' => 'user',
+            'notifiable_id' => 1,
+            'data' => '{}',
+            'patient_id' => $patient->getKey(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->actingAs($this->userWithRole(Rbac::ROLE_ADMIN))
+            ->delete(route('dme.patients.destroy', $patient), [
+                'patient_number' => $patient->patient_number,
+                'reason' => 'Dossier cree par erreur.',
+            ])
+            ->assertRedirect(route('dme.patients.index'));
+
+        $this->assertDatabaseCount('dme_sms_messages', 0);
+        $this->assertDatabaseCount('dme_notifications', 0);
+    }
+
+    /**
+     * Tous les documents quittent le disque, pas seulement un.
+     *
+     * La sequence relevait les chemins par `pluck('storage_path', 'disk')` :
+     * la cle d'un pluck etant unique et tous les documents d'un dossier
+     * vivant sur le meme disque, un dossier de trois documents n'en voyait
+     * qu'un seul partir. Les deux autres restaient sur le volume, lisibles
+     * pour qui y a acces, apres la disparition de la ligne qui les designait.
+     */
+    public function test_la_suppression_emporte_tous_les_fichiers_du_disque(): void
+    {
+        Storage::fake('local');
+
+        $patient = $this->dossierComplet();
+        $patient->update(['status' => 'archived']);
+
+        $chemins = [];
+
+        foreach (['compte-rendu', 'echographie', 'bilan'] as $rang => $nom) {
+            $chemin = 'medical-documents/'.$patient->getKey().'/'.$nom.'.pdf';
+            Storage::disk('local')->put($chemin, 'Contenu du document.');
+
+            MedicalDocument::create([
+                'patient_id' => $patient->getKey(),
+                'title' => $nom,
+                'type' => 'imported',
+                'disk' => 'local',
+                'storage_path' => $chemin,
+                'status' => 'final',
+                'is_generated' => false,
+            ]);
+
+            $chemins[] = $chemin;
+        }
+
+        $this->actingAs($this->userWithRole(Rbac::ROLE_ADMIN))
+            ->delete(route('dme.patients.destroy', $patient), [
+                'patient_number' => $patient->patient_number,
+                'reason' => 'Dossier cree par erreur.',
+            ])
+            ->assertRedirect(route('dme.patients.index'));
+
+        $this->assertDatabaseCount('dme_medical_documents', 0);
+
+        foreach ($chemins as $chemin) {
+            Storage::disk('local')->assertMissing($chemin);
+        }
+    }
+
+    /**
+     * L'echec de la transaction ne doit detruire aucun fichier.
+     *
+     * Les fichiers partent apres la transaction, et non dedans : le disque ne
+     * sait pas revenir en arriere. Supprimes a l'interieur, ils seraient
+     * detruits meme quand la transaction echoue ensuite — l'administrateur
+     * verrait une erreur, en conclurait que rien n'a bouge, et le dossier
+     * aurait perdu ses documents.
+     */
+    public function test_une_suppression_qui_echoue_ne_detruit_aucun_fichier(): void
+    {
+        Storage::fake('local');
+
+        $patient = $this->dossierComplet();
+        $chemin = 'medical-documents/'.$patient->getKey().'/compte-rendu.pdf';
+        Storage::disk('local')->put($chemin, 'Contenu du document.');
+
+        MedicalDocument::create([
+            'patient_id' => $patient->getKey(),
+            'title' => 'Compte rendu',
+            'type' => 'imported',
+            'disk' => 'local',
+            'storage_path' => $chemin,
+            'status' => 'final',
+            'is_generated' => false,
+        ]);
+
+        // Le dossier est encore actif : la policy refuse la purge, et le
+        // service n'est jamais atteint. Rien ne doit avoir bouge sur le
+        // disque non plus.
+        $this->actingAs($this->userWithRole(Rbac::ROLE_ADMIN))
+            ->delete(route('dme.patients.destroy', $patient), [
+                'patient_number' => $patient->patient_number,
+                'reason' => 'Doublon.',
+            ])
+            ->assertForbidden();
+
+        Storage::disk('local')->assertExists($chemin);
+    }
+
+    public function test_un_motif_vide_ne_passe_pas_par_le_service(): void
+    {
+        $patient = $this->dossierComplet();
+
+        // Le service refuse aussi de son cote : l'ecran valide deja le motif,
+        // mais il n'est plus le seul appelant depuis que l'application hote
+        // supprime le dossier medical avec le dossier patient.
+        $this->expectException(\InvalidArgumentException::class);
+
+        app(\Keneya\Dme\Services\Patients\PurgePatient::class)->purge($patient, '   ');
     }
 }
