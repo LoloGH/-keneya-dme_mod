@@ -40,6 +40,11 @@ class StorePatientRequest extends FormRequest
             'nationality' => ['nullable', 'string', 'max:100'],
             'marital_status' => ['nullable', 'string', 'max:50'],
             'occupation' => ['nullable', 'string', 'max:100'],
+            // Recommandé, jamais exigé : un patient arrivé sans papiers doit
+            // avoir un dossier. Pas d'unicité non plus — deux dossiers portant
+            // le même numéro sont un doublon à examiner, pas une saisie à
+            // rejeter devant quelqu'un qui attend.
+            'id_card_number' => ['nullable', 'string', 'max:60'],
 
             'phone' => ['nullable', 'string', 'max:30'],
             'phone_secondary' => ['nullable', 'string', 'max:30'],
@@ -56,7 +61,10 @@ class StorePatientRequest extends FormRequest
             // Contact d'urgence : facultatif à la création (§12)
             'emergency_contact.name' => ['nullable', 'string', 'max:150'],
             'emergency_contact.relationship' => ['nullable', 'string', 'max:100'],
-            'emergency_contact.phone' => ['nullable', 'required_with:emergency_contact.name', 'string', 'max:30'],
+            // Le téléphone n'est plus exigé avec le nom : l'accueil enregistre
+            // des accompagnateurs sans numéro, et un nom accompagné d'un lien
+            // de parenté dit déjà qui chercher dans la salle d'attente.
+            'emergency_contact.phone' => ['nullable', 'string', 'max:30'],
 
             // Informations médicales de premier niveau
             'known_allergies' => ['nullable', 'string', 'max:500'],
@@ -71,6 +79,7 @@ class StorePatientRequest extends FormRequest
     {
         return [
             'last_name' => 'nom',
+            'id_card_number' => "numéro de la carte d'identité",
             'first_name' => 'prénom',
             'sex' => 'sexe',
             'birth_date' => 'date de naissance',

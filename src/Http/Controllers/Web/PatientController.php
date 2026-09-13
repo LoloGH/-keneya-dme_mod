@@ -164,9 +164,16 @@ class PatientController extends Controller
 
     public function update(StorePatientRequest $request, Patient $patient): RedirectResponse
     {
-        $patient->update($request->safe()->except([
-            'emergency_contact', 'known_allergies', 'chronic_conditions',
-        ]));
+        DB::transaction(function () use ($request, $patient): void {
+            $patient->update($request->safe()->except([
+                'emergency_contact', 'known_allergies', 'chronic_conditions',
+            ]));
+
+            // La personne à prévenir se saisissait au formulaire de
+            // modification, mais n'y était jamais enregistrée : le champ
+            // s'affichait, se remplissait, et disparaissait à l'envoi.
+            $this->attachEmergencyContact($request, $patient);
+        });
 
         return redirect()->route('dme.patients.show', $patient)
             ->with('success', 'Dossier mis à jour.');
@@ -446,21 +453,41 @@ class PatientController extends Controller
     }
 
     /**
+     * Enregistre la personne à prévenir saisie au formulaire, à la création
+     * comme à la modification.
+     *
+     * Le même nom ne crée pas un second contact : on le retrouve et on le met
+     * à jour. Un dossier finissait sinon par porter trois fois la même sœur,
+     * avec trois numéros dont on ne savait plus lequel était le bon.
+     */
+    private function attachEmergencyContact(StorePatientRequest $request, Patient $patient): void
+    {
+        $contact = $request->input('emergency_contact', []);
+
+        if (blank($contact['name'] ?? null)) {
+            return;
+        }
+
+        $patient->emergencyContacts()->updateOrCreate(
+            ['name' => $contact['name']],
+            [
+                'relationship' => $contact['relationship'] ?? null,
+                'phone' => $contact['phone'] ?? null,
+                'is_primary' => ! $patient->emergencyContacts()
+                    ->where('name', '!=', $contact['name'])
+                    ->where('is_primary', true)
+                    ->exists(),
+            ],
+        );
+    }
+
+    /**
      * Crée les données médicales de premier niveau saisies au formulaire
      * de création (§12) : allergies connues et maladies chroniques.
      */
     private function attachInitialMedicalData(StorePatientRequest $request, Patient $patient): void
     {
-        $contact = $request->input('emergency_contact', []);
-
-        if (filled($contact['name'] ?? null) && filled($contact['phone'] ?? null)) {
-            $patient->emergencyContacts()->create([
-                'name' => $contact['name'],
-                'relationship' => $contact['relationship'] ?? null,
-                'phone' => $contact['phone'],
-                'is_primary' => true,
-            ]);
-        }
+        $this->attachEmergencyContact($request, $patient);
 
         foreach ($this->splitList($request->input('known_allergies')) as $allergen) {
             Allergy::create([

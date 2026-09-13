@@ -43,6 +43,12 @@
                     <dd>{{ $patient->phone }}</dd>
                 </div>
             @endif
+            @if (! $compact && $patient->id_card_number)
+                <div class="flex gap-1">
+                    <dt class="text-ink-400">Carte d'identité</dt>
+                    <dd class="font-mono">{{ $patient->id_card_number }}</dd>
+                </div>
+            @endif
             @if (! $compact && $patient->attendingDoctor)
                 <div class="flex gap-1">
                     <dt class="text-ink-400">Médecin traitant</dt>

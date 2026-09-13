@@ -158,7 +158,9 @@
                         <p class="text-xs text-ink-500">Personne à prévenir</p>
                         @foreach ($patient->emergencyContacts as $contact)
                             <p class="font-medium text-ink-900">{{ $contact->name }}</p>
-                            <p class="text-xs text-ink-500">{{ $contact->relationship }} · {{ $contact->phone }}</p>
+                            <p class="text-xs text-ink-500">
+                                {{ $contact->relationship ?: 'Proche' }}{{ $contact->phone ? ' · '.$contact->phone : '' }}
+                            </p>
                         @endforeach
                     </div>
                 @endif

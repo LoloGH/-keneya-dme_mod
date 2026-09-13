@@ -50,6 +50,7 @@ class PatientIdentifierResolver
      *     email?: string|null,
      *     address?: string|null,
      *     city?: string|null,
+     *     id_card_number?: string|null,
      *     label?: string|null
      * }  $attributes Informations de base transmises par l'hôte.
      */
@@ -207,7 +208,7 @@ class PatientIdentifierResolver
     {
         [$lastName, $firstName] = $this->splitName($attributes);
 
-        return array_filter([
+        $colonnes = array_filter([
             'last_name' => $lastName,
             'first_name' => $firstName,
             'sex' => $this->normalizeSex($attributes['sex'] ?? null),
@@ -219,6 +220,17 @@ class PatientIdentifierResolver
             'city' => $attributes['city'] ?? null,
             'status' => 'active',
         ], static fn ($value) => $value !== null);
+
+        // Le numéro de carte échappe au filtre ci-dessus, et lui seul :
+        // effacé chez l'hôte, il doit s'effacer ici. Un numéro de pièce qui ne
+        // correspond plus à rien vaut moins que pas de numéro du tout, alors
+        // qu'un champ simplement absent de l'envoi ne doit rien changer.
+        if (array_key_exists('id_card_number', $attributes)) {
+            $numero = trim((string) ($attributes['id_card_number'] ?? ''));
+            $colonnes['id_card_number'] = $numero !== '' ? $numero : null;
+        }
+
+        return $colonnes;
     }
 
     /**
@@ -234,8 +246,12 @@ class PatientIdentifierResolver
             return [$lastName !== '' ? $lastName : '-', $firstName];
         }
 
-        // L'hôte n'a transmis qu'un nom complet : le premier mot est
-        // considéré comme le nom de famille, le reste comme le prénom.
+        // L'hôte n'a transmis qu'un nom complet : le premier mot est le
+        // prénom, le reste le nom de famille. C'est l'ordre dans lequel une
+        // identité s'écrit ici, et le seul qui laisse `fullName()` — « prénom
+        // nom » — rendre exactement la chaîne reçue. L'inverse retournait
+        // « Aminata Traoré » en « Traoré Aminata » sur chaque document du
+        // dossier.
         $full = trim((string) ($attributes['name'] ?? ''));
 
         if ($full === '') {
@@ -245,9 +261,14 @@ class PatientIdentifierResolver
         }
 
         $parts = preg_split('/\s+/', $full) ?: [$full];
-        $lastName = (string) array_shift($parts);
 
-        return [$lastName, implode(' ', $parts)];
+        if (count($parts) === 1) {
+            return [(string) $parts[0], ''];
+        }
+
+        $firstName = (string) array_shift($parts);
+
+        return [implode(' ', $parts), $firstName];
     }
 
     /**

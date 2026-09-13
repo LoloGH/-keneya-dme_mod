@@ -66,6 +66,18 @@
                 <input id="occupation" name="occupation" type="text" maxlength="100"
                        value="{{ old('occupation', $patient?->occupation) }}" class="k-input">
             </div>
+
+            {{-- Le seul champ qui distingue deux personnes à coup sûr : le
+                 téléphone change et se prête, le nom s'écrit de dix façons,
+                 l'âge se donne à un an près. Facultatif, et il doit le rester,
+                 un patient arrivé sans papiers ayant droit à un dossier. --}}
+            <div class="sm:col-span-2">
+                <label for="id_card_number" class="k-label">N° de la carte d'identité</label>
+                <input id="id_card_number" name="id_card_number" type="text" maxlength="60"
+                       value="{{ old('id_card_number', $patient?->id_card_number) }}" class="k-input"
+                       autocomplete="off" placeholder="Recommandé : évite les doublons">
+                <x-dme::field-error name="id_card_number"/>
+            </div>
         </div>
 
         @if ($patient)
@@ -136,31 +148,38 @@
                 @foreach ($patient->emergencyContacts as $contact)
                     <li class="rounded-lg bg-ink-50 px-3 py-2 text-sm">
                         <span class="font-medium text-ink-900">{{ $contact->name }}</span>
-                        <span class="text-ink-500">- {{ $contact->relationship ?: 'Proche' }} · {{ $contact->phone }}</span>
+                        <span class="text-ink-500">- {{ $contact->relationship ?: 'Proche' }}{{ $contact->phone ? ' · '.$contact->phone : '' }}</span>
                     </li>
                 @endforeach
             </ul>
-            <p class="k-hint">Les contacts existants se modifient depuis le dossier du patient.</p>
-        @else
-            <div class="grid gap-4 sm:grid-cols-3">
-                <div>
-                    <label for="ec_name" class="k-label">Nom</label>
-                    <input id="ec_name" name="emergency_contact[name]" type="text" maxlength="150"
-                           value="{{ old('emergency_contact.name') }}" class="k-input">
-                </div>
-                <div>
-                    <label for="ec_relationship" class="k-label">Relation</label>
-                    <input id="ec_relationship" name="emergency_contact[relationship]" type="text" maxlength="100"
-                           value="{{ old('emergency_contact.relationship') }}" class="k-input" placeholder="Épouse, fils...">
-                </div>
-                <div>
-                    <label for="ec_phone" class="k-label">Téléphone</label>
-                    <input id="ec_phone" name="emergency_contact[phone]" type="tel" maxlength="30"
-                           value="{{ old('emergency_contact.phone') }}" class="k-input">
-                    <x-dme::field-error name="emergency_contact.phone"/>
-                </div>
-            </div>
+            <p class="k-hint">
+                Les accompagnateurs relevés à l'accueil figurent ici. Saisir ci-dessous
+                le nom de l'un d'eux met son numéro à jour au lieu d'en créer un second.
+            </p>
         @endif
+
+        {{-- Toujours saisissable, y compris sur un dossier qui a déjà un
+             contact : la personne à prévenir change avec la vie du patient, et
+             renvoyer ailleurs pour ce seul champ n'apprend rien à personne. --}}
+        <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+                <label for="ec_name" class="k-label">Nom</label>
+                <input id="ec_name" name="emergency_contact[name]" type="text" maxlength="150"
+                       value="{{ old('emergency_contact.name') }}" class="k-input">
+                <x-dme::field-error name="emergency_contact.name"/>
+            </div>
+            <div>
+                <label for="ec_relationship" class="k-label">Relation</label>
+                <input id="ec_relationship" name="emergency_contact[relationship]" type="text" maxlength="100"
+                       value="{{ old('emergency_contact.relationship') }}" class="k-input" placeholder="Épouse, fils...">
+            </div>
+            <div>
+                <label for="ec_phone" class="k-label">Téléphone</label>
+                <input id="ec_phone" name="emergency_contact[phone]" type="tel" maxlength="30"
+                       value="{{ old('emergency_contact.phone') }}" class="k-input">
+                <x-dme::field-error name="emergency_contact.phone"/>
+            </div>
+        </div>
     </fieldset>
 
     {{-- Informations médicales --}}

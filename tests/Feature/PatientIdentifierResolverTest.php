@@ -128,14 +128,21 @@ class PatientIdentifierResolverTest extends TestCase
         $this->assertSame('1990-04-17', $patient->birth_date->toDateString());
     }
 
+    /**
+     * Le premier mot est le prénom, le reste le nom de famille : c'est le seul
+     * découpage qui laisse `fullName()`, qui rend « prénom nom », restituer
+     * exactement la chaîne reçue. L'inverse affichait « Aminata Traoré » en
+     * « Traoré Aminata » sur chaque document du dossier.
+     */
     public function test_un_nom_complet_est_scinde_faute_de_mieux(): void
     {
         $patient = $this->resolver()->resolve(self::SYSTEM, 'WF-000903', [
-            'name' => 'Coulibaly Ibrahim Sekou',
+            'name' => 'Ibrahim Sekou Coulibaly',
         ]);
 
-        $this->assertSame('Coulibaly', $patient->last_name);
-        $this->assertSame('Ibrahim Sekou', $patient->first_name);
+        $this->assertSame('Sekou Coulibaly', $patient->last_name);
+        $this->assertSame('Ibrahim', $patient->first_name);
+        $this->assertSame('Ibrahim Sekou Coulibaly', $patient->fullName());
     }
 
     public function test_un_patient_sans_nom_est_refuse(): void
